@@ -1,5 +1,4 @@
 .firebase/
-.firebaserc
 *.log
 .DS_Store
 Thumbs.db
