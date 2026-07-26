@@ -41,8 +41,8 @@ if ($LASTEXITCODE -ne 0) {
     git push -u origin main
 }
 
-Write-Host "`n=== 5. Firebase Hosting 배포 ===" -ForegroundColor Cyan
-firebase deploy --only hosting --project $ProjectId
+Write-Host "`n=== 5. Firebase Hosting 배포 (public/ 폴더) ===" -ForegroundColor Cyan
+npx firebase-tools deploy --only hosting --project $ProjectId
 
 $Url = "https://$ProjectId.web.app"
 Write-Host "`n========================================" -ForegroundColor Green
