@@ -890,6 +890,31 @@ a:hover { color: #aecbfa; }
 .footer-nav a { color: var(--g-muted); font-size: 0.85rem; }
 .footer-disclaimer { font-size: 0.78rem; color: var(--g-muted); line-height: 1.6; }
 .footer-copy { font-size: 0.8rem; color: var(--g-muted); opacity: 0.6; }
+.footer-legal { font-size: 0.78rem; }
+.footer-legal a { color: var(--g-muted); }
+.footer-legal a:hover { color: var(--g-blue); }
+.footer-legal span { margin: 0 0.4rem; color: var(--g-border); }
+
+/* ── Ad slot (Google AdSense) ── */
+.ad-slot {
+  margin: 1.75rem 0;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+.ad-slot-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--g-muted);
+  opacity: 0.6;
+  text-align: center;
+  margin-bottom: 0.4rem;
+  width: 100%;
+}
+.ad-slot .adsbygoogle { width: 100%; }
 
 .market-status { color: var(--g-yellow); font-size: 0.85rem; }
 .market-updated { color: var(--g-muted); font-size: 0.8rem; }
@@ -919,10 +944,12 @@ a:hover { color: #aecbfa; }
     backdrop-filter: blur(20px);
     padding: 0.5rem;
     border-bottom: 1px solid var(--g-border);
+    max-height: calc(100dvh - 60px);
+    overflow-y: auto;
   }
 
   .nav-links.open { display: flex; }
-  .nav-links a { padding: 0.85rem 1rem; border-radius: var(--g-radius-sm); }
+  .nav-links a { display: block; padding: 0.85rem 1rem; border-radius: var(--g-radius-sm); min-height: 44px; }
 
   .hero-cta { flex-direction: column; }
   .hero-cta .btn { width: 100%; min-height: 48px; }
@@ -932,6 +959,50 @@ a:hover { color: #aecbfa; }
 
   .dash-hero-inner { gap: 1rem; }
   .grade-table { min-width: 680px; }
+
+  /* 탭/칩 바는 줄바꿈 대신 가로 스크롤 — 투자앱 느낌의 UX */
+  .market-tabs, .estate-type-tabs, .g-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 0.2rem;
+    margin-left: calc(clamp(1rem, 4vw, 1.5rem) * -1);
+    margin-right: calc(clamp(1rem, 4vw, 1.5rem) * -1);
+    padding-left: clamp(1rem, 4vw, 1.5rem);
+    padding-right: clamp(1rem, 4vw, 1.5rem);
+  }
+  .market-tabs::-webkit-scrollbar, .estate-type-tabs::-webkit-scrollbar, .g-tabs::-webkit-scrollbar { display: none; }
+  .market-tab, .estate-type-tab { flex: 0 0 auto; white-space: nowrap; }
+
+  .market-summary, .g-chips { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .market-summary::-webkit-scrollbar, .g-chips::-webkit-scrollbar { display: none; }
+  .g-chip, .g-chip-btn { flex: 0 0 auto; white-space: nowrap; }
+
+  .logo-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 46vw; }
+
+  .comparison-table th, .comparison-table td { padding: 0.6rem 0.65rem; font-size: 0.82rem; }
+}
+
+@media (max-width: 480px) {
+  .container { padding: 0 1rem; }
+  .section { padding: 1.5rem 0; }
+  .dash-hero { padding: 1.5rem 0 1rem; }
+  .pick-card, .card, .g-panel { padding: 1rem; border-radius: var(--g-radius-sm); }
+  .pick-list, .market-grid, .card-grid { gap: 0.7rem; }
+  .ticker-item { min-width: 112px; padding: 0.6rem 0.8rem; }
+  .stock-detail-avatar { width: 56px !important; height: 56px !important; min-width: 56px !important; font-size: 1.5rem !important; }
+  .stock-detail-price { font-size: 1.25rem; }
+  .metric-box { padding: 0.7rem 0.85rem; }
+  .btn { width: 100%; }
+  .hero-pills { gap: 0.3rem; }
+  .footer-top { flex-direction: column; align-items: flex-start; }
+}
+
+/* 터치 기기: hover 전용 효과 최소화, 탭 시 즉시 반응 */
+@media (hover: none) {
+  .pick-card:hover, .card:hover, .market-card:hover { transform: none; }
+  a, button, .g-chip-btn, .market-tab, .estate-type-tab { -webkit-tap-highlight-color: rgba(138,180,248,0.15); }
 }
 
 @media (prefers-reduced-motion: reduce) {
