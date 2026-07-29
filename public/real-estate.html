@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>영재가 추천하는 | 청년 부동산·주택드림 청약 가이드</title>
+  <title>영재가 추천하는 2030재테크 | 청년 부동산·청약</title>
   <meta name="description" content="청년 부동산 투자·내 집 마련 가이드. 청년 주택드림 청약 자격, 청약 가점, 전세 vs 월세, LTV·DSR 기초. 2030 청년을 위한 부동산 정보.">
   <meta name="keywords" content="청년 부동산, 청년 주택드림 청약, 청년 청약, 내 집 마련, 청약 가점, 전세 월세, LTV DSR, 청년 주택">
   <meta name="robots" content="index, follow">
@@ -13,6 +13,7 @@
   <meta property="og:description" content="청년 주택드림 청약부터 내 집 마련 전략까지, 2030 부동산 가이드">
   <meta property="og:url" content="https://your-domain.com/real-estate.html">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css" rel="stylesheet">
   <script type="application/ld+json">
   {
@@ -25,14 +26,16 @@
   }
   </script>
 </head>
-<body>
+<body class="g-theme">
+  <div class="g-ambient" aria-hidden="true"><span class="g-blob g-blob-blue"></span><span class="g-blob g-blob-red"></span></div>
   <header class="site-header">
     <div class="container header-inner">
-      <a href="index.html" class="logo"><span class="logo-icon">💰</span><span class="logo-text">영재가 추천하는</span></a>
+      <a href="index.html" class="logo"><span class="logo-icon">💰</span><span class="logo-text">영재가 추천하는 <span class="logo-accent">2030재테크</span></span></a>
       <button class="menu-toggle" aria-label="메뉴 열기" aria-expanded="false">☰</button>
       <nav>
         <ul class="nav-links">
           <li><a href="index.html">홈</a></li>
+          <li><a href="dashboard.html">시세·등급</a></li>
           <li><a href="savings.html">예적금</a></li>
           <li><a href="etf.html">ETF</a></li>
           <li><a href="real-estate.html">부동산</a></li>
@@ -48,6 +51,29 @@
         <nav class="breadcrumb"><a href="index.html">홈</a> › 부동산</nav>
         <h1>청년 부동산 가이드 — 주택드림 청약·전월세·내 집 마련</h1>
         <p class="lead">높은 집값 속에서도 청년에게는 주택드림 청약, 전세 대출, 정부 지원 프로그램 등 다양한 내 집 마련 경로가 있습니다. 기본부터 차근차근 알아보세요.</p>
+      </div>
+    </section>
+
+    <section class="section estate-map-section" style="padding-top:1.5rem">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-label">Live Map</span>
+          <h2>🗺️ 지역별 부동산 시세 지도</h2>
+          <p>아파트·토지·임야·건물 — 10개 광역 지역 참고 지수 (<a href="dashboard.html">전체 시세·등급</a>)</p>
+          <div class="estate-type-tabs g-tabs">
+            <button type="button" class="estate-type-tab active" data-estate-type="apt">🏢 아파트</button>
+            <button type="button" class="estate-type-tab" data-estate-type="land">🌍 토지</button>
+            <button type="button" class="estate-type-tab" data-estate-type="forest">🌲 임야</button>
+            <button type="button" class="estate-type-tab" data-estate-type="building">🏗️ 건물</button>
+          </div>
+        </div>
+        <div class="estate-map-layout">
+          <div id="estate-map" class="estate-map"></div>
+          <div id="estate-region-list" class="estate-region-list"></div>
+        </div>
+        <div class="info-box warning" style="margin-top:1rem">
+          <p>지도 시세는 KB·공시 기반 <strong>참고 추정치</strong>이며 실거래가와 다를 수 있습니다.</p>
+        </div>
       </div>
     </section>
 
@@ -161,9 +187,11 @@
   <footer class="site-footer">
     <div class="container footer-inner">
       <p class="footer-disclaimer">본 정보는 투자·법률 자문이 아닙니다. 부동산 거래 전 전문가 상담을 권장합니다.</p>
-      <p class="footer-copy">© 2026 영재가 추천하는</p>
+      <p class="footer-copy">© 2026 영재가 추천하는 2030재테크</p>
     </div>
   </footer>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin defer></script>
+  <script src="js/estate-map.js?v=1" defer></script>
   <script src="js/main.js"></script>
 </body>
 </html>

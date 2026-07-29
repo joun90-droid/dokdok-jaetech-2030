@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>실시간 시세·종목추천 | 영재가 추천하는 2030재테크</title>
+  <meta name="description" content="미장·국장 개별종목 50, PER/PBR/ROE, 영재 Pick, 부동산 지도">
+  <link rel="preload" href="/data/market-pack.json" as="fetch" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css" rel="stylesheet">
+  <script src="js/market.js?v=8" defer></script>
+</head>
+<body class="g-theme">
+  <div class="g-ambient" aria-hidden="true">
+    <span class="g-blob g-blob-blue"></span><span class="g-blob g-blob-green"></span>
+    <span class="g-blob g-blob-red"></span><span class="g-blob g-blob-yellow"></span>
+  </div>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo"><span class="logo-icon g-logo"><span>G</span></span><span class="logo-text">영재가 추천하는 <span class="logo-accent">2030재테크</span></span></a>
+      <button class="menu-toggle" aria-label="메뉴" aria-expanded="false">☰</button>
+      <nav><ul class="nav-links">
+        <li><a href="index.html">홈</a></li><li><a href="dashboard.html" class="active">시세·추천</a></li>
+        <li><a href="savings.html">예적금</a></li><li><a href="etf.html">ETF</a></li>
+        <li><a href="real-estate.html">부동산</a></li><li><a href="articles.html">가이드</a></li>
+      </ul></nav>
+    </div>
+  </header>
+
+  <main id="market-dashboard">
+    <section class="dash-hero">
+      <div class="container">
+        <div class="dash-hero-inner">
+          <div>
+            <span class="g-live-badge"><span class="g-live-dot"></span> TURBO</span>
+            <h1>영재 <span class="g-gradient-text">Pick</span> · 50종목</h1>
+            <p class="dash-lead">칩을 눌러 해당 섹션으로 이동 · PER/PBR/ROE · 종목 클릭 시 상세</p>
+            <p class="market-meta"><span id="load-speed" class="speed-badge">⚡ …</span><span id="market-updated"></span></p>
+            <p id="market-status" class="market-status"></p>
+          </div>
+          <div id="market-summary" class="market-summary g-chips" role="navigation" aria-label="시장 요약 필터"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section pick-section" id="section-picks">
+      <div class="container">
+        <div class="section-header"><span class="section-label">영재 Pick</span><h2>🎯 개별종목 추천</h2><p>카드 클릭 → PER/PBR/ROE 상세</p></div>
+        <div class="pick-list" id="pick-list"><div class="pick-skeleton"><div class="sk-card"></div><div class="sk-card"></div></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="section-tickers" style="padding-top:0">
+      <div class="container"><div class="g-panel"><h3 class="g-panel-title">📡 실시간 시세</h3><div class="ticker-strip" id="market-tickers"></div></div></div>
+    </section>
+
+    <section class="section estate-map-section" id="section-estate-map" style="padding-top:0">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-label">Real Estate</span><h2>🗺️ 부동산 시세 지도</h2>
+          <div class="estate-type-tabs g-tabs">
+            <button type="button" class="estate-type-tab active" data-estate-type="apt">🏢 아파트</button>
+            <button type="button" class="estate-type-tab" data-estate-type="land">🌍 토지</button>
+            <button type="button" class="estate-type-tab" data-estate-type="forest">🌲 임야</button>
+            <button type="button" class="estate-type-tab" data-estate-type="building">🏗️ 건물</button>
+          </div>
+        </div>
+        <div class="estate-map-layout"><div id="estate-map" class="estate-map"></div><div id="estate-region-list" class="estate-region-list"></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="section-market">
+      <div class="container">
+        <div class="section-header"><span class="section-label">Market</span><h2>시장별 분석</h2>
+          <div class="market-tabs g-tabs">
+            <button type="button" class="market-tab active" data-market="all">전체</button>
+            <button type="button" class="market-tab" data-market="stock">개별주</button>
+            <button type="button" class="market-tab" data-market="us">🇺🇸 미장</button>
+            <button type="button" class="market-tab" data-market="kr">🇰🇷 국장</button>
+            <button type="button" class="market-tab" data-market="estate">🏠 부동산</button>
+          </div>
+        </div>
+        <div class="market-grid" id="market-cards"></div>
+      </div>
+    </section>
+
+    <section class="section" id="section-fundamentals" style="padding-top:0">
+      <div class="container">
+        <div class="g-panel">
+          <h3 class="g-panel-title">📊 PER · PBR · ROE (재무지표)</h3>
+          <div class="chart-wrap chart-wrap-tall"><canvas id="fundamentalsChart"></canvas></div>
+          <div class="table-scroll" style="margin-top:1rem">
+            <table class="comparison-table">
+              <thead><tr><th>종목</th><th>PER</th><th>PBR</th><th>ROE</th><th>등급</th><th></th></tr></thead>
+              <tbody id="fundamentals-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="section-chart" style="padding-top:0">
+      <div class="container"><div class="g-panel"><h3 class="g-panel-title">📊 가치평가 점수</h3><div class="chart-wrap"><canvas id="fairValueChart"></canvas></div></div></div>
+    </section>
+
+    <section class="section" id="section-grade-table" style="padding-top:0">
+      <div class="container">
+        <div class="g-panel">
+          <h3 class="g-panel-title">📋 투자등급 종합표</h3>
+          <div class="table-scroll">
+            <table class="comparison-table grade-table">
+              <thead><tr><th>#</th><th>종목</th><th>유형</th><th>현재가</th><th>적정가</th><th>가치</th><th>등급</th><th>추천</th><th>PER/PBR/ROE</th></tr></thead>
+              <tbody id="grade-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="info-box warning" style="margin-top:1rem"><p><strong>면책:</strong> 참고용이며 투자 권유가 아닙니다.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="container"><p class="footer-copy">© 2026 영재가 추천하는 2030재테크</p></div></footer>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script src="js/estate-map.js?v=1" defer></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

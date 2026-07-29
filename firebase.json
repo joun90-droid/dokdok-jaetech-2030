@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "fintrack2030-248bf",
     "public": "public",
     "ignore": [
       "firebase.json",
@@ -7,6 +8,15 @@
       "**/node_modules/**"
     ],
     "headers": [
+      {
+        "source": "/data/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=60, stale-while-revalidate=300"
+          }
+        ]
+      },
       {
         "source": "**/*.@(css|js|html|xml|txt)",
         "headers": [

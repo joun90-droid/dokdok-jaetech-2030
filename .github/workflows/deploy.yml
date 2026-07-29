@@ -3,6 +3,8 @@ name: Deploy to Firebase Hosting
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: "*/10 * * * *" # 10분마다 시세 재수집 → 재배포 (실시간 갱신)
   workflow_dispatch:
 
 jobs:
@@ -16,6 +18,10 @@ jobs:
           node-version: "20"
 
       - run: npm install -g firebase-tools
+
+      - run: pwsh -File scripts/build-market.ps1
+        continue-on-error: true
+        shell: pwsh
 
       - run: npx firebase-tools deploy --only hosting --project "${{ secrets.FIREBASE_PROJECT_ID }}" --token "${{ secrets.FIREBASE_TOKEN }}"
         env:
