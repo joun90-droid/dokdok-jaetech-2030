@@ -1,0 +1,29 @@
+---
+description: fintrack2030 — public/ 변경 시 Firebase Hosting 자동 배포 (묻지 않음)
+alwaysApply: true
+globs: public/**,firebase.json,.firebaserc,scripts/**
+---
+
+# FinTrack 2030 자동 배포 (fintrack2030-248bf)
+
+**Live URL:** https://fintrack2030-248bf.web.app
+
+## 필수 규칙
+
+1. **`public/`**, `firebase.json`, `scripts/build-market.ps1` 등 **Hosting에 영향 주는 파일을 수정한 뒤**, 사용자에게 묻지 말고 **즉시** 배포한다:
+   ```powershell
+   Set-Location "C:\Users\User\Desktop\재테크 투자정보"
+   firebase deploy --only hosting --project fintrack2030-248bf
+   ```
+2. 배포 후 `https://fintrack2030-248bf.web.app/` (또는 변경한 페이지) **200 OK** 한 줄로 확인한다.
+3. **다른 Firebase 사이트**(stockpick, syncpulse 등)에는 이 규칙을 적용하지 않는다. **fintrack2030-248bf만** 자동 배포.
+4. Cloud Run / `gcloud run deploy`는 사용하지 않는다.
+
+## GitHub (백업)
+
+- 의미 있는 변경 후 `git push`는 권장하나, 사용자가 commit을 요청하지 않았으면 **deploy만** 수행한다.
+- GitHub Actions(`.github/workflows/deploy.yml`)도 `main` push 시 배포하므로, push 시 이중 배포 가능 — 문제 없음.
+
+## 로컬 미리보기
+
+- 배포 전 확인이 필요하면: `firebase serve --only hosting --project fintrack2030-248bf` → http://localhost:5000

@@ -1,0 +1,595 @@
+﻿/* FinTrack 2030 — 부동산 실시간 종합분석 (scoped) */
+.estate-live-app {
+  --el-bg-dark: #070a12;
+  --el-bg-card: rgba(22, 28, 45, 0.9);
+  --el-bg-card-border: rgba(255, 255, 255, 0.12);
+  --el-text-main: #f8fafc;
+  --el-text-muted: #94a3b8;
+  --el-accent-primary: #3b82f6;
+  --el-accent-blue: #2563eb;
+  --el-accent-green: #10b981;
+  --el-accent-purple: #8b5cf6;
+  --el-accent-orange: #f59e0b;
+  --el-accent-red: #ef4444;
+  --el-accent-gold: #facc15;
+  --el-font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  background-color: var(--el-bg-dark);
+  background-image:
+    radial-gradient(at 15% 15%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+    radial-gradient(at 85% 85%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+  color: var(--el-text-main);
+  font-family: var(--el-font-family);
+  font-variant-numeric: tabular-nums;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 0;
+}
+
+.estate-live-container {
+  padding-top: 0.25rem;
+  padding-bottom: 0.5rem;
+}
+
+.estate-live-app *,
+.estate-live-app *::before,
+.estate-live-app *::after {
+  box-sizing: border-box;
+}
+
+.estate-live-app .app-shell {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* Header */
+.estate-live-app .app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 1rem 1rem 0.85rem;
+  background: rgba(15, 23, 42, 0.95);
+  border-bottom: 1px solid var(--el-bg-card-border);
+}
+
+.estate-live-app .header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.estate-live-app .logo-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.estate-live-app .header-left h1,
+.estate-live-app .header-left .app-title {
+  font-size: clamp(0.92rem, 2.8vw, 1.05rem);
+  font-weight: 800;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.estate-live-app .section-kicker {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #60a5fa;
+  margin: 0 0 0.2rem;
+}
+
+.estate-live-app .sub-title { font-size: 0.72rem; color: var(--el-text-muted); line-height: 1.45; display: block; margin-top: 0.25rem; }
+
+.estate-live-app .header-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.estate-live-app .pro-live-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(59, 130, 246, 0.15));
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.estate-live-app .badge-text-live { color: #34d399; font-weight: 800; }
+.estate-live-app .badge-divider { color: rgba(255, 255, 255, 0.2); }
+.estate-live-app .badge-text-timer { color: #cbd5e1; font-size: 0.68rem; display: flex; align-items: center; gap: 3px; }
+
+.estate-live-app .pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+.estate-live-app .btn-pro-stream {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--el-text-main);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.7rem;
+}
+
+/* News Ticker */
+.estate-live-app .news-ticker-container {
+  display: flex;
+  align-items: center;
+  background: rgba(30, 41, 59, 0.85);
+  padding: 5px 1rem;
+  font-size: 0.78rem;
+  overflow: hidden;
+  border-bottom: 1px solid var(--el-bg-card-border);
+}
+
+.estate-live-app .ticker-label {
+  background: #f59e0b;
+  color: #000;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  margin-right: 8px;
+  white-space: nowrap;
+}
+
+.estate-live-app .ticker-wrapper {
+  color: #cbd5e1;
+  white-space: nowrap;
+  animation: ticker 22s linear infinite;
+}
+
+@keyframes ticker {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+/* Live Toast Bar */
+.estate-live-app .live-toast-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.15), rgba(59, 130, 246, 0.15));
+  border-bottom: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 5px 1rem;
+  font-size: 0.76rem;
+}
+
+.estate-live-app .toast-content {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.estate-live-app .toast-tag {
+  background: linear-gradient(90deg, #10b981, #059669);
+  color: #ffffff;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-weight: 800;
+  font-size: 0.65rem;
+}
+
+.estate-live-app .toast-time { color: #94a3b8; font-size: 0.68rem; white-space: nowrap; }
+
+/* Sticky Navigation Anchor Bar */
+.estate-live-app .sticky-anchor-nav {
+  position: sticky;
+  top: 56px;
+  z-index: 90;
+  display: flex;
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.97);
+  backdrop-filter: blur(12px);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--el-bg-card-border);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.estate-live-app .sticky-anchor-nav::-webkit-scrollbar { display: none; }
+
+.estate-live-app .anchor-btn {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid var(--el-bg-card-border);
+  color: var(--el-text-muted);
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s;
+}
+
+.estate-live-app .anchor-btn.active,
+.estate-live-app .anchor-btn:hover {
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+/* Continuous Vertical Sections Flow */
+.estate-live-app .vertical-sections-flow {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+  overflow-x: hidden !important;
+}
+
+.estate-live-app .stream-section {
+  scroll-margin-top: 72px;
+}
+
+.estate-live-app .content-header {
+  margin-bottom: 0.8rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.65rem;
+}
+.estate-live-app .content-header h2 { font-size: 1.05rem; font-weight: 800; display: flex; align-items: center; gap: 6px; margin: 0; flex: 1 1 220px; }
+.estate-live-app .content-header .desc { font-size: 0.75rem; color: var(--el-text-muted); flex: 1 1 100%; }
+
+.estate-live-app .filter-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 0;
+  flex: 1 1 240px;
+  justify-content: flex-end;
+}
+
+.estate-live-app select,
+.estate-live-app input[type="number"] {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--el-text-main);
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  outline: none;
+  max-width: 100%;
+}
+
+.estate-live-app .filter-controls select {
+  flex: 1 1 140px;
+  min-width: 0;
+  width: auto;
+}
+
+.estate-live-app .form-group select,
+.estate-live-app .form-group input[type="number"] {
+  width: 100%;
+}
+
+/* Responsive Grids for Responsive App Mode */
+.estate-live-app .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px;
+  margin-bottom: 1rem;
+}
+
+.estate-live-app .stat-card {
+  background: var(--el-bg-card);
+  border: 1px solid var(--el-bg-card-border);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.estate-live-app .stat-title { font-size: 0.7rem; color: var(--el-text-muted); }
+.estate-live-app .stat-value { font-size: 1.1rem; font-weight: 800; margin: 3px 0; }
+.estate-live-app .stat-changeup { font-size: 0.7rem; color: #34d399; }
+.estate-live-app .stat-desc { font-size: 0.65rem; color: #94a3b8; }
+
+/* Region Cards Grid */
+.estate-live-app .region-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+}
+
+.estate-live-app .region-card {
+  background: var(--el-bg-card);
+  border: 1px solid var(--el-bg-card-border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.estate-live-app .region-card:hover {
+  border-color: rgba(59, 130, 246, 0.45);
+  transform: translateY(-1px);
+}
+
+.estate-live-app .region-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.estate-live-app .region-name { font-size: 0.92rem; font-weight: 800; }
+
+.estate-live-app .tag-badge { padding: 2px 6px; border-radius: 4px; font-size: 0.68rem; font-weight: 700; }
+.estate-live-app .tag-badge.regulated { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+.estate-live-app .tag-badge.adjustment { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+.estate-live-app .tag-badge.normal { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+
+.estate-live-app .region-stats-row { display: flex; justify-content: space-between; font-size: 0.78rem; padding: 2px 0; }
+.estate-live-app .region-stats-row span { color: var(--el-text-muted); }
+
+/* STRICT 100% FIT CSS GRID MATRIX TABLE (NO HORIZONTAL SCROLLBAR!) */
+.estate-live-app .table-panel {
+  padding: 0.6rem !important;
+  overflow-x: hidden !important;
+}
+
+.estate-live-app .strict-grid-table {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--el-bg-card-border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.8);
+}
+
+.estate-live-app .sg-row {
+  display: grid;
+  grid-template-columns: 1.6fr 1.1fr 0.9fr 0.9fr 0.9fr 0.6fr;
+  align-items: center;
+  padding: 8px 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.74rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.estate-live-app .sg-header {
+  background: rgba(30, 41, 59, 0.95);
+  color: #94a3b8;
+  font-weight: 800;
+  font-size: 0.72rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.estate-live-app .sg-row:not(.sg-header):hover { background: rgba(59, 130, 246, 0.15); }
+.estate-live-app .sg-cell { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 2px; }
+
+.estate-live-app .sg-cell.col-region { text-align: left; font-weight: 700; color: #f8fafc; }
+.estate-live-app .sg-cell.col-pyeong { text-align: right; }
+.estate-live-app .sg-cell.col-avg { text-align: right; }
+.estate-live-app .sg-cell.col-jeonse { text-align: right; }
+.estate-live-app .sg-cell.col-change { text-align: right; font-weight: 700; }
+.estate-live-app .sg-cell.col-rating { text-align: center; }
+
+/* Responsive Layout split for wide desktop */
+.estate-live-app .investment-layout,
+.estate-live-app .calculator-grid,
+.estate-live-app .loan-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.estate-live-app .chart-box {
+  position: relative;
+  height: min(280px, 55vw);
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.estate-live-app .chart-box-radar {
+  position: relative;
+  height: min(260px, 58vw);
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.estate-live-app .panel-card {
+  background: var(--el-bg-card);
+  border: 1px solid var(--el-bg-card-border);
+  border-radius: 12px;
+  padding: 0.9rem;
+  overflow-x: hidden !important;
+}
+
+.estate-live-app .panel-card h3 { font-size: 0.95rem; font-weight: 800; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+
+.estate-live-app .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.estate-live-app .form-group { display: flex; flex-direction: column; gap: 3px; }
+.estate-live-app .form-group label { font-size: 0.72rem; color: var(--el-text-muted); font-weight: 600; }
+.estate-live-app .input-hint { font-size: 0.68rem; color: #64748b; }
+
+/* ROI Cards */
+.estate-live-app .roi-summary-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px; }
+.estate-live-app .roi-card { background: rgba(15, 23, 42, 0.8); border: 1px solid var(--el-bg-card-border); border-radius: 8px; padding: 6px 2px; text-align: center; }
+.estate-live-app .roi-card .label { font-size: 0.65rem; color: var(--el-text-muted); }
+.estate-live-app .roi-card h2 { font-size: 1.05rem; font-weight: 800; margin-top: 2px; }
+
+.estate-live-app .aligned-detail-grid { display: flex; flex-direction: column; gap: 6px; font-variant-numeric: tabular-nums; }
+.estate-live-app .ad-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px dashed rgba(255, 255, 255, 0.08); font-size: 0.8rem; }
+.estate-live-app .ad-label { color: var(--el-text-muted); font-weight: 600; }
+.estate-live-app .ad-value { text-align: right; font-weight: 700; }
+
+.estate-live-app .cashflow-box { background: rgba(15, 23, 42, 0.8); border: 1px solid var(--el-bg-card-border); border-radius: 8px; padding: 8px; }
+.estate-live-app .cf-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 4px; text-align: center; }
+.estate-live-app .cf-item span { font-size: 0.68rem; color: var(--el-text-muted); }
+.estate-live-app .cf-item strong { font-size: 0.85rem; font-weight: 700; }
+
+/* Loan Box */
+.estate-live-app .loan-limit-box { text-align: center; background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(124, 58, 237, 0.2)); border: 1px solid #3b82f6; border-radius: 10px; padding: 0.8rem; margin-bottom: 8px; }
+.estate-live-app .loan-limit-box span { font-size: 0.72rem; color: var(--el-text-muted); }
+.estate-live-app .loan-limit-box h1 { font-size: 1.6rem; font-weight: 800; color: #38bdf8; margin: 3px 0; }
+
+.estate-live-app .limit-comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px; }
+.estate-live-app .comp-box { background: rgba(15, 23, 42, 0.6); border: 1px solid var(--el-bg-card-border); border-radius: 8px; padding: 6px; text-align: center; }
+.estate-live-app .comp-box span { font-size: 0.68rem; color: var(--el-text-muted); }
+.estate-live-app .comp-box strong { font-size: 0.88rem; font-weight: 700; }
+
+.estate-live-app .warning-banner { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; padding: 8px 10px; border-radius: 8px; font-size: 0.78rem; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.estate-live-app .warning-banner.hidden { display: none; }
+
+/* Radio Tiles */
+.estate-live-app .radio-tile-group { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.estate-live-app .radio-tile { background: rgba(15, 23, 42, 0.6); border: 1px solid var(--el-bg-card-border); border-radius: 8px; padding: 6px 8px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.75rem; }
+.estate-live-app .radio-tile input { display: none; }
+.estate-live-app .radio-tile:has(input:checked) { background: rgba(59, 130, 246, 0.25); border-color: #3b82f6; }
+
+.estate-live-app .rating-box { margin-top: 8px; background: rgba(15, 23, 42, 0.8); border: 1px solid var(--el-bg-card-border); border-radius: 8px; padding: 8px; text-align: center; }
+.estate-live-app .rating-score-badge h2 { font-size: 2rem; font-weight: 800; color: #34d399; }
+.estate-live-app .metric-row { display: flex; justify-content: space-between; font-size: 0.78rem; padding: 2px 0; }
+.estate-live-app .investment-issues-list li { font-size: 0.75rem; padding: 3px 0; }
+
+/* News Feed */
+.estate-live-app .news-feed-container { display: flex; flex-direction: column; gap: 8px; }
+.estate-live-app .news-card { background: var(--el-bg-card); border: 1px solid var(--el-bg-card-border); border-radius: 10px; padding: 10px; }
+.estate-live-app .news-card-content h3 { font-size: 0.88rem; font-weight: 700; margin-bottom: 4px; }
+.estate-live-app .news-card-content p { font-size: 0.78rem; color: var(--el-text-muted); line-height: 1.4; }
+
+.estate-live-app .news-meta { display: flex; align-items: center; gap: 8px; font-size: 0.7rem; color: #64748b; margin-top: 6px; }
+.estate-live-app .news-tag { background: rgba(59, 130, 246, 0.2); color: #60a5fa; padding: 1px 6px; border-radius: 4px; font-weight: 600; }
+
+/* Colors */
+.estate-live-app .text-green { color: #34d399 !important; }
+.estate-live-app .text-red { color: #f87171 !important; }
+.estate-live-app .text-blue { color: #60a5fa !important; }
+.estate-live-app .text-gold { color: #facc15 !important; }
+.estate-live-app .text-warning { color: #fbbf24 !important; }
+
+/* Footer */
+.estate-live-app .app-footer { text-align: center; padding: 1rem; font-size: 0.72rem; color: #64748b; }
+
+.estate-live-disclaimer {
+  margin: 0.75rem 1rem 1rem;
+  font-size: 0.72rem;
+  color: #64748b;
+  text-align: center;
+}
+
+.fa-spin-slow {
+  animation: fa-spin 3s linear infinite;
+}
+
+@keyframes fa-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@media (min-width: 768px) {
+  .estate-live-app .app-header { padding: 1rem 1.5rem; }
+  .estate-live-app .investment-layout,
+  .estate-live-app .calculator-grid,
+  .estate-live-app .loan-layout {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .estate-live-app .strict-grid-table .sg-header { display: none; }
+  .estate-live-app .sg-row:not(.sg-header) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 10px;
+    padding: 12px;
+    margin-bottom: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    background: rgba(15, 23, 42, 0.55);
+    font-size: 0.8rem;
+  }
+  .estate-live-app .sg-row:not(.sg-header) .sg-cell {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    padding: 0;
+  }
+  .estate-live-app .sg-row:not(.sg-header) .col-region {
+    grid-column: 1 / -1;
+    font-size: 0.92rem;
+    padding-bottom: 4px;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+    margin-bottom: 2px;
+  }
+  .estate-live-app .sg-row:not(.sg-header) .col-pyeong::before { content: "평당가 "; color: #64748b; font-weight: 600; }
+  .estate-live-app .sg-row:not(.sg-header) .col-avg::before { content: "평균가 "; color: #64748b; font-weight: 600; }
+  .estate-live-app .sg-row:not(.sg-header) .col-jeonse::before { content: "전세율 "; color: #64748b; font-weight: 600; }
+  .estate-live-app .sg-row:not(.sg-header) .col-change::before { content: "1년 "; color: #64748b; font-weight: 600; }
+  .estate-live-app .sg-row:not(.sg-header) .col-rating { grid-column: 1 / -1; text-align: left; }
+  .estate-live-app .sg-row:not(.sg-header) .col-rating::before { content: "등급 "; color: #64748b; font-weight: 600; }
+  .estate-live-app .table-panel { padding: 0.75rem !important; }
+  .estate-live-app .strict-grid-table { border: none; background: transparent; }
+}
+
+@media (max-width: 640px) {
+  .estate-live-app .header-left h1,
+  .estate-live-app .header-left .app-title { font-size: 0.88rem !important; }
+  .estate-live-app .header-left .sub-title { display: none; }
+  .estate-live-app .pro-live-status-pill .badge-text-timer { display: none; }
+  .estate-live-app .app-header { flex-direction: column; align-items: stretch; }
+  .estate-live-app .header-right { align-self: flex-end; }
+  .estate-live-app .filter-controls { justify-content: stretch; }
+  .estate-live-app .filter-controls select { flex: 1 1 100%; }
+  .estate-live-app .form-grid { grid-template-columns: 1fr; }
+  .estate-live-app .roi-summary-cards { grid-template-columns: 1fr; }
+  .estate-live-app .cf-grid { grid-template-columns: 1fr; }
+  .estate-live-app .sticky-anchor-nav { top: 52px; padding-inline: 8px; }
+  .estate-live-app .anchor-btn { padding: 7px 11px; font-size: 0.74rem; }
+}

@@ -1,0 +1,14 @@
+body.spa-loading {
+  cursor: progress;
+}
+
+main {
+  transition: opacity 0.22s ease;
+}
+
+@supports (view-transition-name: root) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.25s;
+  }
+}

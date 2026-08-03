@@ -1,0 +1,10 @@
+﻿=====FILE index.html =====
+python : Traceback (most recent call last):
+위치 C:\Users\User\AppData\Local\Temp\ps-script-8baf20d5-b903-4479-9482-def7fa0a5002.ps1:79 문자:1
++ python -c "
++ ~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "<string>", line 7, in <module>
+UnicodeEncodeError: 'cp949' codec can't encode character '\xa9' in position 5922: illegal multibyte sequence

@@ -14,38 +14,67 @@ document.addEventListener("DOMContentLoaded", () => {
         nav.classList.remove("open");
         toggle.setAttribute("aria-expanded", "false");
         toggle.setAttribute("aria-label", "메뉴 열기");
+        document.querySelectorAll(".nav-item.has-dropdown.open").forEach((el) => el.classList.remove("open"));
       });
     });
 
     document.addEventListener("click", (e) => {
-      if (!nav.contains(e.target) && !toggle.contains(e.target)) {
-        nav.classList.remove("open");
-        toggle.setAttribute("aria-expanded", "false");
-        toggle.setAttribute("aria-label", "메뉴 열기");
+      if (nav.contains(e.target) || toggle.contains(e.target)) return;
+      nav.classList.remove("open");
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.setAttribute("aria-label", "메뉴 열기");
+      document.querySelectorAll(".nav-item.has-dropdown.open").forEach((el) => el.classList.remove("open"));
+    });
+  }
+
+  document.querySelectorAll(".nav-item.has-dropdown > a").forEach((a) => {
+    a.addEventListener("click", (e) => {
+      if (window.innerWidth > 1024) return;
+      const href = a.getAttribute("href") || "";
+      if (href.includes("#")) return;
+      e.preventDefault();
+      const item = a.parentElement;
+      document.querySelectorAll(".nav-item.has-dropdown.open").forEach((el) => {
+        if (el !== item) el.classList.remove("open");
+      });
+      item.classList.toggle("open");
+    });
+  });
+
+  function setActiveNav() {
+    const parts = window.location.pathname.split("/").filter(Boolean);
+    const current = parts[parts.length - 1] || "index.html";
+    const normalizedCurrent = current.replace(/\.html$/, "");
+    const inArticles = parts.includes("articles");
+
+    document.querySelectorAll(".nav-links a").forEach((link) => {
+      link.classList.remove("active");
+      const href = link.getAttribute("href") || "";
+      const linkFile = href.split("/").pop()?.split("#")[0] || "";
+      const normalizedLink = linkFile.replace(/\.html$/, "");
+
+      if (
+        linkFile === current ||
+        normalizedLink === normalizedCurrent ||
+        (normalizedCurrent === "index" && (linkFile === "index.html" || linkFile === "" || href === "/")) ||
+        (normalizedCurrent === "stock-tech" && (linkFile === "stock-education.html" || normalizedLink === "stock-education")) ||
+        (normalizedCurrent === "stock-fund" && (linkFile === "stock-education.html" || normalizedLink === "stock-education"))
+      ) {
+        link.classList.add("active");
+        return;
+      }
+
+      if (
+        inArticles &&
+        (linkFile === "articles.html" || linkFile === "articles" || href.endsWith("articles.html"))
+      ) {
+        link.classList.add("active");
       }
     });
   }
 
-  const pathParts = window.location.pathname.split("/").filter(Boolean);
-  const currentPath = pathParts[pathParts.length - 1] || "index.html";
-  const inArticles = pathParts.includes("articles");
-
-  document.querySelectorAll(".nav-links a").forEach((link) => {
-    const href = link.getAttribute("href") || "";
-    const linkFile = href.split("/").pop();
-
-    if (linkFile === currentPath) {
-      link.classList.add("active");
-      return;
-    }
-
-    if (
-      inArticles &&
-      (linkFile === "articles.html" || href.endsWith("articles.html"))
-    ) {
-      link.classList.add("active");
-    }
-  });
+  setActiveNav();
+  document.addEventListener("spa:navigate", setActiveNav);
 
   const revealEls = document.querySelectorAll(".reveal");
   if (revealEls.length && "IntersectionObserver" in window) {
@@ -78,4 +107,19 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 600);
     }
   }
+
+  document.querySelectorAll(".hidden-content-area").forEach((area) => {
+    area.addEventListener("click", () => {
+      if (!window.matchMedia("(hover: none)").matches && window.innerWidth > 640) return;
+      document.querySelectorAll(".hidden-content-area.revealed").forEach((el) => {
+        if (el !== area) el.classList.remove("revealed");
+      });
+      area.classList.toggle("revealed");
+    });
+  });
+
+  document.addEventListener("click", (e) => {
+    if (e.target.closest(".hidden-content-area")) return;
+    document.querySelectorAll(".hidden-content-area.revealed").forEach((el) => el.classList.remove("revealed"));
+  });
 });

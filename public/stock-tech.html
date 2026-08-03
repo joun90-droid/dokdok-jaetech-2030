@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<!-- stock-tech.html | FinTrack 2030 — Visual Technical Analysis (SVG + Canvas, no external images) -->
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>기술적 분석 - Technical Analysis | FinTrack 2030</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/trading-rules.css">
+  <link rel="stylesheet" href="css/tech-detail.css">
+  <link rel="stylesheet" href="css/hover-reveal.css">
+  <link rel="stylesheet" href="css/stock-edu-modal.css">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0a0e1a;--glass:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.08);
+      --cyan:#00d4ff;--gold:#f0b90b;--green:#00c897;--red:#f84960;
+      --text:#e8ecf4;--muted:#8b95a8;--header:68px;--radius:16px;
+    }
+    body{font-family:'Inter','Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;
+      background-image:radial-gradient(ellipse 70% 40% at 10% -5%,rgba(0,212,255,.07),transparent),
+        radial-gradient(ellipse 50% 30% at 95% 0%,rgba(240,185,11,.05),transparent)}
+    a{text-decoration:none;color:inherit}
+    .main{max-width:1400px;margin:0 auto;padding:2rem 1.25rem 3.5rem}
+    .hero{margin-bottom:2rem}
+    .hero h1{font-size:clamp(1.6rem,4vw,2.35rem);font-weight:800;margin-bottom:.45rem}
+    .hero h1 span{color:var(--cyan);font-weight:700}
+    .hero p{color:var(--muted);font-size:1rem;max-width:680px}
+    .sec-nav{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.75rem;padding:.4rem;
+      background:var(--glass);border:1px solid var(--border);border-radius:999px;backdrop-filter:blur(10px)}
+    .sec-nav button{padding:.5rem 1rem;border:none;border-radius:999px;background:transparent;
+      color:var(--muted);font-size:.8rem;font-weight:600;cursor:pointer;transition:.25s}
+    .sec-nav button.active{background:linear-gradient(135deg,rgba(0,212,255,.18),rgba(240,185,11,.12));color:var(--text)}
+    .panel{display:none;animation:fade .35s ease}.panel.active{display:block}
+    @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+    .glass{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);
+      padding:1.35rem;margin-bottom:1.25rem;backdrop-filter:blur(10px)}
+    .glass h2{font-size:1.15rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+    .glass h2 i{color:var(--gold)}
+    /* Live chart */
+    .live-chart-wrap{border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-bottom:1.5rem;background:#060912}
+    .live-chart-head{display:flex;justify-content:space-between;align-items:center;padding:.65rem 1rem;
+      background:rgba(255,255,255,.03);border-bottom:1px solid var(--border);font-size:.78rem;color:var(--muted)}
+    .live-chart-head strong{color:var(--text);font-size:.9rem}
+    #main-chart{display:block;width:100%;height:400px}
+    /* Pattern cards with visual */
+    .pat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:.85rem}
+    .pat-card{display:flex;gap:.85rem;padding:.85rem;background:rgba(15,20,35,.7);
+      border:1px solid var(--border);border-radius:12px;transition:.25s;align-items:center}
+    .pat-card:hover{border-color:rgba(0,212,255,.25);transform:translateY(-2px);background:rgba(255,255,255,.06)}
+    .pat-vis{flex-shrink:0;width:120px;height:80px;border-radius:8px;background:rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .pat-vis svg,.pat-vis canvas{display:block}
+    .pat-info{flex:1;min-width:0}
+    .pat-info h4{font-size:.88rem;font-weight:700;margin-bottom:.15rem}
+    .pat-info .en{font-size:.7rem;color:var(--muted)}
+    .pat-info p{font-size:.76rem;color:var(--muted);margin-top:.35rem;line-height:1.45}
+    .sig{display:inline-block;padding:.15rem .45rem;border-radius:999px;font-size:.65rem;font-weight:700;margin-top:.35rem}
+    .sig-buy{background:rgba(0,200,151,.15);color:var(--green)}
+    .sig-sell{background:rgba(248,73,96,.15);color:var(--red)}
+    .sig-hold{background:rgba(240,185,11,.12);color:var(--gold)}
+    /* Chart pattern diagrams */
+    .chart-pat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+    .chart-pat-card{background:rgba(15,20,35,.75);border:1px solid var(--border);border-radius:12px;padding:1rem;transition:.25s}
+    .chart-pat-card:hover{border-color:rgba(240,185,11,.3)}
+    .chart-pat-card h4{font-size:.88rem;margin-bottom:.5rem}
+    .chart-pat-card svg{width:100%;height:140px;display:block;margin-bottom:.5rem;background:rgba(0,0,0,.25);border-radius:8px}
+    .chart-pat-card p{font-size:.75rem;color:var(--muted);line-height:1.5}
+    /* Indicator mini charts */
+    .ind-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem}
+    .ind-card{background:rgba(15,20,35,.75);border:1px solid var(--border);border-radius:12px;padding:.85rem}
+    .ind-card h4{font-size:.85rem;margin-bottom:.5rem;color:var(--cyan)}
+    .ind-card canvas{width:100%;height:100px;display:block;border-radius:6px;background:rgba(0,0,0,.3)}
+    .ind-card p{font-size:.72rem;color:var(--muted);margin-top:.45rem}
+    .site-footer{border-top:1px solid var(--border);padding:1.75rem 1.25rem;text-align:center;background:rgba(10,14,26,.95)}
+    .footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:.65rem 1.1rem;margin-bottom:.75rem}
+    .footer-links a{font-size:.78rem;color:var(--muted)}.footer-links a:hover{color:var(--cyan)}
+    .footer-copy{font-size:.75rem;color:#5a6478}
+    .guide-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-top:1rem}
+    .guide-card{padding:1.15rem;background:rgba(15,20,35,.75);border:1px solid var(--border);border-radius:12px}
+    .guide-card h3{font-size:.95rem;color:var(--gold);margin-bottom:.5rem}
+    .guide-card p,.guide-card li{font-size:.82rem;color:var(--muted);line-height:1.55}
+    .guide-card ul{margin:.5rem 0 0 1rem}
+    @media(max-width:1024px){
+      .pat-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="logo"><span class="logo-icon" aria-hidden="true">💰</span><span class="logo-text">영재 재테크 <span class="logo-accent">2030</span></span></a>
+    <button class="menu-toggle" aria-label="메뉴 열기" aria-expanded="false">☰</button>
+    <nav aria-label="주요 메뉴">
+      <ul class="nav-links">
+        <li><a href="index.html">홈</a></li>
+        <li><a href="stock-price.html">주식시세추천</a></li>
+        <li><a href="stock-education.html">주식교육창</a></li>
+        <li><a href="savings.html">예적금</a></li>
+        <li><a href="etf.html">ETF</a></li>
+        <li><a href="real-estate.html">부동산</a></li>
+        <li><a href="articles.html">가이드</a></li>
+        <li><a href="about.html">운영자 소개</a></li>
+        <li><a href="contact.html">문의하기</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="main">
+  <section class="hero">
+    <h1>📈 기술적 분석 <span>- Technical Analysis</span></h1>
+    <p>차트 패턴, 캔들스틱, 보조지표를 <strong style="color:var(--cyan)">시각적으로</strong> 학습하세요 — SVG·Canvas 기반 실전 차트</p>
+  </section>
+
+  <!-- FULL LIVE CHART -->
+  <div class="live-chart-wrap">
+    <div class="live-chart-head">
+      <strong>BTC/USDT · 1D</strong>
+      <span>50 Candles · Volume · MA(20) · TradingView Style Demo</span>
+    </div>
+    <canvas id="main-chart"></canvas>
+  </div>
+
+  <nav class="sec-nav" id="sec-nav" aria-label="기술적 분석 탭">
+    <button type="button" data-sec="candles" class="active">캔들 패턴</button>
+    <button type="button" data-sec="charts">차트 패턴</button>
+    <button type="button" data-sec="indicators">보조지표</button>
+    <button type="button" data-sec="stop-loss">손절매</button>
+    <button type="button" data-sec="take-profit">익절매</button>
+    <button type="button" data-sec="trading-rules">매매원칙</button>
+    <button type="button" data-sec="split-strategy">분할매매</button>
+  </nav>
+
+  <div id="panel-candles" class="panel active">
+    <div class="tech-detail-panel">
+      <div class="tech-detail-head">
+        <span class="tech-detail-icon" aria-hidden="true">🕯️</span>
+        <div>
+          <h3>캔들스틱 패턴 — 완벽 가이드</h3>
+          <p class="tech-detail-lead">캔들 한 개는 <strong>시가·고가·저가·종가(OHLC)</strong>를 한눈에 보여 줍니다. 몸통은 시·종가 차이, 꼬리(심지)는 그날의 최고·최저를 나타냅니다. 2~3개 이상의 캔들이 모이면 <strong>반전·지속 패턴</strong>으로 해석할 수 있습니다.</p>
+        </div>
+      </div>
+      <div class="tech-detail-grid">
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-book-open"></i> 핵심 개념</h4>
+          <ul>
+            <li><strong>양봉</strong> — 종가 &gt; 시가, 매수세 우위 (녹색)</li>
+            <li><strong>음봉</strong> — 종가 &lt; 시가, 매도세 우위 (적색)</li>
+            <li><strong>도지</strong> — 시가≈종가, 방향성 불확실·전환 신호</li>
+            <li><strong>몸통 vs 꼬리</strong> — 긴 꼬리는 해당 방향의 거부(반전) 암시</li>
+          </ul>
+        </div>
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-magnifying-glass-chart"></i> 해석 순서</h4>
+          <ol>
+            <li>현재 추세(상승·하락·횡보) 확인</li>
+            <li>지지·저항·거래량과 함께 패턴 위치 파악</li>
+            <li>단일 캔들보다 2~3캔들 조합 신뢰도 ↑</li>
+            <li>다음 봉 <strong>종가 확인</strong> 후 진입 (가짜 신호 필터)</li>
+          </ol>
+        </div>
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-table"></i> 패턴 신뢰도</h4>
+          <table class="tech-detail-table">
+            <tr><th>패턴</th><th>신호</th><th>신뢰도</th></tr>
+            <tr><td>아침별·저녁별</td><td class="val-up">반전</td><td class="val-gold">★★★★</td></tr>
+            <tr><td>흡수형(Engulfing)</td><td class="val-up">반전</td><td class="val-gold">★★★★</td></tr>
+            <tr><td>망치형·유성형</td><td class="val-up">반전</td><td class="val-gold">★★★</td></tr>
+            <tr><td>적삼병·삼흑병</td><td>지속</td><td class="val-gold">★★★</td></tr>
+            <tr><td>도지 단독</td><td>관망</td><td>★★</td></tr>
+          </table>
+        </div>
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-triangle-exclamation"></i> 주의사항</h4>
+          <ul>
+            <li>거래량 없는 패턴은 신뢰도 낮음</li>
+            <li>뉴스·실적 발표 직후 캔들은 왜곡될 수 있음</li>
+            <li>일봉·주봉 등 <strong>타임프레임</strong>에 따라 의미가 달라짐</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tech-detail-tip"><strong>💡 실전 팁:</strong> 망치형은 <em>하락 추세 바닥</em>, 교수형은 <em>상승 추세 고점</em>에서 각각 확인하세요. 지지선 근처 망치 + 거래량 증가 = 강한 매수 신호입니다.</div>
+    </div>
+    <div class="glass">
+      <h2><i class="fa-solid fa-candle-holder"></i> 캔들스틱 패턴 — Visual Library</h2>
+      <div class="pat-grid" id="candle-grid"></div>
+    </div>
+  </div>
+
+  <div id="panel-charts" class="panel">
+    <div class="tech-detail-panel">
+      <div class="tech-detail-head">
+        <span class="tech-detail-icon" aria-hidden="true">📐</span>
+        <div>
+          <h3>차트 패턴 — 구조·목표가·진입법</h3>
+          <p class="tech-detail-lead">차트 패턴은 가격이 반복적으로 그리는 <strong>기하학적 형태</strong>입니다. 반전 패턴(머리어깨, 이중꼭지)과 지속 패턴(삼각형, 깃발)으로 나뉘며, <strong>넥라인 돌파·이탈</strong>이 핵심 트리거입니다.</p>
+        </div>
+      </div>
+      <div class="tech-detail-grid">
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-arrows-rotate"></i> 반전 vs 지속</h4>
+          <ul>
+            <li><strong>반전</strong> — H&S, 역H&S, 이중꼭지·바닥, V자</li>
+            <li><strong>지속</strong> — 깃발·페넌트, 삼각형, 직사각형</li>
+            <li>패턴 형성 기간이 길수록 돌파 후 움직임도 커지는 경향</li>
+          </ul>
+        </div>
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-ruler"></i> 목표가 측정법</h4>
+          <div class="tech-detail-steps">
+            <div class="tech-detail-step"><span class="tech-detail-step-num">1</span><span><strong>머리어깨:</strong> 머리 꼭지 ~ 넥라인 거리를 넥 이탈 지점에서 아래로 투영</span></div>
+            <div class="tech-detail-step"><span class="tech-detail-step-num">2</span><span><strong>삼각형:</strong> 패턴 시작 시점의 최대 폭을 돌파 방향으로 투영</span></div>
+            <div class="tech-detail-step"><span class="tech-detail-step-num">3</span><span><strong>깃발:</strong> 깃대(폴) 길이만큼 돌파 방향으로 목표 설정</span></div>
+          </div>
+        </div>
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-door-open"></i> 진입·손절 기준</h4>
+          <ul>
+            <li><strong>진입</strong> — 넥라인·패턴 경계 <em>종가</em> 돌파 확인 후</li>
+            <li><strong>손절</strong> — 패턴 내부(넥라인 반대편) 또는 ATR 1.5배</li>
+            <li><strong>거래량</strong> — 돌파 봉 거래량이 평균 대비 1.5배↑면 신뢰도 ↑</li>
+          </ul>
+        </div>
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-shapes"></i> 패턴별 요약</h4>
+          <table class="tech-detail-table">
+            <tr><th>패턴</th><th>방향</th><th>트리거</th></tr>
+            <tr><td>머리어깨</td><td class="val-down">하락</td><td>넥라인 하향 이탈</td></tr>
+            <tr><td>역머리어깨</td><td class="val-up">상승</td><td>넥라인 상향 돌파</td></tr>
+            <tr><td>상승 삼각형</td><td class="val-up">상승</td><td>수평 저항 돌파</td></tr>
+            <tr><td>하락 삼각형</td><td class="val-down">하락</td><td>수평 지지 이탈</td></tr>
+            <tr><td>깃발</td><td>추세 방향</td><td>채널 돌파</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="tech-detail-tip"><strong>💡 실전 팁:</strong> 대칭 삼각형은 돌파 방향이 불확실합니다. 상승·하락 삼각형처럼 <strong>한쪽 경계가 수평</strong>인 패턴이 방향 예측에 유리합니다.</div>
+    </div>
+    <div class="glass">
+      <h2><i class="fa-solid fa-shapes"></i> 차트 패턴 — SVG Diagrams</h2>
+      <div class="chart-pat-grid" id="chart-pat-grid"></div>
+    </div>
+  </div>
+
+  <div id="panel-indicators" class="panel">
+    <div class="tech-detail-panel">
+      <div class="tech-detail-head">
+        <span class="tech-detail-icon" aria-hidden="true">📊</span>
+        <div>
+          <h3>보조지표 — RSI·MACD·볼린저 활용법</h3>
+          <p class="tech-detail-lead">보조지표는 가격 데이터를 가공해 <strong>과매수·과매도, 추세 강도, 변동성</strong>을 수치화합니다. 단독 매매 신호보다 <strong>가격·거래량·패턴과 함께</strong> 쓰는 것이 원칙입니다.</p>
+        </div>
+      </div>
+      <div class="tech-detail-grid">
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-gauge-high"></i> RSI (14)</h4>
+          <p>0~100 모멘텀 지표. <strong>70↑ 과매수</strong>, <strong>30↓ 과매도</strong>. 강한 추세에서는 80/20 기준 사용.</p>
+          <ul>
+            <li>과매도 구간에서 상향 돌파 → 매수 검토</li>
+            <li><strong>다이버전스</strong> — 가격 신저가, RSI 고저가 = 상승 반전 가능</li>
+          </ul>
+        </div>
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-chart-line"></i> MACD (12,26,9)</h4>
+          <p>MACD선·시그널선 교차, 히스토그램 방향으로 추세 전환 포착.</p>
+          <ul>
+            <li>MACD &gt; Signal (골든) → 상승 모멘텀</li>
+            <li>0선 위·아래로 추세 강도 구분</li>
+            <li>히스토그램 축소 = 모멘텀 약화 경고</li>
+          </ul>
+        </div>
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-expand"></i> Bollinger Bands (20,2)</h4>
+          <p>이동평균 ±2σ 밴드. <strong>밴드 수축</strong> = 변동성 축소 후 큰 움직임 전조.</p>
+          <ul>
+            <li>상단 터치 + RSI 과매수 → 단기 조정 가능</li>
+            <li>하단 이탈 후 재진입 → 반등 신호</li>
+            <li>%B &gt; 1 또는 &lt; 0 = 극단적 과열·과매도</li>
+          </ul>
+        </div>
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-layer-group"></i> 이동평균·스토캐스틱</h4>
+          <ul>
+            <li><strong>MA5/20 골든크로스</strong> — 단기 MA가 장기 MA 상향 돌파</li>
+            <li><strong>데드크로스</strong> — 하향 돌파, 매도·관망 신호</li>
+            <li><strong>Stochastic</strong> — 80↑ 과매수, 20↓ 과매도, %K/%D 교차</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tech-metric-row">
+        <span class="tech-metric-chip gain">RSI 30↓ 매수 검토</span>
+        <span class="tech-metric-chip loss">RSI 70↑ 매도 검토</span>
+        <span class="tech-metric-chip neutral">MACD 교차 확인</span>
+        <span class="tech-metric-chip neutral">밴드 수축 → 돌파 대기</span>
+      </div>
+      <div class="tech-detail-tip" style="margin-top:0.85rem"><strong>💡 실전 팁:</strong> 지표가 서로 모순될 때(RSI 과매수인데 추세 강함)는 <strong>상위 타임프레임 추세</strong>를 우선하세요. 횡보장에서는 RSI·스토캐스틱, 추세장에서는 MA·MACD가 유리합니다.</div>
+    </div>
+    <div class="glass">
+      <h2><i class="fa-solid fa-wave-square"></i> 보조지표 — Mini Charts</h2>
+      <div class="ind-grid" id="ind-grid"></div>
+    </div>
+  </div>
+
+  <div id="panel-stop-loss" class="panel">
+    <div class="tech-detail-panel">
+      <div class="tech-detail-head">
+        <span class="tech-detail-icon" aria-hidden="true">🛡️</span>
+        <div>
+          <h3>손절매(Stop Loss) — 손실 한도를 미리 정하는 법</h3>
+          <p class="tech-detail-lead">손절은 <strong>틀렸을 때 빠져나오는 규칙</strong>입니다. 감정이 개입되기 전에 매수 전에 손절가·손실 금액을 정해 두면 계좌 생존율이 크게 올라갑니다.</p>
+        </div>
+      </div>
+      <div class="tech-detail-grid">
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-percent"></i> 고정 % 손절</h4>
+          <ul>
+            <li>매수가 대비 <strong>-5%~-8%</strong> 구간에 스탑 주문</li>
+            <li>변동성 큰 종목·코인은 -7%~-10%까지 허용 가능</li>
+            <li>장점: 단순·실행 용이 / 단점: 차트 구조 무시 가능</li>
+          </ul>
+          <div class="tech-metric-row">
+            <span class="tech-metric-chip loss">-5% 보수적</span>
+            <span class="tech-metric-chip loss">-7% 변동성 대응</span>
+          </div>
+        </div>
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-chart-area"></i> 기술적 손절</h4>
+          <ul>
+            <li><strong>지지선 이탈</strong> — 최근 스윙 저점 종가 하향 이탈</li>
+            <li><strong>ATR 기준</strong> — 진입가 − ATR×1.5~2</li>
+            <li><strong>이동평균 이탈</strong> — 20일선·60일선 종가 이탈</li>
+            <li>패턴 손절 — 넥라인·삼각형 반대 경계 이탈</li>
+          </ul>
+        </div>
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-calculator"></i> 2% 룰과 연결</h4>
+          <p>총 자산 1,000만 원, 1회 최대 손실 2%(20만)라면:</p>
+          <ul>
+            <li>손절폭 -5% → 최대 투자금 400만 원</li>
+            <li>손절폭 -10% → 최대 투자금 200만 원</li>
+          </ul>
+          <p style="margin-top:0.5rem;font-size:0.78rem;color:#9ca3af">포지션 크기 = (계좌×2%) ÷ 손절 %</p>
+        </div>
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-ban"></i> 피해야 할 실수</h4>
+          <ul>
+            <li>손절선을 계속 아래로 내리는 <strong>손절 이동</strong></li>
+            <li>「곧 반등한다」며 손절 미실행</li>
+            <li>손절 없이 물타기만 반복</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tech-detail-tip"><strong>💡 실전 팁:</strong> 진입과 동시에 브로커 앱에 <strong>스탑로스 주문</strong>을 걸어 두세요. 장중 확인하지 않아도 규칙이 지켜집니다.</div>
+    </div>
+    <section class="glass">
+    <h2><i class="fa-solid fa-shield-halved"></i> 손절매 (Stop Loss) 설정</h2>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h3>고정 % 손절</h3>
+        <p>매수가 대비 -5%~-8% 구간에 미리 주문을 걸어 두면 감정적 방치를 줄일 수 있습니다. 변동성이 큰 종목은 범위를 넓게 잡으세요.</p>
+      </div>
+      <div class="guide-card">
+        <h3>지지선·ATR 기준</h3>
+        <p>최근 저점(지지선) 이탈 또는 ATR(평균 진폭)의 1.5~2배 아래를 손절선으로 쓰면 차트 구조와 맞는 손절이 됩니다.</p>
+      </div>
+    </div>
+  </section>
+  </div>
+
+  <div id="panel-take-profit" class="panel">
+    <div class="tech-detail-panel">
+      <div class="tech-detail-head">
+        <span class="tech-detail-icon" aria-hidden="true">🎯</span>
+        <div>
+          <h3>익절매(Take Profit) — 수익을 확정하는 전략</h3>
+          <p class="tech-detail-lead">익절은 <strong>「언제 수익을 실현할지」</strong>를 미리 정하는 것입니다. 전량 매도보다 <strong>분할 익절</strong>이 심리적 부담을 줄이고, 추가 상승 구간도 노릴 수 있습니다.</p>
+        </div>
+      </div>
+      <div class="tech-detail-grid">
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-stairs"></i> 분할 익절 예시</h4>
+          <table class="tech-detail-table">
+            <tr><th>구간</th><th>매도 비율</th><th>목적</th></tr>
+            <tr><td class="val-up">+10%</td><td>30%</td><td>원금 회수·심리 안정</td></tr>
+            <tr><td class="val-up">+20%</td><td>30%</td><td>수익 확대</td></tr>
+            <tr><td>추세 이탈</td><td>잔량 40%</td><td>추가 상승 추종</td></tr>
+          </table>
+        </div>
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-mountain"></i> 기술적 익절 구간</h4>
+          <ul>
+            <li><strong>전고점·저항선</strong> — 과거 매물대에서 일부 매도</li>
+            <li><strong>피보나치</strong> — 61.8%, 100%, 161.8% 확장 구간</li>
+            <li><strong>볼린저 상단</strong> + RSI 70↑ = 단기 과열</li>
+            <li><strong>목표가</strong> — H&S·깃발 패턴 측정 목표 도달 시</li>
+          </ul>
+        </div>
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-scale-balanced"></i> 손익비(R:R) 설정</h4>
+          <p>손절 -5%, 익절 +15% → 손익비 <strong>1:3</strong>. 승률 40%만 되어도 장기 수익 가능.</p>
+          <div class="tech-metric-row">
+            <span class="tech-metric-chip loss">손절 -5%</span>
+            <span class="tech-metric-chip gain">익절 +10~15%</span>
+            <span class="tech-metric-chip neutral">R:R ≥ 1:2</span>
+          </div>
+        </div>
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-person-running"></i> 트레일링 스탑</h4>
+          <ul>
+            <li>고점 대비 -7%~-10% 하락 시 잔량 매도</li>
+            <li>상승 추세에서 수익 극대화에 유리</li>
+            <li>20일 이동평균선 아래 종가 마감 시 정리</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tech-detail-tip"><strong>💡 실전 팁:</strong> 1차 익절(+10%)에서 <strong>투자 원금만 회수</strong>하면 이후 매매가 심리적으로 훨씬 편해집니다. 「무릎에서 판다」는 후회를 줄이는 방법입니다.</div>
+    </div>
+    <section class="glass">
+    <h2><i class="fa-solid fa-bullseye"></i> 익절매 (Take Profit) 설정</h2>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h3>목표가 분할 익절</h3>
+        <p>1차 목표(+10%)에서 30% 매도, 2차(+20%)에서 30%, 나머지는 추세 추종 — 이렇게 나누면 수익 확정과 추가 상승을 동시에 노릴 수 있습니다.</p>
+      </div>
+      <div class="guide-card">
+        <h3>저항·피보나치 활용</h3>
+        <p>전고점·저항선, 피보나치 61.8%·100% 구간에서 일부 익절하면 기술적 분석과 리스크 관리가 연결됩니다.</p>
+      </div>
+    </div>
+  </section>
+  </div>
+
+  <div id="panel-trading-rules" class="panel">
+    <div class="tech-detail-panel">
+      <div class="tech-detail-head">
+        <span class="tech-detail-icon" aria-hidden="true">📋</span>
+        <div>
+          <h3>매매 원칙 — 감정을 배제하는 규칙 세트</h3>
+          <p class="tech-detail-lead">수익보다 중요한 것은 <strong>일관된 규칙</strong>입니다. 진입 전 체크리스트, 손절·익절·포지션 크기를 문서화해 두면 FOMO·공포 매도를 줄일 수 있습니다.</p>
+        </div>
+      </div>
+      <div class="tech-detail-grid">
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-clipboard-check"></i> 진입 전 체크리스트</h4>
+          <ol>
+            <li>손익비 1:2 이상인가?</li>
+            <li>손절가·익절가를 숫자로 정했는가?</li>
+            <li>한 종목·섹터 비중 상한(예: 20%)을 지키는가?</li>
+            <li>실적·뉴스 등 이벤트 일정을 확인했는가?</li>
+            <li>상위 타임프레임 추세와 방향이 일치하는가?</li>
+          </ol>
+        </div>
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-gavel"></i> 4대 핵심 원칙</h4>
+          <ul>
+            <li><strong>손절 -5%</strong> — 즉시 실행, 예외 없음</li>
+            <li><strong>익절 +10%</strong> — 30~50% 분할 매도</li>
+            <li><strong>추세 추종</strong> — 역추세 all-in 금지</li>
+            <li><strong>2% 룰</strong> — 1회 거래 최대 손실 = 총자산 2%</li>
+          </ul>
+        </div>
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-circle-xmark"></i> 금지 규칙</h4>
+          <ul>
+            <li>손실 구간 물타기만 반복</li>
+            <li>레버리지·전 재산·대출 투자</li>
+            <li>「이번만」 예외 손절 유예</li>
+            <li>남의 추천만 보고 원칙 없이 진입</li>
+          </ul>
+        </div>
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-calendar-check"></i> 매매 일지</h4>
+          <p>매매 후 기록: 진입 이유, 손절·익절가, 결과, 감정 상태. 3개월마다 복기하면 반복 실수를 줄일 수 있습니다.</p>
+        </div>
+      </div>
+      <div class="tech-detail-tip"><strong>💡 실전 팁:</strong> 아래 카드에 마우스를 올리면(모바일은 탭) 각 원칙의 상세 설명을 볼 수 있습니다. 규칙을 <strong>종이·노트에 적어</strong> 모니터 옆에 두세요.</div>
+    </div>
+    <section class="glass">
+    <h2><i class="fa-solid fa-list-check"></i> 매매 원칙 세우기</h2>
+    <p class="caption" style="margin-bottom:0.75rem">카드에 마우스를 올리면 상세 원칙이 표시됩니다.</p>
+    <div class="rule-cards-grid">
+      <div class="rule-hover-card rule-hover-card--loss" tabindex="0">
+        <div class="rule-card-icon">🛡️</div>
+        <div class="rule-card-teaser">손절매 (Stop Loss)</div>
+        <div class="rule-card-metric loss">-5%</div>
+        <span class="rule-badge">즉시 매도</span>
+        <p class="rule-card-detail">매수가 대비 -5% 도달 시 감정 개입 없이 즉시 매도합니다. 변동성 큰 종목은 -7%까지 허용하되, 반드시 사전에 규칙을 정해 둡니다.</p>
+      </div>
+      <div class="rule-hover-card rule-hover-card--gain" tabindex="0">
+        <div class="rule-card-icon">🎯</div>
+        <div class="rule-card-teaser">익절매 (Take Profit)</div>
+        <div class="rule-card-metric gain">+10%</div>
+        <span class="rule-badge">분할 매도</span>
+        <p class="rule-card-detail">+10% 구간에서 30~50% 분할 익절 후, 잔량은 추세선·이동평균 이탈 시 정리합니다.</p>
+      </div>
+      <div class="rule-hover-card rule-hover-card--trend" tabindex="0">
+        <div class="rule-card-icon">📈</div>
+        <div class="rule-card-teaser">추세·지지선 원칙</div>
+        <div class="rule-card-metric" style="color:#60a5fa;font-size:1rem">추세 추종</div>
+        <span class="rule-badge">매매 원칙</span>
+        <p class="rule-card-detail">추세선 이탈 시 매도, 지지선 근접 시 분할 매수. 역추세 all-in은 금지합니다.</p>
+      </div>
+      <div class="rule-hover-card rule-hover-card--risk" tabindex="0">
+        <div class="rule-card-icon">⚖️</div>
+        <div class="rule-card-teaser">리스크 관리</div>
+        <div class="rule-card-metric" style="color:#facc15;font-size:1rem">2% 룰</div>
+        <span class="rule-badge">자금 관리</span>
+        <p class="rule-card-detail">총 자산의 2%를 한 번의 거래에서 잃지 않도록 포지션 크기를 조절합니다.</p>
+      </div>
+    </div>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h3>진입 전 체크리스트</h3>
+        <ul>
+          <li>손익비 1:2 이상인가?</li>
+          <li>한 종목·한 섹터 비중 상한을 지키는가?</li>
+          <li>뉴스·실적 등 이벤트 일정을 확인했는가?</li>
+        </ul>
+      </div>
+      <div class="guide-card">
+        <h3>금지 규칙</h3>
+        <ul>
+          <li>손실 구간에서 물타기만 반복하지 않기</li>
+          <li>레버리지·전 재산 투입 금지</li>
+          <li>감정적 추격 매수·공포 매도 금지</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  </div>
+
+  <div id="panel-split-strategy" class="panel">
+    <div class="tech-detail-panel">
+      <div class="tech-detail-head">
+        <span class="tech-detail-icon" aria-hidden="true">📊</span>
+        <div>
+          <h3>분할 매수·매도 — 타이밍과 비중 관리</h3>
+          <p class="tech-detail-lead">한 번에 all-in/all-out 하지 않고 <strong>여러 번에 나눠</strong> 매매하면 평균 단가·심리 부담·변동성 리스크를 동시에 줄일 수 있습니다. DCA(달러 코스트 평균)와 기술적 분할 매수를 구분해 적용하세요.</p>
+        </div>
+      </div>
+      <div class="tech-detail-grid">
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-arrow-down-wide-short"></i> 분할 매수 (3~4회)</h4>
+          <table class="tech-detail-table">
+            <tr><th>회차</th><th>비중</th><th>조건 예시</th></tr>
+            <tr><td>1차</td><td>30%</td><td>추세 확인·돌파 진입</td></tr>
+            <tr><td>2차</td><td>30%</td><td>지지선 터치·눌림목</td></tr>
+            <tr><td>3차</td><td>40%</td><td>추가 지지·RSI 과매도</td></tr>
+          </table>
+        </div>
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-arrow-up-wide-short"></i> 분할 매도</h4>
+          <ul>
+            <li>저항·목표가 도달 시 30%씩 단계적 매도</li>
+            <li>잔량은 이동평균·추세선 이탈까지 보유</li>
+            <li>급등 시 FOMO 대신 <strong>미리 정한 비율</strong>만 실행</li>
+          </ul>
+        </div>
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-clock"></i> DCA vs 기술적 분할</h4>
+          <ul>
+            <li><strong>DCA</strong> — 정기·정액 매수 (ETF·장기 투자)</li>
+            <li><strong>기술적 분할</strong> — 지지·패턴·지표 기준 매수</li>
+            <li>하락 추세에서는 추가 매수 <strong>간격을 넓히거나 중단</strong></li>
+          </ul>
+        </div>
+        <div class="tech-detail-block">
+          <h4><i class="fa-solid fa-triangle-exclamation"></i> 주의</h4>
+          <ul>
+            <li>하락장에서 무한 물타기는 손실 확대</li>
+            <li>분할 횟수마다 <strong>최대 투자 한도</strong> 정하기</li>
+            <li>각 회차마다 손절선 재설정</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tech-detail-tip"><strong>💡 실전 팁:</strong> 「3-3-4 분할」처럼 비율을 미리 정하고, 2차·3차는 <strong>1차 대비 -3%~-5% 구간</strong>에만 추가 매수하세요. 규칙 없는 물타기와 구분됩니다.</div>
+    </div>
+    <section class="glass">
+    <h2><i class="fa-solid fa-chart-pie"></i> 분할 매수/매도 전략</h2>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h3>분할 매수 (DCA)</h3>
+        <p>한 번에 all-in 하지 않고 3~4회에 나눠 매수하면 평균 단가와 심리 부담을 줄입니다. 하락 추세에서는 추가 매수 간격을 넓히세요.</p>
+      </div>
+      <div class="guide-card">
+        <h3>분할 매도</h3>
+        <p>상승 구간에서 일정 비율씩 매도해 수익을 확정하고, 잔량은 이동평균·추세선 이탈 시 정리하는 방식이 일반적입니다.</p>
+      </div>
+    </div>
+  </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <nav class="footer-links">
+    <a href="stock-price.html">주식시세추천</a><a href="savings.html">예적금</a><a href="etf.html">ETF</a>
+    <a href="real-estate.html">부동산</a><a href="stock-education.html">주식교육장</a>
+    <a href="articles.html">가이드</a><a href="about.html">운영자 소개</a><a href="contact.html">문의하기</a>
+    <a href="privacy.html">개인정보처리방침</a>
+  </nav>
+  <p class="footer-copy">© 2026 FinTrack 2030 · 교육용 데모 · 투자 권유 아님</p>
+</footer>
+
+<script>
+/* ================================================================
+   FinTrack 2030 — Visual Engine (SVG + Canvas, hard-coded)
+   ================================================================ */
+const G = '#00c897', R = '#f84960', W = '#888', CY = '#00d4ff', GD = '#f0b90b';
+
+/* --- SVG Candle helpers --- */
+function svgOpen(w, h) { return `<svg viewBox="0 0 ${w} ${h}" width="120" height="80" xmlns="http://www.w3.org/2000/svg">`; }
+function svgClose() { return '</svg>'; }
+
+/** Draw single candle: o,h,l,c in 0-100 scale, x center */
+function candle(x, o, h, l, c, Wd = 14) {
+  const bull = c >= o, col = bull ? G : R;
+  const bt = Math.min(o, c), bb = Math.max(o, c), bh = Math.max(bb - bt, 2);
+  return `<line x1="${x}" y1="${h}" x2="${x}" y2="${l}" stroke="${W}" stroke-width="1.5"/>
+    <rect x="${x - Wd/2}" y="${bt}" width="${Wd}" height="${bh}" fill="${col}" rx="1"/>`;
+}
+
+function patHammer() {
+  return svgOpen(120, 80) + candle(60, 55, 58, 15, 52) + svgClose();
+}
+function patHangMan() {
+  return svgOpen(120, 80) + candle(60, 25, 30, 65, 28) + svgClose();
+}
+function patBullEngulf() {
+  return svgOpen(120, 80) + candle(35, 45, 48, 38, 40) + candle(75, 52, 58, 32, 55) + svgClose();
+}
+function patBearEngulf() {
+  return svgOpen(120, 80) + candle(35, 35, 42, 32, 40) + candle(75, 42, 45, 28, 30) + svgClose();
+}
+function patDoji() {
+  return svgOpen(120, 80) + `<line x1="60" y1="20" x2="60" y2="70" stroke="${W}" stroke-width="1.5"/>
+    <rect x="52" y="38" width="16" height="4" fill="${GD}" rx="1"/>` + svgClose();
+}
+function patShootStar() {
+  return svgOpen(120, 80) + candle(60, 22, 18, 55, 25) + svgClose();
+}
+function patMorningStar() {
+  return svgOpen(120, 80) + candle(25, 50, 52, 35, 36) +
+    `<rect x="52" y="38" width="10" height="4" fill="${GD}" rx="1"/>` +
+    candle(85, 42, 48, 38, 46) + svgClose();
+}
+function patEveningStar() {
+  return svgOpen(120, 80) + candle(25, 30, 32, 22, 28) +
+    `<rect x="52" y="38" width="10" height="4" fill="${GD}" rx="1"/>` +
+    candle(85, 38, 40, 28, 30) + svgClose();
+}
+function patThreeBlack() {
+  return svgOpen(120, 80) + candle(25, 25, 28, 18, 20) + candle(60, 22, 25, 15, 17) + candle(95, 19, 22, 10, 12) + svgClose();
+}
+function patThreeWhite() {
+  return svgOpen(120, 80) + candle(25, 55, 62, 50, 60) + candle(60, 62, 68, 58, 66) + candle(95, 66, 72, 62, 70) + svgClose();
+}
+
+const CANDLE_PATTERNS = [
+  { ko:'망치형', en:'Hammer', meaning:'하락 추세 말단 매수세 유입', sig:'buy', svg:patHammer },
+  { ko:'교수형', en:'Hanging Man', meaning:'상승 고점 매도 압력', sig:'sell', svg:patHangMan },
+  { ko:'흡수형 (양)', en:'Bullish Engulfing', meaning:'음봉을 감싸는 양봉', sig:'buy', svg:patBullEngulf },
+  { ko:'흡수형 (음)', en:'Bearish Engulfing', meaning:'양봉을 감싸는 음봉', sig:'sell', svg:patBearEngulf },
+  { ko:'별형', en:'Doji', meaning:'시가=종가, 방향 불확실', sig:'hold', svg:patDoji },
+  { ko:'유성형', en:'Shooting Star', meaning:'상승 후 긴 상단 꼬리', sig:'sell', svg:patShootStar },
+  { ko:'아침별', en:'Morning Star', meaning:'3캔들 강력 상승 반전', sig:'buy', svg:patMorningStar },
+  { ko:'저녁별', en:'Evening Star', meaning:'3캔들 강력 하락 반전', sig:'sell', svg:patEveningStar },
+  { ko:'삼흑병', en:'Three Black Crows', meaning:'연속 3음봉 하락', sig:'sell', svg:patThreeBlack },
+  { ko:'적삼병', en:'Three White Soldiers', meaning:'연속 3양봉 상승', sig:'buy', svg:patThreeWhite },
+];
+
+/* --- Chart pattern SVG diagrams --- */
+const CHART_PATTERNS = [
+  { name:'Head & Shoulders (머리어깨)', desc:'넥라인 이탈 시 하락 목표 = 머리~넥 거리',
+    svg:`<polyline points="10,90 30,50 50,70 70,20 90,55 110,75" fill="none" stroke="${CY}" stroke-width="2"/>
+      <line x1="10" y1="75" x2="110" y2="75" stroke="${GD}" stroke-width="1.5" stroke-dasharray="4"/>
+      <text x="70" y="15" fill="${R}" font-size="8" text-anchor="middle">Head</text>
+      <text x="55" y="82" fill="${GD}" font-size="7">Neckline</text>` },
+  { name:'Inverse H&S (역머리어깨)', desc:'넥라인 돌파 시 상승 목표 = 머리~넥 거리',
+    svg:`<polyline points="10,30 30,70 50,50 70,85 90,45 110,25" fill="none" stroke="${CY}" stroke-width="2"/>
+      <line x1="10" y1="45" x2="110" y2="45" stroke="${GD}" stroke-width="1.5" stroke-dasharray="4"/>
+      <text x="70" y="92" fill="${G}" font-size="8" text-anchor="middle">Head</text>` },
+  { name:'Double Top (이중꼭지)', desc:'M자 — 넥 이탈 시 하락',
+    svg:`<polyline points="10,80 35,25 60,55 85,25 110,80" fill="none" stroke="${CY}" stroke-width="2"/>
+      <line x1="10" y1="55" x2="110" y2="55" stroke="${R}" stroke-width="1" stroke-dasharray="3"/>
+      <text x="35" y="20" fill="${R}" font-size="7">Top</text><text x="85" y="20" fill="${R}" font-size="7">Top</text>` },
+  { name:'Double Bottom (이중바닥)', desc:'W자 — 넥 돌파 시 상승',
+    svg:`<polyline points="10,25 35,75 60,45 85,75 110,25" fill="none" stroke="${CY}" stroke-width="2"/>
+      <line x1="10" y1="45" x2="110" y2="45" stroke="${G}" stroke-width="1" stroke-dasharray="3"/>` },
+  { name:'Symmetrical Triangle (대칭 삼각형)', desc:'수렴 후 돌파 방향 추종',
+    svg:`<polyline points="10,20 110,70" fill="none" stroke="${R}" stroke-width="1.5"/>
+      <polyline points="10,80 110,30" fill="none" stroke="${G}" stroke-width="1.5"/>
+      <polyline points="10,50 30,45 50,52 70,48 90,55 110,50" fill="none" stroke="${CY}" stroke-width="2"/>` },
+  { name:'Ascending Triangle (상승 삼각형)', desc:'수평 저항 + 상승 지지 → 상방 돌파',
+    svg:`<line x1="10" y1="25" x2="110" y2="25" stroke="${R}" stroke-width="1.5"/>
+      <polyline points="10,75 110,35" fill="none" stroke="${G}" stroke-width="1.5"/>
+      <polyline points="10,70 50,55 110,40" fill="none" stroke="${CY}" stroke-width="2"/>` },
+  { name:'Descending Triangle (하락 삼각형)', desc:'수평 지지 + 하락 저항 → 하방 이탈',
+    svg:`<line x1="10" y1="75" x2="110" y2="75" stroke="${G}" stroke-width="1.5"/>
+      <polyline points="10,25 110,65" fill="none" stroke="${R}" stroke-width="1.5"/>
+      <polyline points="10,30 50,50 110,70" fill="none" stroke="${CY}" stroke-width="2"/>` },
+  { name:'Bull Flag (상승 깃발)', desc:'깃대 후 하향 채널 → 상단 돌파',
+    svg:`<polyline points="10,85 25,20" fill="none" stroke="${G}" stroke-width="2.5"/>
+      <polyline points="25,45 110,55" fill="none" stroke="${R}" stroke-width="1"/>
+      <polyline points="25,65 110,75" fill="none" stroke="${G}" stroke-width="1"/>
+      <polyline points="60,60 110,48" fill="none" stroke="${CY}" stroke-width="2"/>
+      <text x="15" y="50" fill="${G}" font-size="7">Pole</text>` },
+  { name:'Bear Flag (하락 깃발)', desc:'깃대 후 상향 채널 → 하단 이탈',
+    svg:`<polyline points="10,20 25,85" fill="none" stroke="${R}" stroke-width="2.5"/>
+      <polyline points="25,35 110,25" fill="none" stroke="${G}" stroke-width="1"/>
+      <polyline points="25,55 110,45" fill="none" stroke="${R}" stroke-width="1"/>
+      <polyline points="60,40 110,52" fill="none" stroke="${CY}" stroke-width="2"/>` },
+];
+
+/* --- Render candle pattern cards --- */
+function renderCandles() {
+  const sigCls = { buy:'sig-buy', sell:'sig-sell', hold:'sig-hold' };
+  const sigKo = { buy:'매수', sell:'매도', hold:'관망' };
+  document.getElementById('candle-grid').innerHTML = CANDLE_PATTERNS.map(p => `
+    <div class="pat-card">
+      <div class="pat-vis">${p.svg()}</div>
+      <div class="pat-info">
+        <h4>${p.ko}</h4><span class="en">${p.en}</span>
+        <p>${p.meaning}</p>
+        <span class="sig ${sigCls[p.sig]}">${sigKo[p.sig]}</span>
+      </div>
+    </div>`).join('');
+}
+
+function renderChartPatterns() {
+  document.getElementById('chart-pat-grid').innerHTML = CHART_PATTERNS.map(p => `
+    <div class="chart-pat-card">
+      <h4>${p.name}</h4>
+      <svg viewBox="0 0 120 90" preserveAspectRatio="xMidYMid meet">${p.svg}</svg>
+      <p>${p.desc}</p>
+    </div>`).join('');
+}
+
+/* --- Canvas mini indicator charts --- */
+function drawMiniChart(id, drawFn) {
+  const c = document.getElementById(id);
+  if (!c) return;
+  const dpr = window.devicePixelRatio || 1;
+  const w = c.parentElement.clientWidth || 260;
+  c.width = w * dpr; c.height = 100 * dpr;
+  c.style.width = w + 'px'; c.style.height = '100px';
+  const ctx = c.getContext('2d');
+  ctx.scale(dpr, dpr);
+  drawFn(ctx, w, 100);
+}
+
+function drawMACD(ctx, w, h) {
+  ctx.fillStyle = '#0a0e1a'; ctx.fillRect(0,0,w,h);
+  const n = 40, xs = w/n;
+  let macd = [], sig = [];
+  for (let i = 0; i < n; i++) { macd.push(Math.sin(i*.25)*20+Math.cos(i*.1)*8); sig.push(Math.sin(i*.25-.3)*18); }
+  const mid = h*.55;
+  for (let i = 0; i < n; i++) {
+    const v = macd[i]-sig[i], x = i*xs+xs/2;
+    ctx.fillStyle = v >= 0 ? G : R;
+    ctx.fillRect(x-3, mid - Math.abs(v)*.8, 6, Math.abs(v)*.8);
+  }
+  ctx.strokeStyle = CY; ctx.lineWidth = 1.5; ctx.beginPath();
+  macd.forEach((v,i)=>{ i?ctx.lineTo(i*xs+xs/2,mid-v):ctx.moveTo(xs/2,mid-v); }); ctx.stroke();
+  ctx.strokeStyle = GD; ctx.beginPath();
+  sig.forEach((v,i)=>{ i?ctx.lineTo(i*xs+xs/2,mid-v):ctx.moveTo(xs/2,mid-v); }); ctx.stroke();
+}
+
+function drawRSI(ctx, w, h) {
+  ctx.fillStyle = '#0a0e1a'; ctx.fillRect(0,0,w,h);
+  ctx.fillStyle = 'rgba(248,73,96,.08)'; ctx.fillRect(0,0,w,h*.3);
+  ctx.fillStyle = 'rgba(0,200,151,.08)'; ctx.fillRect(0,h*.7,w,h*.3);
+  ctx.strokeStyle = 'rgba(255,255,255,.08)'; [h*.3,h*.5,h*.7].forEach(y=>{ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();});
+  ctx.strokeStyle = CY; ctx.lineWidth = 1.5; ctx.beginPath();
+  for (let i = 0; i < 50; i++) {
+    const y = h*.5 - Math.sin(i*.2)*h*.22 - Math.cos(i*.08)*h*.08;
+    i?ctx.lineTo(i*w/50,y):ctx.moveTo(0,y);
+  } ctx.stroke();
+  ctx.fillStyle = R; ctx.font = '9px Inter'; ctx.fillText('70', 4, h*.28);
+  ctx.fillStyle = G; ctx.fillText('30', 4, h*.78);
+}
+
+function drawBB(ctx, w, h) {
+  ctx.fillStyle = '#0a0e1a'; ctx.fillRect(0,0,w,h);
+  const n = 50, xs = w/n; let price = [], upper = [], lower = [], mid = [];
+  let p = h*.5;
+  for (let i = 0; i < n; i++) { p += (Math.random()-.48)*8; price.push(p); const bw=18+Math.sin(i*.15)*6; mid.push(p); upper.push(p-bw); lower.push(p+bw); }
+  ctx.fillStyle = 'rgba(0,212,255,.06)';
+  ctx.beginPath(); upper.forEach((v,i)=>i?ctx.lineTo(i*xs,v):ctx.moveTo(0,v));
+  for (let i=n-1;i>=0;i--) ctx.lineTo(i*xs,lower[i]); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = 'rgba(0,212,255,.5)'; ctx.lineWidth = 1;
+  [upper,lower,mid].forEach(arr=>{ctx.beginPath();arr.forEach((v,i)=>i?ctx.lineTo(i*xs,v):ctx.moveTo(0,v));ctx.stroke();});
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.beginPath();
+  price.forEach((v,i)=>i?ctx.lineTo(i*xs,v):ctx.moveTo(0,v)); ctx.stroke();
+}
+
+function drawMA(ctx, w, h) {
+  ctx.fillStyle = '#0a0e1a'; ctx.fillRect(0,0,w,h);
+  const n = 50, xs = w/n; let price = [];
+  let p = h*.6;
+  for (let i = 0; i < n; i++) { p += (Math.random()-.45)*6; price.push(p); }
+  function sma(arr, p) { return arr.map((_,i)=>{ if(i<p-1)return null; let s=0; for(let j=0;j<p;j++)s+=arr[i-j]; return s/p; }); }
+  const ma5 = sma(price,5), ma20 = sma(price,12);
+  ctx.strokeStyle = 'rgba(255,255,255,.25)'; ctx.lineWidth = 1; ctx.beginPath();
+  price.forEach((v,i)=>i?ctx.lineTo(i*xs,v):ctx.moveTo(0,v)); ctx.stroke();
+  ctx.strokeStyle = CY; ctx.lineWidth = 1.5; ctx.beginPath();
+  ma5.forEach((v,i)=>{if(v!=null)i?ctx.lineTo(i*xs,v):ctx.moveTo(i*xs,v);}); ctx.stroke();
+  ctx.strokeStyle = GD; ctx.beginPath();
+  ma20.forEach((v,i)=>{if(v!=null)i?ctx.lineTo(i*xs,v):ctx.moveTo(i*xs,v);}); ctx.stroke();
+}
+
+function drawStoch(ctx, w, h) {
+  ctx.fillStyle = '#0a0e1a'; ctx.fillRect(0,0,w,h);
+  ctx.fillStyle = 'rgba(248,73,96,.07)'; ctx.fillRect(0,0,w,h*.2);
+  ctx.fillStyle = 'rgba(0,200,151,.07)'; ctx.fillRect(0,h*.8,w,h*.2);
+  const n = 50, xs = w/n;
+  let k = [], d = [];
+  for (let i = 0; i < n; i++) { k.push(h*.5-Math.sin(i*.22)*h*.35); d.push(h*.5-Math.sin(i*.22-.4)*h*.3); }
+  ctx.strokeStyle = CY; ctx.lineWidth = 1.5; ctx.beginPath();
+  k.forEach((v,i)=>i?ctx.lineTo(i*xs,v):ctx.moveTo(0,v)); ctx.stroke();
+  ctx.strokeStyle = GD; ctx.lineWidth = 1; ctx.beginPath();
+  d.forEach((v,i)=>i?ctx.lineTo(i*xs,v):ctx.moveTo(0,v)); ctx.stroke();
+}
+
+const INDICATORS = [
+  { id:'c-macd', title:'MACD (12,26,9)', desc:'MACD Line(청) · Signal(금) · Histogram(녹/적)', fn:drawMACD },
+  { id:'c-rsi', title:'RSI (14)', desc:'30↓ 과매도 · 70↑ 과매수 · 음영 구간', fn:drawRSI },
+  { id:'c-bb', title:'Bollinger Bands (20,2)', desc:'가격(흰) · 상/하단 밴드(청) · %B 해석', fn:drawBB },
+  { id:'c-ma', title:'Moving Averages (5/20)', desc:'가격 + MA5(청) + MA20(금) 골든/데드크로스', fn:drawMA },
+  { id:'c-stoch', title:'Stochastic (%K, %D)', desc:'80↑ 과매수 · 20↓ 과매도 · %K/%D 교차', fn:drawStoch },
+];
+
+function renderIndicators() {
+  document.getElementById('ind-grid').innerHTML = INDICATORS.map(i => `
+    <div class="ind-card"><h4>${i.title}</h4><canvas id="${i.id}"></canvas><p>${i.desc}</p></div>`).join('');
+  INDICATORS.forEach(i => drawMiniChart(i.id, i.fn));
+}
+
+/* --- Full-size TradingView-style chart --- */
+function generateOHLC(n) {
+  const data = []; let price = 68000, trend = 1;
+  for (let i = 0; i < n; i++) {
+    if (Math.random() < .08) trend *= -1;
+    const vol = 0.012 + Math.random() * .018;
+    const o = price;
+    const c = o * (1 + (Math.random() - .48 + trend * .015) * vol * 3);
+    const h = Math.max(o, c) * (1 + Math.random() * vol);
+    const l = Math.min(o, c) * (1 - Math.random() * vol);
+    const v = 800 + Math.random() * 2200;
+    data.push({ o, h, l, c, v }); price = c;
+  }
+  return data;
+}
+
+function drawMainChart() {
+  const canvas = document.getElementById('main-chart');
+  const wrap = canvas.parentElement;
+  const dpr = window.devicePixelRatio || 1;
+  const W = wrap.clientWidth, H = 400;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const data = generateOHLC(50);
+  const pad = { t: 20, r: 70, b: 70, l: 10 };
+  const cw = W - pad.l - pad.r, ch = H - pad.t - pad.b;
+  const priceH = ch * .72, volH = ch * .22, volTop = pad.t + priceH + 8;
+
+  const allP = data.flatMap(d => [d.h, d.l]);
+  const minP = Math.min(...allP), maxP = Math.max(...allP);
+  const pR = maxP - minP || 1;
+  const maxV = Math.max(...data.map(d => d.v));
+
+  const px = i => pad.l + (i + .5) * (cw / data.length);
+  const py = v => pad.t + priceH - ((v - minP) / pR) * priceH;
+
+  // Grid
+  ctx.strokeStyle = 'rgba(255,255,255,.05)'; ctx.lineWidth = 1;
+  for (let i = 0; i <= 5; i++) {
+    const y = pad.t + (priceH / 5) * i;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + cw, y); ctx.stroke();
+    const pr = maxP - (pR / 5) * i;
+    ctx.fillStyle = '#5a6478'; ctx.font = '10px Inter'; ctx.textAlign = 'left';
+    ctx.fillText('$' + pr.toFixed(0), W - pad.r + 6, y + 3);
+  }
+
+  // MA20
+  const ma20 = data.map((_, i) => {
+    if (i < 19) return null;
+    let s = 0; for (let j = 0; j < 20; j++) s += data[i - j].c; return s / 20;
+  });
+  ctx.strokeStyle = GD; ctx.lineWidth = 1.5; ctx.beginPath();
+  ma20.forEach((v, i) => { if (v == null) return; i === 19 || ma20[i-1]==null ? ctx.moveTo(px(i), py(v)) : ctx.lineTo(px(i), py(v)); });
+  ctx.stroke();
+
+  // Candles
+  const bw = Math.max(3, cw / data.length * .55);
+  data.forEach((d, i) => {
+    const x = px(i), bull = d.c >= d.o, col = bull ? G : R;
+    ctx.strokeStyle = col; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x, py(d.h)); ctx.lineTo(x, py(d.l)); ctx.stroke();
+    const yt = py(Math.max(d.o, d.c)), yb = py(Math.min(d.o, d.c));
+    ctx.fillStyle = col; ctx.fillRect(x - bw/2, yt, bw, Math.max(yb - yt, 1));
+  });
+
+  // Volume
+  data.forEach((d, i) => {
+    const x = px(i), bull = d.c >= d.o;
+    const vh = (d.v / maxV) * volH;
+    ctx.fillStyle = bull ? 'rgba(0,200,151,.35)' : 'rgba(248,73,96,.35)';
+    ctx.fillRect(x - bw/2, volTop + volH - vh, bw, vh);
+  });
+
+  // Legend
+  ctx.fillStyle = '#8b95a8'; ctx.font = '11px Inter';
+  ctx.fillText('MA(20)', pad.l + 4, pad.t + 12);
+  ctx.strokeStyle = GD; ctx.beginPath(); ctx.moveTo(pad.l + 44, pad.t + 8); ctx.lineTo(pad.l + 74, pad.t + 8); ctx.stroke();
+  ctx.fillStyle = G; ctx.fillRect(pad.l + 80, pad.t + 4, 8, 8);
+  ctx.fillStyle = '#8b95a8'; ctx.fillText('Vol', pad.l + 92, pad.t + 12);
+}
+
+/* --- Nav --- */
+const secNav = document.getElementById('sec-nav');
+if (secNav) {
+  secNav.addEventListener('click', e => {
+    const btn = e.target.closest('button[data-sec]');
+    if (!btn) return;
+    document.querySelectorAll('#sec-nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    const panel = document.getElementById('panel-' + btn.dataset.sec);
+    if (panel) {
+      panel.classList.add('active');
+      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+}
+</script>
+
+<script src="js/main.js"></script>
+<script>
+
+document.querySelectorAll('.nav-item.has-dropdown > a').forEach((a) => {
+  a.addEventListener('click', (e) => {
+    if (window.innerWidth > 1024) return;
+    const href = a.getAttribute('href') || '';
+    if (href.includes('#')) return;
+    e.preventDefault();
+    const item = a.parentElement;
+    document.querySelectorAll('.nav-item.has-dropdown.open').forEach((el) => {
+      if (el !== item) el.classList.remove('open');
+    });
+    item.classList.toggle('open');
+  });
+});
+
+document.querySelectorAll('.dropdown-menu a[href^="#"]').forEach((link) => {
+  link.addEventListener('click', () => {
+    document.getElementById('top-nav')?.classList.remove('open');
+    document.querySelectorAll('.nav-item.has-dropdown.open').forEach((el) => el.classList.remove('open'));
+  });
+});
+
+const SEC_HASH_MAP = {
+  'stop-loss': 'stop-loss',
+  'take-profit': 'take-profit',
+  'trading-rules': 'trading-rules',
+  'split-strategy': 'split-strategy',
+  'candles': 'candles',
+  'charts': 'charts',
+  'indicators': 'indicators'
+};
+
+function activateSecTab(sec) {
+  const btn = document.querySelector(`#sec-nav button[data-sec="${sec}"]`);
+  const panel = document.getElementById('panel-' + sec);
+  if (!btn || !panel) return false;
+  document.querySelectorAll('#sec-nav button').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  panel.classList.add('active');
+  return true;
+}
+
+if (location.hash) {
+  const hash = location.hash.replace('#', '');
+  if (SEC_HASH_MAP[hash]) {
+    setTimeout(() => {
+      activateSecTab(SEC_HASH_MAP[hash]);
+      document.getElementById('panel-' + SEC_HASH_MAP[hash])?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
+  } else {
+    const target = document.querySelector(location.hash);
+    if (target) {
+      setTimeout(() => {
+        const top = target.getBoundingClientRect().top + window.scrollY - 88;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }, 300);
+    }
+  }
+}
+
+document.querySelectorAll('.rule-hover-card').forEach((card) => {
+  card.addEventListener('click', () => {
+    if (!window.matchMedia('(hover: none)').matches && window.innerWidth > 768) return;
+    document.querySelectorAll('.rule-hover-card.revealed').forEach((el) => {
+      if (el !== card) el.classList.remove('revealed');
+    });
+    card.classList.toggle('revealed');
+  });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderCandles();
+  renderChartPatterns();
+  renderIndicators();
+  drawMainChart();
+  window.addEventListener('resize', () => { drawMainChart(); INDICATORS.forEach(i => drawMiniChart(i.id, i.fn)); });
+});
+</script>
+<script src="js/stock-edu-detail.js?v=1" defer></script>
+</body>
+</html>

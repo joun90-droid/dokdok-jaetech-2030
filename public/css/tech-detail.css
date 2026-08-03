@@ -1,0 +1,224 @@
+/* 기술적 분석 — 탭별 상세 설명 패널 */
+.tech-detail-panel {
+  background: linear-gradient(145deg, rgba(30, 30, 30, 0.95), rgba(20, 20, 20, 0.98));
+  border: 1px solid rgba(250, 204, 21, 0.2);
+  border-radius: 16px;
+  padding: 1.35rem 1.5rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+.tech-detail-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.tech-detail-icon {
+  font-size: 2rem;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(250, 204, 21, 0.1);
+  border-radius: 12px;
+  border: 1px solid rgba(250, 204, 21, 0.25);
+}
+
+.tech-detail-head h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #f5f5f5;
+  margin-bottom: 0.35rem;
+}
+
+.tech-detail-lead {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  line-height: 1.65;
+  max-width: 720px;
+}
+
+.tech-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.tech-detail-block {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+}
+
+.tech-detail-block h4 {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #facc15;
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tech-detail-block h4 i {
+  font-size: 0.75rem;
+  opacity: 0.9;
+}
+
+.tech-detail-block ul,
+.tech-detail-block ol {
+  margin: 0;
+  padding-left: 1.15rem;
+  font-size: 0.8125rem;
+  color: #cbd5e1;
+  line-height: 1.65;
+}
+
+.tech-detail-block li + li {
+  margin-top: 0.35rem;
+}
+
+.tech-detail-block p {
+  font-size: 0.8125rem;
+  color: #cbd5e1;
+  line-height: 1.65;
+  margin: 0;
+}
+
+.tech-detail-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+  margin-top: 0.5rem;
+}
+
+.tech-detail-table th,
+.tech-detail-table td {
+  padding: 0.5rem 0.65rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.tech-detail-table th {
+  color: #9ca3af;
+  font-weight: 600;
+  font-size: 0.72rem;
+}
+
+.tech-detail-table td {
+  color: #e5e7eb;
+}
+
+.tech-detail-table .val-up { color: #4ade80; font-weight: 700; }
+.tech-detail-table .val-down { color: #f87171; font-weight: 700; }
+.tech-detail-table .val-gold { color: #facc15; font-weight: 700; }
+
+.tech-detail-tip {
+  background: rgba(250, 204, 21, 0.08);
+  border: 1px solid rgba(250, 204, 21, 0.22);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  font-size: 0.8125rem;
+  color: #e5e7eb;
+  line-height: 1.6;
+}
+
+.tech-detail-tip strong {
+  color: #facc15;
+}
+
+.tech-detail-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  counter-reset: step;
+}
+
+.tech-detail-step {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  font-size: 0.8125rem;
+  color: #cbd5e1;
+  line-height: 1.55;
+}
+
+.tech-detail-step-num {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(250, 204, 21, 0.15);
+  color: #facc15;
+  font-size: 0.72rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tech-metric-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 0.75rem;
+}
+
+.tech-metric-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.tech-metric-chip.loss { color: #f87171; border-color: rgba(248, 113, 113, 0.35); }
+.tech-metric-chip.gain { color: #4ade80; border-color: rgba(74, 222, 128, 0.35); }
+.tech-metric-chip.neutral { color: #facc15; border-color: rgba(250, 204, 21, 0.35); }
+
+/* sec-nav 확장 */
+.sec-nav {
+  overflow-x: auto;
+  flex-wrap: nowrap !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 0.5rem !important;
+}
+
+.sec-nav::-webkit-scrollbar { display: none; }
+
+.sec-nav button {
+  flex-shrink: 0;
+  white-space: nowrap;
+  min-height: 40px;
+  padding: 0.55rem 1rem !important;
+}
+
+@media (max-width: 768px) {
+  .tech-detail-head {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .tech-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sec-nav button {
+    min-height: 44px;
+    font-size: 0.78rem !important;
+  }
+}

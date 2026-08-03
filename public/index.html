@@ -1,46 +1,151 @@
 <!DOCTYPE html>
+<!--
+  UI 구조: 영재 재테크 2030 슬로건 + 6개 카드 2열 그리드
+  네비: 주식시세추천 단일 메뉴 → stock-education.html
+-->
 <html lang="ko">
 <head>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3079797618341925" crossorigin="anonymous"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>영재가 추천하는 2030재테크 | 예적금·ETF·부동산·실시간 시세</title>
-  <meta name="description" content="영재가 추천하는 2030재테크 — Apple·NVIDIA·삼성전자 개별종목 추천, 미장·국장 실시간 시세, 적정가·투자등급 A+~D">
-  <meta name="keywords" content="2030재테크, 청년 재테크, 개별종목 추천, 미장 시세, 국장 시세, 삼성전자, NVIDIA">
+  <title>똑똑한 재테크 2030 | 영재 재테크 2030</title>
+  <meta name="description" content="2030 세대를 위한 재테크 — 주식, 부동산, 예적금, ETF, 가이드 한눈에">
   <link rel="canonical" href="https://fintrack2030-248bf.web.app/">
-  <meta property="og:title" content="영재가 추천하는 2030재테크">
-  <meta property="og:description" content="개별종목 Pick 추천 · 미장·국장 실시간 시세 · 투자등급">
-  <link rel="preload" href="/data/market-pack.json" as="fetch" crossorigin>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css" rel="stylesheet">
-  <script src="js/market.js?v=8" defer></script>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/spa-nav.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f0f0f;
+      --bg-card: #1e1e1e;
+      --bg-card-hover: #252525;
+      --text: #ffffff;
+      --text-muted: #a0a0a0;
+      --accent: #facc15;
+      --border: rgba(255, 255, 255, 0.08);
+      --radius-pill: 999px;
+      --radius-card: 20px;
+      --header-h: 64px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    .container { width: 100%; max-width: 960px; margin: 0 auto; padding: 0 1.25rem; }
+    .hero {
+      flex: 1; text-align: center;
+      padding: 2.75rem 0 1.5rem;
+    }
+    .hero-slogan {
+      font-size: clamp(1.85rem, 6vw, 2.75rem);
+      font-weight: 800; letter-spacing: -0.03em;
+      margin-bottom: 0.85rem;
+    }
+    .hero-sub {
+      font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+      color: var(--text-muted); line-height: 1.65;
+      max-width: 440px; margin: 0 auto 0.75rem;
+    }
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      max-width: 720px;
+      margin: 0.5rem auto 0;
+      padding-bottom: 2.5rem;
+    }
+    .menu-card {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.35rem 1.25rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      transition: transform 0.22s ease, background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+      min-height: 96px;
+    }
+    .menu-card:hover {
+      transform: translateY(-4px);
+      background: var(--bg-card-hover);
+      border-color: rgba(255, 255, 255, 0.14);
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.35);
+    }
+    .menu-card-icon {
+      flex-shrink: 0;
+      width: 50px; height: 50px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.45rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 14px;
+    }
+    .menu-card-body { flex: 1; text-align: left; min-width: 0; }
+    .menu-card-title {
+      font-size: 0.98rem; font-weight: 700;
+      margin-bottom: 0.2rem; line-height: 1.3;
+    }
+    .menu-card-desc {
+      font-size: 0.78rem; color: var(--text-muted); line-height: 1.4;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .menu-card-arrow {
+      flex-shrink: 0; color: var(--text-muted); font-size: 1rem;
+      transition: transform 0.2s, color 0.2s;
+    }
+    .menu-card:hover .menu-card-arrow { color: #facc15; transform: translateX(3px); }
+    .menu-card--accent {
+      background: linear-gradient(145deg, rgba(250,204,21,0.08), rgba(250,204,21,0.03));
+      border-color: rgba(250, 204, 21, 0.28);
+    }
+    .menu-card--accent:hover {
+      background: linear-gradient(145deg, rgba(250,204,21,0.14), rgba(250,204,21,0.06));
+      border-color: rgba(250, 204, 21, 0.45);
+    }
+    .menu-card--accent .menu-card-icon { background: rgba(250, 204, 21, 0.12); }
+    .site-footer { border-top: 1px solid var(--border); padding: 2rem 0; margin-top: auto; }
+    .footer-nav { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; margin: 1rem 0; }
+    .footer-nav a { font-size: 0.8rem; color: var(--text-muted); transition: color 0.2s; }
+    .footer-nav a:hover { color: var(--text); }
+    .footer-disclaimer, .footer-copy { font-size: 0.75rem; color: #666; line-height: 1.5; }
+    .footer-disclaimer { margin-bottom: 0.35rem; }
+    @media (max-width: 768px) {
+      .menu-grid { grid-template-columns: 1fr; max-width: 420px; }
+      .menu-card-desc { white-space: normal; }
+      .hero { padding: 2rem 0 1.25rem; }
+      .hero-sub { margin-bottom: 0.5rem; }
+    }
+    @media (min-width: 900px) {
+      .menu-grid { grid-template-columns: repeat(3, 1fr); max-width: 900px; }
+    }
+  </style>
 </head>
-<body class="g-theme">
-  <div class="g-ambient" aria-hidden="true">
-    <span class="g-blob g-blob-blue"></span>
-    <span class="g-blob g-blob-green"></span>
-    <span class="g-blob g-blob-red"></span>
-    <span class="g-blob g-blob-yellow"></span>
-  </div>
-
+<body>
   <header class="site-header">
     <div class="container header-inner">
       <a href="index.html" class="logo">
-        <span class="logo-icon g-logo"><span>G</span></span>
-        <span class="logo-text">영재가 추천하는 <span class="logo-accent">2030재테크</span></span>
+        <span class="logo-icon" aria-hidden="true">💰</span>
+        <span class="logo-text">영재 재테크 <span class="logo-accent">2030</span></span>
       </a>
-      <button class="menu-toggle" aria-label="메뉴" aria-expanded="false">☰</button>
-      <nav>
+      <button class="menu-toggle" aria-label="메뉴 열기" aria-expanded="false">☰</button>
+      <nav aria-label="주요 메뉴">
         <ul class="nav-links">
-          <li><a href="index.html" class="active">홈</a></li>
-          <li><a href="dashboard.html">시세·추천</a></li>
+          <li><a href="index.html">홈</a></li>
+          <li><a href="stock-price.html">주식시세추천</a></li>
+          <li><a href="stock-education.html">주식교육창</a></li>
           <li><a href="savings.html">예적금</a></li>
           <li><a href="etf.html">ETF</a></li>
-          <li><a href="real-estate.html">부동산</a></li>
+          <li><a href="real-estate.html" data-full-nav="true">부동산</a></li>
           <li><a href="articles.html">가이드</a></li>
+          <li><a href="about.html">운영자 소개</a></li>
+          <li><a href="contact.html">문의하기</a></li>
         </ul>
       </nav>
     </div>
@@ -48,148 +153,63 @@
 
   <main>
     <section class="hero">
-      <div class="container hero-grid">
-        <div class="hero-content">
-          <span class="hero-badge"><span class="g-live-dot"></span> LIVE · 영재 Pick</span>
-          <h1>개별종목 추천부터<br><span class="g-gradient-text">실시간 시세</span>까지</h1>
-          <p class="hero-desc">Apple·NVIDIA·삼성전자 등 미장·국장 개별주 Pick 추천, 적정가 가치평가, A+~D 투자등급과 2030 청년 재테크 가이드.</p>
-          <div class="hero-cta">
-            <a href="dashboard.html" class="btn btn-primary">🎯 영재 Pick 보기</a>
-            <a href="savings.html" class="btn btn-secondary">예적금 가이드</a>
-          </div>
-          <div class="hero-pills">
-            <a href="dashboard.html#section-picks" class="hero-pill">🍎 Apple</a>
-            <a href="dashboard.html#section-picks" class="hero-pill">🎮 NVIDIA</a>
-            <a href="dashboard.html#section-picks" class="hero-pill">📱 삼성전자</a>
-            <a href="dashboard.html#section-fundamentals" class="hero-pill">📊 PER/PBR/ROE</a>
-          </div>
-        </div>
-        <div class="hero-visual" aria-hidden="true">
-          <div class="hero-card-stack">
-            <div class="hero-float-card">
-              <div class="hero-float-icon us">🍎</div>
-              <div class="hero-float-info">
-                <span>Apple · AAPL</span>
-                <strong>영재 Pick #1</strong>
-                <span class="up">▲ LIVE</span>
-              </div>
+      <div class="container">
+        <h1 class="hero-slogan">똑똑한 재테크 2030</h1>
+        <p class="hero-sub">복잡한 정보는 줄이고, 꼭 필요한 재테크만.<br>아래 메뉴에서 바로 시작하세요.</p>
+
+        <div class="menu-grid">
+          <a href="stock-price.html" class="menu-card menu-card--accent">
+            <span class="menu-card-icon" aria-hidden="true">📈</span>
+            <div class="menu-card-body">
+              <div class="menu-card-title">주식시세추천</div>
+              <div class="menu-card-desc">오늘의 추천 종목 · 시세</div>
             </div>
-            <div class="hero-float-card">
-              <div class="hero-float-icon kr">📱</div>
-              <div class="hero-float-info">
-                <span>삼성전자 · 005930</span>
-                <strong>국장 대표주</strong>
-                <span class="up">▲ LIVE</span>
-              </div>
+            <span class="menu-card-arrow" aria-hidden="true">→</span>
+          </a>
+
+          <a href="real-estate.html" class="menu-card" data-full-nav="true">
+            <span class="menu-card-icon" aria-hidden="true">🏠</span>
+            <div class="menu-card-body">
+              <div class="menu-card-title">부동산 실시간 시세</div>
+              <div class="menu-card-desc">지역별 시세 · 청약 · 트렌드</div>
             </div>
-            <div class="hero-float-card">
-              <div class="hero-float-icon re">🎮</div>
-              <div class="hero-float-info">
-                <span>NVIDIA · NVDA</span>
-                <strong>AI·반도체</strong>
-                <span class="up">▲ LIVE</span>
-              </div>
+            <span class="menu-card-arrow" aria-hidden="true">→</span>
+          </a>
+
+          <a href="savings.html" class="menu-card">
+            <span class="menu-card-icon" aria-hidden="true">💰</span>
+            <div class="menu-card-body">
+              <div class="menu-card-title">예적금</div>
+              <div class="menu-card-desc">청년도약계좌 · 우대 금리</div>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 영재 Pick 미리보기 -->
-    <section class="section pick-section" id="market-dashboard" style="padding-top:0">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-label">영재 Pick</span>
-          <h2>🎯 오늘의 개별종목 추천</h2>
-          <p id="market-updated" class="market-updated"></p>
-        </div>
-        <div id="market-summary" class="market-summary g-chips" style="margin-bottom:1rem"></div>
-        <div class="pick-list" id="pick-list" data-limit="4">
-          <div class="pick-loading">추천 종목 분석 중…</div>
-        </div>
-        <p id="market-status" class="market-status" aria-live="polite"></p>
-        <div class="cta-center">
-          <a href="dashboard.html" class="btn btn-primary">전체 추천·시세 보기 →</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="section dashboard-preview" style="padding-top:0">
-      <div class="container">
-        <div class="g-panel reveal">
-          <h3 class="g-panel-title">📡 실시간 시세</h3>
-          <div class="ticker-strip" id="market-tickers">
-            <div class="pick-loading">시세 불러오는 중…</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- AD_SLOT: home_infeed_1 (섹션 사이 인피드 광고) -->
-
-    <section class="section" id="section-pillars">
-      <div class="container">
-        <div class="section-header reveal">
-          <span class="section-label">Invest Guide</span>
-          <h2>2030 재테크 3대 축</h2>
-          <p>카드를 눌러 상세 가이드로 이동</p>
-        </div>
-        <div class="card-grid">
-          <a href="savings.html" class="card card-link reveal">
-            <div class="card-icon savings">🏦</div>
-            <h3>예적금 · 청년도약계좌</h3>
-            <p>정부 지원 금리 혜택, 청년 우대 적금, 비상금 통장까지.</p>
-            <span class="card-tag">저위험 · 원금 보장</span>
-            <span class="card-arrow">→</span>
+            <span class="menu-card-arrow" aria-hidden="true">→</span>
           </a>
-          <a href="etf.html" class="card card-link reveal">
-            <div class="card-icon etf">📈</div>
-            <h3>ETF 투자</h3>
-            <p>S&amp;P500, KODEX 200 ETF. 적립식 투자와 ISA 활용법.</p>
-            <span class="card-tag">중위험 · 장기 성장</span>
-            <span class="card-arrow">→</span>
-          </a>
-          <a href="real-estate.html" class="card card-link reveal">
-            <div class="card-icon estate">🏠</div>
-            <h3>부동산 · 청약</h3>
-            <p>청년 주택드림 청약, LTV·DSR, 내 집 마련 전략.</p>
-            <span class="card-tag">장기 · 내 집 마련</span>
-            <span class="card-arrow">→</span>
-          </a>
-        </div>
-      </div>
-    </section>
 
-    <!-- AD_SLOT: home_infeed_2 -->
+          <a href="etf.html" class="menu-card">
+            <span class="menu-card-icon" aria-hidden="true">📊</span>
+            <div class="menu-card-body">
+              <div class="menu-card-title">ETF</div>
+              <div class="menu-card-desc">S&amp;P500 · KODEX 200 적립</div>
+            </div>
+            <span class="menu-card-arrow" aria-hidden="true">→</span>
+          </a>
 
-    <section class="section" id="section-guides" style="padding-top: 0;">
-      <div class="container">
-        <div class="section-header reveal">
-          <span class="section-label">Popular</span>
-          <h2>인기 투자 가이드</h2>
-          <p>클릭하면 세부 조건·전략·FAQ 확인</p>
-        </div>
-        <div class="card-grid">
-          <a href="articles/youth-leap-account.html" class="card card-link reveal">
-            <div class="card-icon article">📋</div>
-            <h3>청년도약계좌 조건·금리·가입</h3>
-            <p>19~34세 청년 전용 적금, 정부 기여금 혜택 총정리.</p>
-            <span class="card-tag">예적금</span>
-            <span class="card-arrow">→</span>
+          <a href="articles.html" class="menu-card">
+            <span class="menu-card-icon" aria-hidden="true">🧭</span>
+            <div class="menu-card-body">
+              <div class="menu-card-title">재테크 초보 가이드</div>
+              <div class="menu-card-desc">예적금 · ETF · 청약 가이드</div>
+            </div>
+            <span class="menu-card-arrow" aria-hidden="true">→</span>
           </a>
-          <a href="articles/etf-beginner.html" class="card card-link reveal">
-            <div class="card-icon article">📋</div>
-            <h3>ETF 초보 — 월 10만 원 적립</h3>
-            <p>증권 개설부터 ETF 선택, 포트폴리오까지.</p>
-            <span class="card-tag">ETF</span>
-            <span class="card-arrow">→</span>
-          </a>
-          <a href="articles/youth-housing-subscription.html" class="card card-link reveal">
-            <div class="card-icon article">📋</div>
-            <h3>청년 주택드림 청약 정리</h3>
-            <p>만 19~39세 청년 특별공급, 가점·순위 산정.</p>
-            <span class="card-tag">부동산</span>
-            <span class="card-arrow">→</span>
+
+          <a href="etf.html" class="menu-card">
+            <span class="menu-card-icon" aria-hidden="true">📈</span>
+            <div class="menu-card-body">
+              <div class="menu-card-title">2030 맞춤 포트폴리오</div>
+              <div class="menu-card-desc">적립식 투자 · ISA 활용법</div>
+            </div>
+            <span class="menu-card-arrow" aria-hidden="true">→</span>
           </a>
         </div>
       </div>
@@ -197,24 +217,27 @@
   </main>
 
   <footer class="site-footer">
-    <div class="container footer-inner">
-      <div class="footer-top">
-        <a href="index.html" class="logo">
-          <span class="logo-icon g-logo"><span>G</span></span>
-          <span class="logo-text">영재가 추천하는 <span class="logo-accent">2030재테크</span></span>
-        </a>
-        <nav class="footer-nav">
-          <a href="dashboard.html">시세·추천</a>
-          <a href="savings.html">예적금</a>
-          <a href="etf.html">ETF</a>
-          <a href="real-estate.html">부동산</a>
-          <a href="privacy.html">개인정보처리방침</a>
-        </nav>
-      </div>
-      <p class="footer-disclaimer">추천·시세·투자등급은 참고용이며 투자 권유가 아닙니다.</p>
-      <p class="footer-copy">© 2026 영재가 추천하는 2030재테크</p>
+    <div class="container">
+      <a href="index.html" class="logo">
+        <span class="logo-icon" aria-hidden="true">💰</span>
+        <span class="logo-text">영재 재테크 <span class="logo-accent">2030</span></span>
+      </a>
+      <nav class="footer-nav">
+        <a href="stock-price.html">주식시세추천</a>
+        <a href="stock-education.html">주식교육창</a>
+        <a href="savings.html">예적금</a>
+        <a href="etf.html">ETF</a>
+        <a href="real-estate.html" data-full-nav="true">부동산</a>
+        <a href="articles.html">가이드</a>
+        <a href="about.html">운영자 소개</a>
+        <a href="contact.html">문의하기</a>
+        <a href="privacy.html">개인정보처리방침</a>
+      </nav>
+      <p class="footer-disclaimer">본 사이트의 정보는 참고용이며 투자 권유가 아닙니다.</p>
+      <p class="footer-copy">© 2026 영재 재테크 2030</p>
     </div>
   </footer>
   <script src="js/main.js"></script>
+  <script src="js/spa-nav.js" defer></script>
 </body>
 </html>

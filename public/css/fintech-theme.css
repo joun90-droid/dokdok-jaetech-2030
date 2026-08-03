@@ -1,0 +1,146 @@
+/**
+ * FinTrack 2030 — 통합 핀테크 다크모드 디자인 시스템
+ * 배경 #0f0f0f · 카드 #1e1e1e · 포인트 골드 #facc15
+ */
+:root {
+  --g-bg: #0f0f0f;
+  --g-surface: #1e1e1e;
+  --g-surface-2: #252525;
+  --g-surface-3: #2a2a2a;
+  --g-border: rgba(255, 255, 255, 0.08);
+  --g-text: #f5f5f5;
+  --g-muted: #9ca3af;
+  --g-gold: #facc15;
+  --g-gold-soft: rgba(250, 204, 21, 0.12);
+  --g-gold-border: rgba(250, 204, 21, 0.35);
+  --g-blue: #60a5fa;
+  --g-red: #f87171;
+  --g-green: #4ade80;
+  --g-radius: 16px;
+  --g-radius-sm: 12px;
+  --g-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+  --g-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.45);
+  --font: "Pretendard", "Noto Sans KR", -apple-system, BlinkMacSystemFont, sans-serif;
+  --text-h1: clamp(1.75rem, 5vw, 2.5rem);
+  --text-h2: clamp(1.25rem, 3vw, 1.5rem);
+  --text-body: 0.9375rem;
+  --text-caption: 0.8125rem;
+  /* legacy aliases */
+  --bg: var(--g-bg);
+  --surface: var(--g-surface);
+  --surface-hover: var(--g-surface-2);
+  --border: var(--g-border);
+  --text: var(--g-text);
+  --text-muted: var(--g-muted);
+  --accent: var(--g-gold);
+  --accent-soft: var(--g-gold-soft);
+}
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: var(--font);
+  background: var(--g-bg);
+  color: var(--g-text);
+  font-size: var(--text-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 { font-size: var(--text-h1); font-weight: 800; letter-spacing: -0.02em; line-height: 1.25; }
+h2 { font-size: var(--text-h2); font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+.caption, .text-caption { font-size: var(--text-caption); color: var(--g-muted); }
+
+.site-header {
+  background: #121212 !important;
+  border-bottom: 1px solid var(--g-border) !important;
+}
+
+.btn-primary,
+.menu-card--accent {
+  border-color: var(--g-gold-border);
+}
+
+.btn-primary:hover,
+a.menu-card:hover {
+  box-shadow: 0 0 0 1px var(--g-gold-border), var(--g-shadow-hover);
+}
+
+.page-hero,
+.section,
+.glass,
+.panel-card,
+.info-box,
+.comparison-table,
+.menu-card,
+.edu-card,
+.guide-card,
+.vi-stock-card {
+  border-radius: var(--g-radius);
+}
+
+.menu-card,
+.edu-card,
+.guide-card,
+.vi-stock-card,
+.stat-card {
+  background: var(--g-surface);
+  border: 1px solid var(--g-border);
+  box-shadow: var(--g-shadow);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.menu-card:hover,
+.edu-card:hover,
+.guide-card:hover {
+  border-color: var(--g-gold-border);
+  transform: translateY(-3px);
+  box-shadow: var(--g-shadow-hover);
+}
+
+.stock-analyzer-page {
+  background: var(--g-bg);
+}
+
+.stock-analyzer-page .vi-app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 clamp(0.75rem, 3vw, 1.25rem) 2rem;
+}
+
+@media (max-width: 768px) {
+  .vi-stock-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .vi-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .vi-header-stats {
+    width: 100%;
+  }
+
+  .vi-header-actions {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+  }
+
+  .vi-header-actions .vi-btn {
+    flex-shrink: 0;
+    min-height: 44px;
+  }
+
+  .menu-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .nav-links a {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+}

@@ -1,0 +1,262 @@
+/* FinTrack 2030 — Real Estate page renewal (dark / pill UI) */
+@import url("/css/estate-live.css?v=5");
+
+.estate-page { --est-bg: #121212; --est-surface: #1a1a1a; --est-surface-2: #2b2b2b; --est-text: #e0e0e0; --est-muted: #9aa0a6; --est-blue: #8ab4f8; --est-blue-dim: rgba(138,180,248,0.15); }
+
+.estate-page .page-hero {
+  padding-bottom: 1.25rem;
+}
+
+.estate-page .page-hero h1 {
+  font-size: clamp(1.35rem, 4.5vw, 1.85rem);
+  line-height: 1.35;
+}
+
+.estate-live-wrap {
+  padding-top: 0.5rem !important;
+  padding-bottom: 1.5rem !important;
+}
+
+.estate-live-wrap .section-header {
+  display: none;
+}
+
+.estate-hero-actions {
+  padding: 0 0 1.25rem;
+  border-bottom: 1px solid var(--g-border);
+}
+
+.estate-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  align-items: center;
+}
+
+.estate-action-row .btn {
+  min-height: 48px;
+  padding: 0.7rem 1.25rem;
+  font-size: 0.88rem;
+  white-space: nowrap;
+}
+
+.estate-action-row .btn-primary {
+  background: linear-gradient(135deg, #8ab4f8 0%, #669df6 100%);
+  color: #131314;
+  box-shadow: 0 2px 12px rgba(138,180,248,0.25);
+}
+
+.estate-action-row .btn-primary:hover {
+  background: linear-gradient(135deg, #aecbfa 0%, #8ab4f8 100%);
+  transform: translateY(-1px);
+}
+
+.estate-action-pill {
+  background: #2b2b2b !important;
+  color: #e0e0e0 !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+.estate-action-pill:hover,
+.estate-action-pill.is-active {
+  background: var(--est-blue-dim) !important;
+  border-color: rgba(138,180,248,0.4) !important;
+  color: var(--est-blue) !important;
+}
+
+.estate-map-section {
+  background: linear-gradient(180deg, transparent 0%, rgba(18,18,18,0.4) 100%);
+  padding-bottom: 2rem !important;
+}
+
+.estate-map-section .section-header h2 {
+  font-size: clamp(1.25rem, 4vw, 1.55rem);
+  letter-spacing: -0.02em;
+}
+
+.estate-type-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 1rem;
+}
+
+.estate-page .estate-type-tab {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: #2b2b2b;
+  color: #e0e0e0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  min-height: 40px;
+}
+
+.estate-page .estate-type-tab.active {
+  background: var(--est-blue-dim);
+  color: var(--est-blue);
+  border-color: rgba(138,180,248,0.45);
+}
+
+.estate-page .estate-type-tab:hover:not(.active) {
+  background: #333;
+  color: #fff;
+}
+
+.estate-page .estate-map-v2-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+  margin-top: 0.85rem;
+}
+
+.estate-drilldown-bar {
+  margin-top: 1.25rem;
+  padding: 1rem 1.15rem;
+  background: #1a1a1a;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+}
+
+.estate-drilldown-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem 1rem;
+}
+
+.estate-drilldown-field {
+  flex: 1 1 140px;
+  min-width: 0;
+}
+
+.estate-drilldown-field .efp-select {
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0.55rem 2.2rem 0.55rem 1rem;
+  font-size: 0.85rem;
+}
+
+.efp-reset-inline {
+  flex: 0 0 auto;
+  align-self: flex-end;
+  margin-bottom: 0.1rem;
+}
+
+@media (min-width: 960px) {
+  .estate-drilldown-field { flex: 1 1 180px; max-width: 220px; }
+}
+
+@media (min-width: 960px) {
+  .estate-page .estate-map-v2-layout {
+    grid-template-columns: minmax(280px, 300px) 1fr;
+  }
+}
+
+.estate-page .estate-filter-panel {
+  background: #1a1a1a;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  padding: 1.1rem;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+}
+
+.estate-page .efp-select {
+  border-radius: 999px;
+  background: #2b2b2b;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.1);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath fill='%239aa0a6' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.2rem;
+}
+
+.estate-page .efp-label { color: var(--est-blue); }
+
+.estate-page .estate-detail-panel {
+  background: #121212;
+  border-radius: 16px;
+}
+
+.estate-page .edp-price { color: var(--est-blue); }
+
+.estate-map-wrap {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.07);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+}
+
+.estate-page .estate-map-v2 {
+  height: min(520px, 62vh);
+  background: #0d0d0d;
+}
+
+.estate-map-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 500;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(18,18,18,0.88);
+  border: 1px solid rgba(255,255,255,0.1);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--est-blue);
+  backdrop-filter: blur(8px);
+}
+
+.estate-info-panel {
+  display: none;
+  margin-top: 1rem;
+  padding: 1.15rem 1.25rem;
+  background: #1a1a1a;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+}
+
+.estate-info-panel.is-visible { display: block; }
+
+.estate-info-panel h3 { font-size: 1rem; margin: 0 0 0.5rem; color: #fff; }
+.estate-info-panel p { font-size: 0.88rem; color: var(--est-muted); margin: 0; line-height: 1.65; }
+
+.estate-trend-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  height: 80px;
+  margin-top: 0.75rem;
+}
+
+.estate-trend-bar {
+  flex: 1;
+  background: linear-gradient(180deg, #8ab4f8 0%, rgba(138,180,248,0.2) 100%);
+  border-radius: 6px 6px 0 0;
+}
+
+.leaflet-popup-content-wrapper {
+  background: #1a1a1a;
+  color: #e0e0e0;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.leaflet-popup-tip { background: #1a1a1a; }
+
+.estate-popup-card .epc-price { font-size: 1.15rem; font-weight: 800; color: #8ab4f8; }
+.estate-popup-card .epc-chg.up { color: #81c995; }
+.estate-popup-card .epc-chg.down { color: #f28b82; }
+
+@media (max-width: 959px) {
+  .estate-action-row { flex-direction: column; }
+  .estate-action-row .btn { width: 100%; }
+  .estate-page .estate-map-v2 { height: min(380px, 52vh); }
+  .estate-drilldown-inner { flex-direction: column; align-items: stretch; }
+  .estate-drilldown-field { flex: 1 1 auto; max-width: none; }
+  .efp-reset-inline { width: 100%; margin-bottom: 0; }
+}

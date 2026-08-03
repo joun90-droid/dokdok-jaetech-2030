@@ -21,6 +21,10 @@ jobs:
         continue-on-error: true
         shell: pwsh
 
+      - run: pwsh -File scripts/build-stock-live.ps1
+        continue-on-error: true
+        shell: pwsh
+
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"

@@ -1,0 +1,120 @@
+/* 매매 원칙 — 호버 인터랙션 카드 */
+.rule-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0 1.5rem;
+}
+
+.rule-hover-card {
+  position: relative;
+  background: var(--g-surface, #1e1e1e);
+  border: 1px solid var(--g-border, rgba(255,255,255,0.08));
+  border-radius: 16px;
+  padding: 1.25rem 1.35rem;
+  min-height: 120px;
+  overflow: hidden;
+  cursor: default;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.rule-hover-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--rule-accent, #facc15), transparent);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.rule-hover-card:hover,
+.rule-hover-card:focus-within {
+  border-color: rgba(250, 204, 21, 0.35);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+}
+
+.rule-hover-card:hover::before,
+.rule-hover-card:focus-within::before {
+  opacity: 1;
+}
+
+.rule-hover-card--loss { --rule-accent: #f87171; }
+.rule-hover-card--gain { --rule-accent: #4ade80; }
+.rule-hover-card--risk { --rule-accent: #facc15; }
+.rule-hover-card--trend { --rule-accent: #60a5fa; }
+
+.rule-card-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.rule-card-teaser {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--g-text, #f5f5f5);
+  margin-bottom: 0.35rem;
+}
+
+.rule-card-metric {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "Outfit", var(--font, sans-serif);
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin: 0.25rem 0 0.5rem;
+}
+
+.rule-card-metric.loss { color: #f87171; }
+.rule-card-metric.gain { color: #4ade80; }
+
+.rule-card-detail {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  font-size: 0.8125rem;
+  color: var(--g-muted, #9ca3af);
+  line-height: 1.55;
+  transition: max-height 0.35s ease, opacity 0.3s ease, margin 0.3s ease;
+}
+
+.rule-hover-card:hover .rule-card-detail,
+.rule-hover-card:focus-within .rule-card-detail,
+.rule-hover-card.revealed .rule-card-detail {
+  max-height: 120px;
+  opacity: 1;
+  margin-top: 0.5rem;
+}
+
+.rule-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--g-gold-soft, rgba(250,204,21,0.12));
+  color: var(--g-gold, #facc15);
+  border: 1px solid rgba(250, 204, 21, 0.25);
+}
+
+@media (max-width: 768px) {
+  .rule-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rule-hover-card {
+    min-height: auto;
+  }
+
+  .rule-hover-card.revealed .rule-card-detail,
+  .rule-hover-card:active .rule-card-detail {
+    max-height: 120px;
+    opacity: 1;
+    margin-top: 0.5rem;
+  }
+}

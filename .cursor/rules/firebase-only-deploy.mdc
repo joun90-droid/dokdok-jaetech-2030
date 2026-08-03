@@ -1,0 +1,20 @@
+---
+description: Always use GitHub backup + Firebase Hosting only
+alwaysApply: true
+---
+
+# Deploy & backup policy
+
+## Required for every app (new and existing)
+
+1. **GitHub**: Keep the project in a GitHub repo under `joun90-droid`. After meaningful changes, commit and `git push`. New apps: `git init` → `gh repo create` → push before or with first deploy.
+2. **Firebase Hosting only**: 
+   - **fintrack2030 (`fintrack2030-248bf`, https://fintrack2030-248bf.web.app)**: `public/` 등 Hosting 관련 파일 수정 후 **사용자에게 묻지 말고 즉시** `firebase deploy --only hosting --project fintrack2030-248bf` 실행. (자세한 규칙: `fintrack-auto-deploy.mdc`)
+   - **그 외 앱**: Firebase Hosting 비용 절감을 위해 deploy는 사용자가 **명시적으로 요청할 때만** 실행.
+   - 배포 시 `firebase deploy --only hosting:...` 사용. `gcloud run deploy` / Cloud Run은 사용자 요청 시만.
+3. Never commit secrets (`.env`, credentials). Use `.gitignore`.
+
+## Reminders
+
+- AdSense registration ≠ code backup. Live site = Firebase. Source backup = GitHub.
+- Prefer repo names matching the Firebase site id when possible (e.g. `jeonyoungjae-theme`).

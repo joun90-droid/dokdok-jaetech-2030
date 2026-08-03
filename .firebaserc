@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "fintrack2030-248bf"
-  }
+  },
+  "targets": {
+    "vaulted-acolyte-387217": {
+      "hosting": {
+        "math": [
+          "jeonyoungjae-math"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

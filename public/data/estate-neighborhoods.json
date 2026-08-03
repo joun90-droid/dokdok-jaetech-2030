@@ -1,0 +1,112 @@
+{
+  "updated": "2026-08-03",
+  "unit": "manwon/m2",
+  "cities": [
+    {
+      "id": "seoul",
+      "name": "서울",
+      "lat": 37.5665,
+      "lng": 126.978,
+      "zoom": 11,
+      "districts": [
+        {
+          "id": "gangnam",
+          "name": "강남구",
+          "lat": 37.5172,
+          "lng": 127.0473,
+          "zoom": 14,
+          "neighborhoods": [
+            { "id": "yeoksam", "name": "역삼동", "lat": 37.5004, "lng": 127.0366, "apt": 2920, "land": 2100, "forest": 95, "building": 1180, "changePct": 0.24, "grade": "A+", "score": 88 },
+            { "id": "samseong", "name": "삼성동", "lat": 37.5088, "lng": 127.0632, "apt": 3100, "land": 2250, "forest": 102, "building": 1250, "changePct": 0.18, "grade": "A+", "score": 90 },
+            { "id": "daechi", "name": "대치동", "lat": 37.4944, "lng": 127.0626, "apt": 2850, "land": 1980, "forest": 88, "building": 1100, "changePct": 0.21, "grade": "A", "score": 85 }
+          ]
+        },
+        {
+          "id": "mapo",
+          "name": "마포구",
+          "lat": 37.5663,
+          "lng": 126.9019,
+          "zoom": 14,
+          "neighborhoods": [
+            { "id": "seogyo", "name": "서교동", "lat": 37.5547, "lng": 126.9209, "apt": 2180, "land": 1650, "forest": 72, "building": 890, "changePct": 0.15, "grade": "A", "score": 82 },
+            { "id": "hapjeong", "name": "합정동", "lat": 37.5495, "lng": 126.9139, "apt": 2050, "land": 1580, "forest": 68, "building": 820, "changePct": 0.12, "grade": "B+", "score": 78 },
+            { "id": "gongdeok", "name": "공덕동", "lat": 37.5445, "lng": 126.9513, "apt": 1980, "land": 1520, "forest": 65, "building": 780, "changePct": 0.09, "grade": "B+", "score": 76 }
+          ]
+        },
+        {
+          "id": "songpa",
+          "name": "송파구",
+          "lat": 37.5145,
+          "lng": 127.1059,
+          "zoom": 14,
+          "neighborhoods": [
+            { "id": "jamsil", "name": "잠실동", "lat": 37.5133, "lng": 127.1002, "apt": 2450, "land": 1720, "forest": 78, "building": 950, "changePct": 0.17, "grade": "A", "score": 84 },
+            { "id": "bangi", "name": "방이동", "lat": 37.5117, "lng": 127.1264, "apt": 2280, "land": 1680, "forest": 74, "building": 910, "changePct": 0.14, "grade": "A", "score": 81 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gyeonggi",
+      "name": "경기",
+      "lat": 37.4138,
+      "lng": 127.5183,
+      "zoom": 10,
+      "districts": [
+        {
+          "id": "suwon",
+          "name": "수원시",
+          "lat": 37.2636,
+          "lng": 127.0286,
+          "zoom": 13,
+          "neighborhoods": [
+            { "id": "yeongtong", "name": "영통동", "lat": 37.2520, "lng": 127.0764, "apt": 1420, "land": 980, "forest": 52, "building": 620, "changePct": 0.22, "grade": "B+", "score": 74 },
+            { "id": "ingye", "name": "인계동", "lat": 37.2669, "lng": 127.0324, "apt": 1380, "land": 920, "forest": 48, "building": 590, "changePct": 0.19, "grade": "B+", "score": 72 },
+            { "id": "hwaseo", "name": "화서동", "lat": 37.2838, "lng": 127.0105, "apt": 1180, "land": 810, "forest": 42, "building": 510, "changePct": 0.16, "grade": "B", "score": 68 }
+          ]
+        },
+        {
+          "id": "seongnam",
+          "name": "성남시",
+          "lat": 37.4449,
+          "lng": 127.1388,
+          "zoom": 13,
+          "neighborhoods": [
+            { "id": "pangyo", "name": "판교동", "lat": 37.3947, "lng": 127.1112, "apt": 1850, "land": 1320, "forest": 58, "building": 740, "changePct": 0.20, "grade": "A", "score": 80 },
+            { "id": "bundang", "name": "분당동", "lat": 37.3827, "lng": 127.1189, "apt": 1720, "land": 1250, "forest": 55, "building": 690, "changePct": 0.18, "grade": "A", "score": 79 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "busan",
+      "name": "부산",
+      "lat": 35.1796,
+      "lng": 129.0756,
+      "zoom": 11,
+      "districts": [
+        {
+          "id": "haeundae",
+          "name": "해운대구",
+          "lat": 35.1631,
+          "lng": 129.1635,
+          "zoom": 14,
+          "neighborhoods": [
+            { "id": "udong", "name": "우동", "lat": 35.1634, "lng": 129.1604, "apt": 1680, "land": 1120, "forest": 48, "building": 580, "changePct": 0.13, "grade": "B+", "score": 75 },
+            { "id": "jungdong", "name": "중동", "lat": 35.1682, "lng": 129.1731, "apt": 1750, "land": 1180, "forest": 50, "building": 610, "changePct": 0.11, "grade": "B+", "score": 76 }
+          ]
+        },
+        {
+          "id": "suyeong",
+          "name": "수영구",
+          "lat": 35.1456,
+          "lng": 129.1133,
+          "zoom": 14,
+          "neighborhoods": [
+            { "id": "gwangan", "name": "광안동", "lat": 35.1532, "lng": 129.1187, "apt": 1520, "land": 1050, "forest": 44, "building": 540, "changePct": 0.10, "grade": "B", "score": 71 }
+          ]
+        }
+      ]
+    }
+  ]
+}

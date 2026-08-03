@@ -1,0 +1,142 @@
+/* 영재 재테크 2030 — 통일 탭 네비게이션 (전 페이지) */
+.site-header {
+  background: #121212;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+}
+
+.site-header .header-inner {
+  min-height: 56px;
+  padding: 0;
+  gap: 0.75rem;
+}
+
+.site-header nav {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.site-header .nav-links {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: nowrap;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.site-header .nav-links::-webkit-scrollbar {
+  display: none;
+}
+
+.site-header .nav-links > li {
+  list-style: none;
+  flex-shrink: 0;
+}
+
+.site-header .nav-links a {
+  display: block;
+  padding: 1.125rem 0.9rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #9ca3af;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+  border-radius: 0;
+  background: transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.site-header .nav-links a:hover {
+  color: #f3f4f6;
+  border-bottom-color: rgba(59, 130, 246, 0.45);
+  background: transparent;
+}
+
+.site-header .nav-links a.active {
+  color: #ffffff;
+  font-weight: 600;
+  border-bottom-color: #facc15;
+  background: transparent;
+}
+
+.site-header .nav-links .nav-item {
+  position: relative;
+}
+
+.site-header .nav-links .nav-item > a::after {
+  content: " ▾";
+  font-size: 0.6em;
+  opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+  .site-header .header-inner {
+    flex-wrap: wrap;
+    min-height: 52px;
+  }
+
+  .site-header nav {
+    order: 3;
+    flex: 1 1 100%;
+    justify-content: stretch;
+  }
+
+  .site-header .nav-links {
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    overflow: visible;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 110;
+    background: rgba(18, 18, 18, 0.98);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 0.35rem 0;
+  }
+
+  .site-header .nav-links.open {
+    display: flex;
+  }
+
+  .site-header .nav-links a {
+    padding: 0.85rem 1.25rem;
+    border-bottom: none;
+    border-left: 3px solid transparent;
+    margin-bottom: 0;
+  }
+
+  .site-header .nav-links a:hover,
+  .site-header .nav-links a.active {
+    border-bottom: none;
+    border-left-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.06);
+  }
+
+  .site-header .header-inner {
+    position: relative;
+  }
+}
+
+@media (min-width: 769px) {
+  .site-header .menu-toggle {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .site-header .nav-links a {
+    font-size: 0.875rem;
+    padding: 0.9rem 1.25rem;
+  }
+}

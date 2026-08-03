@@ -1,0 +1,61 @@
+/**
+ * Tab menu — hover 시 배경 이미지로 전환
+ * 이미지 교체: --tab-hover-img 경로만 수정 (public/images/tab-hover.png 권장)
+ */
+.tab-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  justify-content: center;
+}
+
+.tab-menu li a {
+  display: block;
+  padding: 15px 30px;
+  min-width: 100px;
+  text-align: center;
+  background-color: #2a2a2a;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 700;
+  border-radius: 30px;
+  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-image: none;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: color 0.3s ease, padding 0.3s ease, background-color 0.3s ease,
+    border-radius 0.3s ease, min-width 0.3s ease, min-height 0.3s ease;
+}
+
+.tab-menu li a:hover,
+.tab-menu li a:focus-visible {
+  background-image: var(--tab-hover-img, url('../images/tab-hover.svg'));
+  background-size: contain;
+  color: transparent;
+  padding: 20px 40px;
+  min-width: 140px;
+  min-height: 56px;
+  background-color: transparent;
+  border-color: transparent;
+  border-radius: 28px;
+  outline: none;
+}
+
+.tab-menu li a:focus-visible {
+  box-shadow: 0 0 0 2px #00d4ff;
+}
+
+@media (max-width: 640px) {
+  .tab-menu { gap: 8px; }
+  .tab-menu li a { padding: 12px 20px; font-size: 0.9rem; }
+  .tab-menu li a:hover,
+  .tab-menu li a:focus-visible {
+    padding: 16px 28px;
+    min-width: 120px;
+  }
+}
