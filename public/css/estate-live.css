@@ -153,15 +153,17 @@
   font-size: 0.7rem;
 }
 
-/* News Ticker */
+/* News Ticker — seamless marquee */
 .estate-live-app .news-ticker-container {
   display: flex;
   align-items: center;
   background: rgba(30, 41, 59, 0.85);
-  padding: 5px 1rem;
+  padding: 6px 0.75rem;
   font-size: 0.78rem;
   overflow: hidden;
   border-bottom: 1px solid var(--el-bg-card-border);
+  width: 100%;
+  min-width: 0;
 }
 
 .estate-live-app .ticker-label {
@@ -173,17 +175,23 @@
   font-size: 0.68rem;
   margin-right: 8px;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .estate-live-app .ticker-wrapper {
-  color: #cbd5e1;
-  white-space: nowrap;
-  animation: ticker 22s linear infinite;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
 }
 
-@keyframes ticker {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
+.estate-live-app .ticker-single-line {
+  margin: 0;
+  color: #cbd5e1;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Live Toast Bar */
@@ -498,14 +506,46 @@
 .estate-live-app .metric-row { display: flex; justify-content: space-between; font-size: 0.78rem; padding: 2px 0; }
 .estate-live-app .investment-issues-list li { font-size: 0.75rem; padding: 3px 0; }
 
-/* News Feed */
-.estate-live-app .news-feed-container { display: flex; flex-direction: column; gap: 8px; }
-.estate-live-app .news-card { background: var(--el-bg-card); border: 1px solid var(--el-bg-card-border); border-radius: 10px; padding: 10px; }
-.estate-live-app .news-card-content h3 { font-size: 0.88rem; font-weight: 700; margin-bottom: 4px; }
-.estate-live-app .news-card-content p { font-size: 0.78rem; color: var(--el-text-muted); line-height: 1.4; }
+/* News Feed — 한 줄 속보 */
+.estate-live-app .news-feed-single {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--el-bg-card);
+  border: 1px solid var(--el-bg-card-border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  min-width: 0;
+}
 
-.estate-live-app .news-meta { display: flex; align-items: center; gap: 8px; font-size: 0.7rem; color: #64748b; margin-top: 6px; }
-.estate-live-app .news-tag { background: rgba(59, 130, 246, 0.2); color: #60a5fa; padding: 1px 6px; border-radius: 4px; font-weight: 600; }
+.estate-live-app .news-feed-tag {
+  flex-shrink: 0;
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.estate-live-app .news-feed-line {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.estate-live-app .news-feed-time {
+  flex-shrink: 0;
+  font-size: 0.68rem;
+  color: #64748b;
+  white-space: nowrap;
+}
 
 /* Colors */
 .estate-live-app .text-green { color: #34d399 !important; }

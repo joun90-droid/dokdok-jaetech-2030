@@ -431,12 +431,15 @@ const realTimeNews = [
 ];
 
 // Global Streaming State Variables
+const ESTATE_REFRESH_MS = 60 * 60 * 1000; // 1시간 갱신
 let barChart = null;
 let radarChart = null;
 let autoLiveInterval = null;
 let isStreamingActive = true;
 let estateLiveBooted = false;
 let inputFormattersBound = false;
+let tickerNewsIdx = 0;
+const liveHeadlines = [];
 
 function destroyEstateCharts() {
   if (barChart) {
@@ -453,11 +456,6 @@ function bootEstateLive(force) {
   if (!document.getElementById('estate-live-app')) return;
   if (estateLiveBooted && !force) return;
 
-  if (typeof Chart === 'undefined') {
-    setTimeout(() => bootEstateLive(force), 40);
-    return;
-  }
-
   if (force) {
     destroyEstateCharts();
     if (autoLiveInterval) {
@@ -465,21 +463,36 @@ function bootEstateLive(force) {
       autoLiveInterval = null;
     }
     estateLiveBooted = false;
+    liveHeadlines.length = 0;
+    tickerNewsIdx = 0;
   }
 
   estateLiveBooted = true;
 
   renderRegionGrid(regionalData);
   renderAlignedTable(regionalData);
-  renderRegionalChart(regionalData);
   populateRegionDropdowns(regionalData);
-  renderNewsTicker(realTimeNews);
-  renderNewsFeed(realTimeNews);
+  renderNewsTickerShell();
+  renderNewsFeedShell();
+  initLiveDisplay();
   setupInputFormatters();
   renderInvestmentAnalysis();
   calculateROI();
   calculateLoanLimit();
   startAutoStreaming();
+
+  if (typeof Chart !== 'undefined') {
+    renderRegionalChart(regionalData);
+  } else {
+    const waitChart = () => {
+      if (typeof Chart === 'undefined') {
+        setTimeout(waitChart, 50);
+        return;
+      }
+      renderRegionalChart(getCurrentlyFilteredData());
+    };
+    waitChart();
+  }
 }
 
 window.bootEstateLive = bootEstateLive;
@@ -515,7 +528,7 @@ function startAutoStreaming() {
     if (isStreamingActive) {
       triggerLiveTick();
     }
-  }, 3000); // 3 seconds real-time tick
+  }, ESTATE_REFRESH_MS);
 }
 
 function toggleAutoStreaming() {
@@ -529,7 +542,7 @@ function toggleAutoStreaming() {
         <span class="pulse-dot"></span>
         <span class="badge-text-live">LIVE</span>
         <span class="badge-divider">|</span>
-        <span class="badge-text-timer"><i class="fa-solid fa-arrows-rotate fa-spin-slow"></i> 3초 자동 스트리밍</span>
+        <span class="badge-text-timer"><i class="fa-solid fa-arrows-rotate fa-spin-slow"></i> 1시간 갱신</span>
       `;
     }
     if (btn) btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
@@ -562,6 +575,7 @@ function triggerLiveTick() {
   const isGain = deltaPrice >= 0;
   const now = new Date();
   const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+  const dateStr = formatNewsDate();
 
   const toastText = `[${timeStr}] ${region.name} ${pType} 실거래 신고! (평당 ${region.avgPricePerPyeong.toLocaleString()}만, ${isGain ? '+' : ''}${deltaPrice}만)`;
   
@@ -570,8 +584,48 @@ function triggerLiveTick() {
   if (toastEl) toastEl.textContent = toastText;
   if (timeEl) timeEl.textContent = '방금 전';
 
-  // Current active filter check
-  filterRegions();
+  const headline = `[실거래] ${region.name} ${pType} 평당 ${region.avgPricePerPyeong.toLocaleString()}만 (${isGain ? '+' : ''}${deltaPrice}만)`;
+  liveHeadlines.unshift(headline);
+  if (liveHeadlines.length > 6) liveHeadlines.pop();
+  tickerNewsIdx = (tickerNewsIdx + 1) % realTimeNews.length;
+  updateNewsTickerLine(headline);
+  updateNewsFeedLine(headline, `${dateStr} ${timeStr}`, '실거래 LIVE');
+  patchRegionInDom(region);
+}
+
+function formatNewsDate() {
+  const today = new Date();
+  return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+}
+
+function patchRegionInDom(region) {
+  const card = document.querySelector(`.region-card[data-region-id="${region.id}"]`);
+  if (card) {
+    const rows = card.querySelectorAll('.region-stats-row');
+    if (rows[0]) {
+      const strong = rows[0].querySelector('strong');
+      if (strong) strong.textContent = `${region.avgPricePerPyeong.toLocaleString()} 만원`;
+    }
+    if (rows[1]) {
+      const isUp = region.priceChange1Yr >= 0;
+      const strong = rows[1].querySelector('strong');
+      if (strong) {
+        strong.className = isUp ? 'text-green' : 'text-red';
+        strong.textContent = `${region.jeonseRatio}% (${isUp ? '+' : ''}${region.priceChange1Yr}%)`;
+      }
+    }
+  }
+
+  const row = document.querySelector(`.sg-row[data-region-id="${region.id}"]`);
+  if (row) {
+    const cells = row.querySelectorAll('.sg-cell');
+    if (cells[1]) cells[1].textContent = `${region.avgPricePerPyeong.toLocaleString()}만`;
+    if (cells[3]) cells[3].textContent = `${region.jeonseRatio}%`;
+  }
+
+  if (barChart) {
+    renderRegionalChart(getCurrentlyFilteredData());
+  }
 }
 
 function loadAllData() {
@@ -627,7 +681,7 @@ function renderRegionGrid(regions) {
     const badgeClass = r.category.includes('투기') ? 'regulated' : (r.category.includes('조정') ? 'adjustment' : 'normal');
 
     const cardHtml = `
-      <div class="region-card" onclick="selectRegionForAnalysis('${r.id}')">
+      <div class="region-card" data-region-id="${r.id}" onclick="selectRegionForAnalysis('${r.id}')">
         <div class="region-card-header">
           <div class="region-name">${r.name}</div>
           <span class="tag-badge ${badgeClass}">${r.category}</span>
@@ -658,6 +712,7 @@ function renderAlignedTable(regions) {
 
     const rowDiv = document.createElement('div');
     rowDiv.className = 'sg-row';
+    rowDiv.dataset.regionId = r.id;
     rowDiv.onclick = () => selectRegionForAnalysis(r.id);
     rowDiv.style.cursor = 'pointer';
 
@@ -973,30 +1028,59 @@ function calculateLoanLimit() {
   if (dsrPctEl) dsrPctEl.textContent = `${actualDsrPercent.toFixed(2)} %`;
 }
 
-// News Ticker & Feed
-function renderNewsTicker(news) {
-  const ticker = document.getElementById('newsTicker');
-  if (ticker) {
-    ticker.innerHTML = news.map(n => `<span>[${n.tag}] ${n.title}</span>`).join('&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;');
+// News Ticker & Feed — 한 줄 표시, DOM 재생성 없이 텍스트만 갱신
+function getCurrentNewsLine() {
+  if (liveHeadlines.length) return liveHeadlines[0];
+  const n = realTimeNews[tickerNewsIdx] || realTimeNews[0];
+  return n ? `[${n.tag}] ${n.title}` : '부동산 시장 속보를 불러오는 중...';
+}
+
+function initLiveDisplay() {
+  const n = realTimeNews[0];
+  if (n) {
+    updateNewsTickerLine(`[${n.tag}] ${n.title}`);
+    updateNewsFeedLine(n.title, n.time, n.tag);
+  } else {
+    updateNewsTickerLine('실시간 부동산 데이터 연동 중...');
   }
 }
 
-function renderNewsFeed(news) {
+function renderNewsTickerShell() {
+  const ticker = document.getElementById('newsTicker');
+  if (!ticker || ticker.querySelector('#newsTickerText')) return;
+  ticker.innerHTML = '<p class="ticker-single-line" id="newsTickerText">실시간 부동산 데이터 연동 중...</p>';
+}
+
+function updateNewsTickerLine(text) {
+  renderNewsTickerShell();
+  const el = document.getElementById('newsTickerText');
+  if (el) el.textContent = text;
+}
+
+function renderNewsFeedShell() {
   const container = document.getElementById('newsFeedList');
-  if (container) {
-    container.innerHTML = news.map(n => `
-      <div class="news-card">
-        <div class="news-card-content">
-          <h3>${n.title}</h3>
-          <p>${n.summary}</p>
-          <div class="news-meta">
-            <span class="news-tag">${n.tag}</span>
-            <span><i class="fa-regular fa-clock"></i> ${n.time}</span>
-          </div>
-        </div>
-      </div>
-    `).join('');
-  }
+  if (!container || container.querySelector('#newsFeedText')) return;
+  container.className = 'news-feed-single';
+  container.innerHTML = `
+    <span class="news-feed-tag" id="newsFeedTag">속보</span>
+    <p class="news-feed-line" id="newsFeedText">속보를 불러오는 중...</p>
+    <time class="news-feed-time" id="newsFeedTime"></time>`;
+}
+
+function updateNewsFeedLine(text, timeLabel, tag) {
+  renderNewsFeedShell();
+  const textEl = document.getElementById('newsFeedText');
+  const timeEl = document.getElementById('newsFeedTime');
+  const tagEl = document.getElementById('newsFeedTag');
+  if (textEl) textEl.textContent = text;
+  if (timeEl) timeEl.textContent = timeLabel || '';
+  if (tagEl && tag) tagEl.textContent = tag;
+}
+
+function renderNewsFeed(news) {
+  renderNewsFeedShell();
+  const item = news[0];
+  if (item) updateNewsFeedLine(item.title, item.time, item.tag);
 }
 
 // Input Helpers

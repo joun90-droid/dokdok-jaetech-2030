@@ -3,7 +3,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>기술적 분석 - Technical Analysis | FinTrack 2030</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="css/tech-detail.css">
   <link rel="stylesheet" href="css/hover-reveal.css">
   <link rel="stylesheet" href="css/stock-edu-modal.css">
+  <link rel="stylesheet" href="css/stock-tech-mobile.css?v=1">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     :root{
@@ -20,16 +21,21 @@
       --text:#e8ecf4;--muted:#8b95a8;--header:68px;--radius:16px;
     }
     body{font-family:'Inter','Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;
+      min-height:100dvh;width:100%;max-width:100vw;overflow-x:clip;
       background-image:radial-gradient(ellipse 70% 40% at 10% -5%,rgba(0,212,255,.07),transparent),
         radial-gradient(ellipse 50% 30% at 95% 0%,rgba(240,185,11,.05),transparent)}
+    body.stock-tech-page .site-header,
+    body.stock-tech-page .main{width:100%;max-width:100%;min-width:0;box-sizing:border-box}
     a{text-decoration:none;color:inherit}
-    .main{max-width:1400px;margin:0 auto;padding:2rem 1.25rem 3.5rem}
+    .main{max-width:min(1400px,100%);width:100%;margin:0 auto;padding:clamp(1rem,3vw,2rem) clamp(.85rem,3vw,1.25rem) 3.5rem;min-width:0}
     .hero{margin-bottom:2rem}
     .hero h1{font-size:clamp(1.6rem,4vw,2.35rem);font-weight:800;margin-bottom:.45rem}
     .hero h1 span{color:var(--cyan);font-weight:700}
     .hero p{color:var(--muted);font-size:1rem;max-width:680px}
     .sec-nav{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.75rem;padding:.4rem;
-      background:var(--glass);border:1px solid var(--border);border-radius:999px;backdrop-filter:blur(10px)}
+      background:var(--glass);border:1px solid var(--border);border-radius:999px;backdrop-filter:blur(10px);
+      width:100%;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .sec-nav::-webkit-scrollbar{display:none}
     .sec-nav button{padding:.5rem 1rem;border:none;border-radius:999px;background:transparent;
       color:var(--muted);font-size:.8rem;font-weight:600;cursor:pointer;transition:.25s}
     .sec-nav button.active{background:linear-gradient(135deg,rgba(0,212,255,.18),rgba(240,185,11,.12));color:var(--text)}
@@ -40,15 +46,16 @@
     .glass h2{font-size:1.15rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
     .glass h2 i{color:var(--gold)}
     /* Live chart */
-    .live-chart-wrap{border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-bottom:1.5rem;background:#060912}
-    .live-chart-head{display:flex;justify-content:space-between;align-items:center;padding:.65rem 1rem;
+    .live-chart-wrap{border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-bottom:1.5rem;background:#060912;width:100%;min-width:0}
+    .live-chart-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;padding:.65rem 1rem;
       background:rgba(255,255,255,.03);border-bottom:1px solid var(--border);font-size:.78rem;color:var(--muted)}
     .live-chart-head strong{color:var(--text);font-size:.9rem}
-    #main-chart{display:block;width:100%;height:400px}
+    #main-chart{display:block;width:100%;max-width:100%;height:clamp(240px,42vw,400px)}
     /* Pattern cards with visual */
-    .pat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:.85rem}
+    .pat-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:.85rem;width:100%;min-width:0}
+    @media(min-width:640px){.pat-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}}
     .pat-card{display:flex;gap:.85rem;padding:.85rem;background:rgba(15,20,35,.7);
-      border:1px solid var(--border);border-radius:12px;transition:.25s;align-items:center}
+      border:1px solid var(--border);border-radius:12px;transition:.25s;align-items:center;min-width:0;max-width:100%}
     .pat-card:hover{border-color:rgba(0,212,255,.25);transform:translateY(-2px);background:rgba(255,255,255,.06)}
     .pat-vis{flex-shrink:0;width:120px;height:80px;border-radius:8px;background:rgba(0,0,0,.35);
       border:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;overflow:hidden}
@@ -62,15 +69,17 @@
     .sig-sell{background:rgba(248,73,96,.15);color:var(--red)}
     .sig-hold{background:rgba(240,185,11,.12);color:var(--gold)}
     /* Chart pattern diagrams */
-    .chart-pat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+    .chart-pat-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:1rem;width:100%;min-width:0}
+    @media(min-width:640px){.chart-pat-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}}
     .chart-pat-card{background:rgba(15,20,35,.75);border:1px solid var(--border);border-radius:12px;padding:1rem;transition:.25s}
     .chart-pat-card:hover{border-color:rgba(240,185,11,.3)}
     .chart-pat-card h4{font-size:.88rem;margin-bottom:.5rem}
     .chart-pat-card svg{width:100%;height:140px;display:block;margin-bottom:.5rem;background:rgba(0,0,0,.25);border-radius:8px}
     .chart-pat-card p{font-size:.75rem;color:var(--muted);line-height:1.5}
     /* Indicator mini charts */
-    .ind-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem}
-    .ind-card{background:rgba(15,20,35,.75);border:1px solid var(--border);border-radius:12px;padding:.85rem}
+    .ind-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:1rem;width:100%;min-width:0}
+    @media(min-width:640px){.ind-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}}
+    .ind-card{background:rgba(15,20,35,.75);border:1px solid var(--border);border-radius:12px;padding:.85rem;min-width:0;max-width:100%}
     .ind-card h4{font-size:.85rem;margin-bottom:.5rem;color:var(--cyan)}
     .ind-card canvas{width:100%;height:100px;display:block;border-radius:6px;background:rgba(0,0,0,.3)}
     .ind-card p{font-size:.72rem;color:var(--muted);margin-top:.45rem}
@@ -78,17 +87,21 @@
     .footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:.65rem 1.1rem;margin-bottom:.75rem}
     .footer-links a{font-size:.78rem;color:var(--muted)}.footer-links a:hover{color:var(--cyan)}
     .footer-copy{font-size:.75rem;color:#5a6478}
-    .guide-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-top:1rem}
+    .guide-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:1rem;margin-top:1rem;width:100%;min-width:0}
+    @media(min-width:640px){.guide-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}}
     .guide-card{padding:1.15rem;background:rgba(15,20,35,.75);border:1px solid var(--border);border-radius:12px}
     .guide-card h3{font-size:.95rem;color:var(--gold);margin-bottom:.5rem}
     .guide-card p,.guide-card li{font-size:.82rem;color:var(--muted);line-height:1.55}
     .guide-card ul{margin:.5rem 0 0 1rem}
-    @media(max-width:1024px){
-      .pat-grid{grid-template-columns:1fr}
+    @media(max-width:768px){
+      .pat-card{flex-direction:column;align-items:flex-start}
+      .pat-vis{width:100%;max-width:100%;height:72px}
+      .hero h1{font-size:clamp(1.35rem,5vw,1.75rem)}
+      .glass{padding:1rem}
     }
   </style>
 </head>
-<body>
+<body class="stock-tech-page">
 
 <header class="site-header">
   <div class="container header-inner">
@@ -743,11 +756,11 @@ function drawMiniChart(id, drawFn) {
   const c = document.getElementById(id);
   if (!c) return;
   const dpr = window.devicePixelRatio || 1;
-  const w = c.parentElement.clientWidth || 260;
+  const w = Math.max(c.parentElement?.clientWidth || c.clientWidth || 240, 180);
   c.width = w * dpr; c.height = 100 * dpr;
   c.style.width = w + 'px'; c.style.height = '100px';
   const ctx = c.getContext('2d');
-  ctx.scale(dpr, dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   drawFn(ctx, w, 100);
 }
 
@@ -856,13 +869,15 @@ function generateOHLC(n) {
 
 function drawMainChart() {
   const canvas = document.getElementById('main-chart');
+  if (!canvas) return;
   const wrap = canvas.parentElement;
   const dpr = window.devicePixelRatio || 1;
-  const W = wrap.clientWidth, H = 400;
+  const W = Math.max(wrap?.clientWidth || canvas.clientWidth || 320, 280);
+  const H = Math.round(Math.min(400, Math.max(240, W * 0.42)));
   canvas.width = W * dpr; canvas.height = H * dpr;
   canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
   const ctx = canvas.getContext('2d');
-  ctx.scale(dpr, dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
   const data = generateOHLC(50);
   const pad = { t: 20, r: 70, b: 70, l: 10 };
@@ -1013,12 +1028,30 @@ document.querySelectorAll('.rule-hover-card').forEach((card) => {
   });
 });
 
+function redrawAllCharts() {
+  drawMainChart();
+  INDICATORS.forEach(i => drawMiniChart(i.id, i.fn));
+}
+
+function bindChartResize() {
+  const wrap = document.querySelector('.live-chart-wrap');
+  const main = document.querySelector('.main');
+  if (typeof ResizeObserver !== 'undefined') {
+    const ro = new ResizeObserver(() => redrawAllCharts());
+    if (wrap) ro.observe(wrap);
+    if (main) ro.observe(main);
+  }
+  window.addEventListener('resize', redrawAllCharts, { passive: true });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   renderCandles();
   renderChartPatterns();
   renderIndicators();
-  drawMainChart();
-  window.addEventListener('resize', () => { drawMainChart(); INDICATORS.forEach(i => drawMiniChart(i.id, i.fn)); });
+  requestAnimationFrame(() => {
+    requestAnimationFrame(redrawAllCharts);
+  });
+  bindChartResize();
 });
 </script>
 <script src="js/stock-edu-detail.js?v=1" defer></script>

@@ -1,11 +1,11 @@
 /**
- * stock-live.js — Naver/Yahoo 실시간 시세 fetch + 60초 자동 갱신 + fallback
- * ※ CORS: 네이버 API는 브라우저 직접 호출 시 차단될 수 있어 same-origin JSON fallback 사용
+ * stock-live.js — Naver/Yahoo 실시간 시세 + 60초 갱신 + 카드 패치(깜빡임 방지)
  */
 (function () {
   const UNIVERSE_URL = "data/stock-universe.json";
   const FALLBACK_JSON = { naver: "data/stock-live-naver.json", yahoo: "data/stock-live-yahoo.json" };
-  const REFRESH_MS = 3000;
+  const REFRESH_MS = 60000;
+  const JSON_STALE_MS = 180000;
   const NAVER_URL = "https://polling.finance.naver.com/api/realtime/domestic/stock/";
   const NAVER_INDEX_URL = "https://polling.finance.naver.com/api/realtime/domestic/index/";
   const YAHOO_SPARK = "https://query1.finance.yahoo.com/v7/finance/spark";
@@ -24,6 +24,9 @@
   let stockBooted = false;
   let listenersBound = false;
   let indexCache = { kr: null, us: null, at: 0 };
+  let lastRenderFingerprint = "";
+  let toastRotateIdx = 0;
+  let lastDataSource = "";
   const stockCache = new Map();
 
   const SECTORS_KR = ["반도체", "2차전지", "바이오", "금융", "자동차", "플랫폼", "에너지"];
@@ -33,6 +36,17 @@
   const statusEl = () => document.getElementById("quote-status");
   const visibleEl = () => document.getElementById("visible-count");
   const updatedEl = () => document.getElementById("quote-updated");
+
+  /** auto-fit 그리드가 최초 렌더 후 폭을 잘못 잡는 경우 reflow */
+  function reflowStockGrid() {
+    const grid = listEl();
+    if (!grid || !grid.querySelector(".vi-stock-card")) return;
+    requestAnimationFrame(() => {
+      grid.style.setProperty("display", "none");
+      void grid.offsetHeight;
+      grid.style.removeProperty("display");
+    });
+  }
 
   /* 백업 Mock (API 전부 실패 시) */
   const FALLBACK_MOCK = {
@@ -380,7 +394,74 @@
       </article>`;
   }
 
-  function renderList(stocks, animate) {
+  function quotesFingerprint(list) {
+    return list.map((s) => `${s.code}:${s.price}:${s.change}:${s.volume}`).join("|");
+  }
+
+  function updateCardInPlace(card, s, isKr) {
+    const priceEl = card.querySelector(".vi-price-val");
+    const chgEl = card.querySelector(".vi-change-badge");
+    if (priceEl) {
+      const next = fmtPrice(s, isKr);
+      if (priceEl.textContent !== next) {
+        priceEl.textContent = next;
+        priceEl.classList.add("vi-price-flash");
+        window.setTimeout(() => priceEl.classList.remove("vi-price-flash"), 600);
+      }
+    }
+    if (chgEl) {
+      const chgCls = s.change > 0 ? "up" : s.change < 0 ? "down" : "flat";
+      const sign = s.change >= 0 ? "+" : "";
+      chgEl.className = `vi-change-badge ${chgCls}`;
+      chgEl.textContent = `${sign}${Number(s.change).toFixed(2)}%`;
+    }
+  }
+
+  function patchStockGrid(filtered, isKr, forceRebuild) {
+    const el = listEl();
+    if (!el) return;
+
+    const fp = quotesFingerprint(filtered);
+    const codes = new Set(filtered.map((s) => s.code));
+
+    if (!forceRebuild && fp === lastRenderFingerprint && el.querySelector(".vi-stock-card")) {
+      filtered.forEach((s) => {
+        const card = el.querySelector(`.vi-stock-card[data-code="${s.code}"]`);
+        if (card) updateCardInPlace(card, s, isKr);
+        stockCache.set(s.code, { ...s, isKr });
+      });
+      return false;
+    }
+
+    lastRenderFingerprint = fp;
+
+    if (!forceRebuild && el.querySelector(".vi-stock-card")) {
+      filtered.forEach((s) => {
+        let card = el.querySelector(`.vi-stock-card[data-code="${s.code}"]`);
+        if (card) {
+          updateCardInPlace(card, s, isKr);
+        } else {
+          el.insertAdjacentHTML("beforeend", renderCard(s, isKr));
+        }
+        stockCache.set(s.code, { ...s, isKr });
+      });
+      el.querySelectorAll(".vi-stock-card").forEach((card) => {
+        if (!codes.has(card.dataset.code)) card.remove();
+      });
+      const order = filtered.map((s) => s.code);
+      order.forEach((code) => {
+        const card = el.querySelector(`.vi-stock-card[data-code="${code}"]`);
+        if (card) el.appendChild(card);
+      });
+      return true;
+    }
+
+    el.innerHTML = filtered.map((s) => renderCard(s, isKr)).join("");
+    filtered.forEach((s) => stockCache.set(s.code, { ...s, isKr }));
+    return true;
+  }
+
+  function renderList(stocks, animate, forceRebuild) {
     const el = listEl();
     if (!el) return;
     const isKr = activeMarket === "kr";
@@ -396,30 +477,43 @@
 
     if (!filtered.length) {
       el.innerHTML = '<div class="vi-empty"><i class="fa-solid fa-chart-pie"></i><br>조건에 맞는 종목이 없습니다.</div>';
+      lastRenderFingerprint = "";
       if (visibleEl()) visibleEl().textContent = "0";
       return;
     }
 
-    const html = filtered.map((s) => renderCard(s, isKr)).join("");
-    filtered.forEach((s) => stockCache.set(s.code, { ...s, isKr }));
+    const applyDom = () => {
+      patchStockGrid(filtered, isKr, !!forceRebuild || !!animate);
+      if (visibleEl()) visibleEl().textContent = filtered.length;
+      if (updatedEl()) {
+        updatedEl().textContent = "갱신 " + new Date().toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+      }
+      if (statusEl()) {
+        statusEl().className = lastError ? "quote-status quote-status--warn" : "quote-status";
+        if (lastError) {
+          statusEl().textContent = lastError;
+        } else if (lastDataSource === "api") {
+          statusEl().textContent = "실시간 API 연동 · 60초마다 갱신";
+        } else if (lastDataSource === "json") {
+          statusEl().textContent = "배포 JSON 시세 · API 재시도 중 · 60초 갱신";
+        } else {
+          statusEl().textContent = "시세 연결됨 · 60초 갱신";
+        }
+      }
+      updateLiveToast(filtered.length ? filtered : stocks);
+      reflowStockGrid();
+    };
 
     if (animate) {
       el.classList.add("is-switching");
-      setTimeout(() => {
-        el.innerHTML = html;
+      window.setTimeout(() => {
+        lastRenderFingerprint = "";
+        applyDom();
         el.classList.remove("is-switching");
       }, 180);
     } else {
-      el.innerHTML = html;
+      applyDom();
     }
-
-    if (visibleEl()) visibleEl().textContent = filtered.length;
-    if (updatedEl()) updatedEl().textContent = "갱신 " + new Date().toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" });
-    if (statusEl()) {
-      statusEl().className = "quote-status";
-      statusEl().textContent = lastError ? lastError + " · 백업 데이터 표시" : "실시간 연결 · 3초 자동";
-    }
-    updateLiveToast(filtered.length ? filtered : stocks, !animate);
   }
 
   function parseNaver(data, meta) {
@@ -473,7 +567,10 @@
 
   async function fetchNaverDirect() {
     const codes = universe.kr.map((s) => s.code).join(",");
-    const res = await fetch(NAVER_URL + codes, { cache: "no-store" });
+    const res = await fetch(NAVER_URL + codes, {
+      cache: "no-store",
+      headers: { Referer: "https://finance.naver.com/" },
+    });
     if (!res.ok) throw new Error("Naver HTTP " + res.status);
     const json = await res.json();
     const map = parseNaver(json);
@@ -508,6 +605,57 @@
     return mergeUniverse(list, map, false, false);
   }
 
+  function buildIndicesFromParts(krIdx, usIdx) {
+    const out = {};
+    if (krIdx?.KOSPI) out.KOSPI = krIdx.KOSPI;
+    if (krIdx?.KOSDAQ) out.KOSDAQ = krIdx.KOSDAQ;
+    if (usIdx?.sp) out.SP500 = usIdx.sp;
+    if (usIdx?.nasdaq) out.NASDAQ = usIdx.nasdaq;
+    return Object.keys(out).length ? out : null;
+  }
+
+  async function fetchLiveQuotes() {
+    let kr = null;
+    let us = null;
+    let indices = null;
+    let packUpdated = null;
+    let dataSource = "api";
+
+    const yahooKr = await fetchYahooDirect("kr").catch(() => null);
+    const yahooUs = await fetchYahooDirect("us").catch(() => null);
+    if (yahooKr?.length) kr = yahooKr;
+    if (yahooUs?.length) us = yahooUs;
+
+    if (activeSource === "naver") {
+      const naverKr = await fetchNaverDirect().catch(() => null);
+      if (naverKr?.kr?.length) {
+        kr = naverKr.kr.map((row) => {
+          const y = yahooKr?.find((x) => x.code === row.code);
+          if (!row.price && y?.price) return { ...row, price: y.price, change: y.change, volume: y.volume || row.volume };
+          if (row.price && row.change === 0 && y?.change) return { ...row, change: y.change, volume: row.volume || y.volume };
+          return row;
+        });
+      }
+    }
+
+    const [krIdx, usIdx] = await Promise.all([
+      fetchKrIndices().catch(() => null),
+      fetchUsIndices().catch(() => null),
+    ]);
+    indices = buildIndicesFromParts(krIdx, usIdx);
+
+    if (!kr?.length || !us?.length) {
+      const pack = await fetchLiveJson(activeSource);
+      kr = kr?.length ? kr : pack.kr;
+      us = us?.length ? us : pack.us;
+      if (!indices && pack.indices) indices = pack.indices;
+      packUpdated = pack.updated;
+      dataSource = "json";
+    }
+
+    return { kr, us, indices, packUpdated, dataSource };
+  }
+
   async function fetchLiveJson(source) {
     const key = source === "yahoo" ? "yahoo" : "naver";
     const url = `${FALLBACK_JSON[key]}?t=${Date.now()}`;
@@ -525,62 +673,40 @@
     lastError = "";
 
     try {
-      const srcKey = activeSource === "yahoo" ? "yahoo" : "naver";
-      const pack = await fetchLiveJson(srcKey);
-      const kr = pack.kr;
-      const us = pack.us;
-      applyIndicesFromPack(pack);
+      const { kr, us, indices, packUpdated, dataSource } = await fetchLiveQuotes();
+      lastDataSource = dataSource;
 
-      if (pack.updated) {
-        const ageMs = Date.now() - new Date(pack.updated).getTime();
-        if (ageMs > 120000) {
-          lastError = `시세 ${Math.round(ageMs / 60000)}분 전 · scripts/build-stock-live.ps1 실행 권장`;
+      if (indices) applyIndicesFromPack({ indices });
+      else if (dataSource === "api") await refreshIndexRibbons();
+
+      if (packUpdated) {
+        const ageMs = Date.now() - new Date(packUpdated).getTime();
+        if (ageMs > JSON_STALE_MS) {
+          lastError = `JSON 시세 ${Math.round(ageMs / 60000)}분 전 · 실시간 API 우선 재시도`;
+        } else if (dataSource === "json") {
+          lastError = `API 일시 불가 · JSON ${Math.round(ageMs / 60000)}분 전 시세 표시`;
         }
       }
 
-      window.__STOCK_LIVE__ = { kr, us, source: activeSource, updated: Date.now(), indices: pack.indices };
-      renderList(activeMarket === "kr" ? kr : us, !silent);
-      if (statusEl() && !lastError) {
-        statusEl().className = "quote-status";
-        statusEl().textContent = "실시간 연동 · 3초 자동 (Naver/Yahoo 서버 동기화)";
-      } else if (statusEl() && lastError) {
-        statusEl().className = "quote-status quote-status--warn";
-        statusEl().textContent = lastError;
-      }
+      if (!kr?.length || !us?.length) throw new Error("empty quotes");
+
+      window.__STOCK_LIVE__ = { kr, us, source: activeSource, updated: Date.now(), indices, dataSource };
+      renderList(activeMarket === "kr" ? kr : us, !silent, !silent);
     } catch {
-      lastError = "시세 JSON 로드 실패";
+      lastError = lastError || "시세 로드 실패";
       try {
-        let kr = null;
-        let us = null;
-
-        if (activeSource === "naver") {
-          try {
-            kr = (await fetchNaverDirect()).kr;
-          } catch {
-            lastError = "API 호출 한도 초과 또는 연결 실패 (Naver)";
-          }
-          try {
-            us = await fetchYahooDirect("us");
-          } catch {
-            if (!lastError) lastError = "API 호출 한도 초과 또는 연결 실패 (Yahoo US)";
-          }
-        } else {
-          try {
-            kr = await fetchYahooDirect("kr");
-            us = await fetchYahooDirect("us");
-          } catch {
-            lastError = "API 호출 한도 초과 또는 연결 실패 (Yahoo)";
-          }
+        const pack = await fetchLiveJson(activeSource);
+        lastDataSource = "json";
+        applyIndicesFromPack(pack);
+        window.__STOCK_LIVE__ = { kr: pack.kr, us: pack.us, source: activeSource, updated: Date.now(), indices: pack.indices };
+        if (pack.updated) {
+          const ageMs = Date.now() - new Date(pack.updated).getTime();
+          lastError = `백업 JSON (${Math.round(ageMs / 60000)}분 전)`;
         }
-
-        if (!kr?.length || !us?.length) throw new Error("no data");
-
-        window.__STOCK_LIVE__ = { kr, us, source: activeSource, updated: Date.now() };
-        await refreshIndexRibbons();
-        renderList(activeMarket === "kr" ? kr : us, !silent);
+        renderList(activeMarket === "kr" ? pack.kr : pack.us, false, true);
       } catch {
         showError(lastError, true);
-        renderList(FALLBACK_MOCK[activeMarket], false);
+        renderList(FALLBACK_MOCK[activeMarket], false, true);
       }
     }
   }
@@ -597,16 +723,17 @@
     const stocks = currentStocks.length
       ? currentStocks
       : (data ? (activeMarket === "kr" ? data.kr : data.us) : []);
-    if (stocks.length) renderList(stocks, true);
+    if (stocks.length) renderList(stocks, true, true);
   }
 
   function switchMarket(market) {
     activeMarket = market;
+    lastRenderFingerprint = "";
     document.querySelectorAll(".market-tab").forEach((t) => {
       t.classList.toggle("active", t.dataset.market === market);
     });
     const data = window.__STOCK_LIVE__;
-    if (data) renderList(market === "kr" ? data.kr : data.us, true);
+    if (data) renderList(market === "kr" ? data.kr : data.us, true, true);
     else loadQuotes(false);
   }
 
@@ -618,18 +745,20 @@
     loadQuotes(false);
   }
 
-  function updateLiveToast(stocks, silent) {
+  function updateLiveToast(stocks) {
     const toastText = document.getElementById("stockLiveToastText");
     const toastTime = document.getElementById("stockLiveToastTime");
     if (!toastText || !stocks?.length) return;
 
-    const pick = stocks[Math.floor(Math.random() * Math.min(stocks.length, 20))];
+    const pool = stocks.slice(0, Math.min(stocks.length, 20));
+    const pick = pool[toastRotateIdx % pool.length];
+    toastRotateIdx += 1;
     const isKr = activeMarket === "kr";
     const sign = pick.change >= 0 ? "+" : "";
     const now = new Date();
-    const timeStr = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`;
-    toastText.textContent = `[${timeStr}] ${pick.name} ${fmtPrice(pick, isKr)} (${sign}${Number(pick.change).toFixed(2)}%) · 가치점수 ${pick.score || computeScore(pick)}`;
-    if (toastTime) toastTime.textContent = silent ? "갱신됨" : "방금 전";
+    const timeStr = now.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    toastText.textContent = `${pick.name} ${fmtPrice(pick, isKr)} (${sign}${Number(pick.change).toFixed(2)}%) · 가치 ${pick.score || computeScore(pick)}점 · ${lastDataSource === "api" ? "실시간" : "JSON"}`;
+    if (toastTime) toastTime.textContent = timeStr;
   }
 
   function setLiveBadgePaused(paused) {
@@ -642,7 +771,7 @@
         <span class="pulse-dot"></span>
         <span class="badge-text-live">LIVE</span>
         <span class="badge-divider">|</span>
-        <span class="badge-text-timer"><i class="fa-solid fa-arrows-rotate fa-spin-slow"></i> 3초 자동</span>
+        <span class="badge-text-timer"><i class="fa-solid fa-arrows-rotate fa-spin-slow"></i> 60초 갱신</span>
       `;
       if (btn) btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
     } else {
@@ -716,7 +845,8 @@
         const stocks = currentStocks.length
           ? currentStocks
           : (data ? (activeMarket === "kr" ? data.kr : data.us) : []);
-        renderList(stocks, false);
+        lastRenderFingerprint = "";
+        renderList(stocks, false, true);
       });
     }
 
@@ -728,7 +858,7 @@
         const stocks = currentStocks.length
           ? currentStocks
           : (data ? (activeMarket === "kr" ? data.kr : data.us) : []);
-        if (stocks.length) renderList(stocks, true);
+        if (stocks.length) renderList(stocks, true, true);
       });
     }
 

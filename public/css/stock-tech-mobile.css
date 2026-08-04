@@ -1,0 +1,177 @@
+/* 기술적 분석 — 모바일·태블릿 반응형 (축소 없이 100% 폭 맞춤) */
+html:has(body.stock-tech-page) {
+  overflow-x: clip;
+  width: 100%;
+  max-width: 100vw;
+}
+
+body.stock-tech-page {
+  overflow-x: clip;
+  width: 100%;
+  max-width: 100vw;
+  min-width: 0;
+}
+
+body.stock-tech-page .site-header .container {
+  width: 100%;
+  max-width: 100%;
+  padding-left: clamp(0.65rem, 3vw, 1rem);
+  padding-right: clamp(0.65rem, 3vw, 1rem);
+}
+
+body.stock-tech-page .main,
+body.stock-tech-page .panel,
+body.stock-tech-page .panel.active,
+body.stock-tech-page .glass,
+body.stock-tech-page .tech-detail-panel,
+body.stock-tech-page .live-chart-wrap {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+body.stock-tech-page .hero p {
+  max-width: 100%;
+  font-size: clamp(0.88rem, 3.5vw, 1rem);
+}
+
+body.stock-tech-page .sec-nav {
+  flex-wrap: nowrap !important;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 12px;
+  scroll-snap-type: x proximity;
+  gap: 0.35rem;
+  padding: 0.35rem !important;
+}
+
+body.stock-tech-page .sec-nav button {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  white-space: nowrap;
+}
+
+body.stock-tech-page .tech-detail-head h3,
+body.stock-tech-page .glass h2,
+body.stock-tech-page .pat-info h4,
+body.stock-tech-page .chart-pat-card h4 {
+  overflow-wrap: anywhere;
+  word-break: keep-all;
+}
+
+body.stock-tech-page .tech-detail-lead {
+  max-width: 100%;
+}
+
+body.stock-tech-page .tech-detail-table {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+body.stock-tech-page .tech-detail-block,
+body.stock-tech-page .guide-card,
+body.stock-tech-page .rule-hover-card,
+body.stock-tech-page .chart-pat-card,
+body.stock-tech-page .ind-card,
+body.stock-tech-page .pat-card {
+  min-width: 0;
+  max-width: 100%;
+}
+
+body.stock-tech-page .live-chart-head {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+body.stock-tech-page .live-chart-head span {
+  width: 100%;
+  line-height: 1.45;
+}
+
+body.stock-tech-page #main-chart {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: clamp(220px, 55vw, 360px) !important;
+}
+
+@media (max-width: 768px) {
+  body.stock-tech-page .main {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  body.stock-tech-page .sec-nav button {
+    min-height: 44px;
+    font-size: 0.72rem !important;
+    padding: 0.45rem 0.7rem !important;
+  }
+
+  body.stock-tech-page .pat-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  body.stock-tech-page .pat-vis {
+    width: 100%;
+    max-width: 100%;
+    height: 72px;
+  }
+
+  body.stock-tech-page .pat-vis svg {
+    width: 100%;
+    max-width: 120px;
+    height: auto;
+  }
+
+  body.stock-tech-page .glass {
+    padding: 0.85rem;
+    margin-bottom: 1rem;
+  }
+
+  body.stock-tech-page .tech-detail-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 1.5rem;
+  }
+
+  body.stock-tech-page .rule-cards-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.stock-tech-page .hidden-content-area {
+    max-width: 100%;
+    height: auto;
+    min-height: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  body.stock-tech-page .hero h1 {
+    font-size: 1.25rem;
+    line-height: 1.35;
+  }
+
+  body.stock-tech-page .hero h1 span {
+    display: block;
+    margin-top: 0.15rem;
+  }
+
+  body.stock-tech-page .chart-pat-card svg {
+    height: 100px;
+  }
+
+  body.stock-tech-page .tech-metric-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.stock-tech-page .panel {
+    animation: none;
+  }
+}

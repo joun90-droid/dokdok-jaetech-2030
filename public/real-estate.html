@@ -16,8 +16,8 @@
   <meta property="og:description" content="청년 주택드림 청약부터 내 집 마련 전략까지, 2030 부동산 가이드">
   <meta property="og:url" content="https://fintrack2030-248bf.web.app/real-estate.html">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/estate-renewal.css?v=6">
-  <link rel="stylesheet" href="css/estate-live.css?v=6">
+  <link rel="stylesheet" href="css/estate-renewal.css?v=8">
+  <link rel="stylesheet" href="css/estate-live.css?v=8">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css" rel="stylesheet">
@@ -90,7 +90,7 @@
               <span class="pulse-dot"></span>
               <span class="badge-text-live">LIVE</span>
               <span class="badge-divider">|</span>
-              <span class="badge-text-timer"><i class="fa-solid fa-arrows-rotate fa-spin-slow"></i> 3초 자동</span>
+              <span class="badge-text-timer"><i class="fa-solid fa-arrows-rotate fa-spin-slow"></i> 1시간 갱신</span>
             </div>
             <button type="button" class="btn-pro-stream" id="toggleLiveStreamBtn" onclick="toggleAutoStreaming()" title="실시간 스트리밍 일시정지/재개"><i class="fa-solid fa-pause"></i></button>
           </div>
@@ -98,7 +98,7 @@
 
         <div class="news-ticker-container">
           <div class="ticker-label"><i class="fa-solid fa-bullhorn"></i> 속보</div>
-          <div class="ticker-wrapper" id="newsTicker"><div class="ticker-item">실시간 부동산 실거래 데이터 스트리밍 연동 중...</div></div>
+          <div class="ticker-wrapper" id="newsTicker"><p class="ticker-single-line" id="newsTickerText">실시간 부동산 데이터 연동 중...</p></div>
         </div>
 
         <div class="live-toast-bar">
@@ -303,7 +303,11 @@
 
           <section id="sec-news" class="stream-section">
             <div class="content-header"><h2><i class="fa-solid fa-newspaper"></i> 부동산 실시간 시장 속보</h2></div>
-            <div class="news-feed-container" id="newsFeedList"></div>
+            <div class="news-feed-single" id="newsFeedList">
+              <span class="news-feed-tag" id="newsFeedTag">속보</span>
+              <p class="news-feed-line" id="newsFeedText">속보를 불러오는 중...</p>
+              <time class="news-feed-time" id="newsFeedTime"></time>
+            </div>
           </section>
         </div>
   </div>
@@ -505,8 +509,8 @@
   </footer>
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin defer></script>
-  <script src="js/estate-live.js?v=6" defer></script>
-  <script src="js/estate-page-boot.js?v=6" defer></script>
+  <script src="js/estate-live.js?v=8" defer></script>
+  <script src="js/estate-page-boot.js?v=8" defer></script>
   <script src="js/estate-map.js?v=10" defer></script>
   <script src="js/main.js" defer></script>
 </body>

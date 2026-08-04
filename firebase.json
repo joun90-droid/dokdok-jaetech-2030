@@ -10,69 +10,165 @@
     "cleanUrls": true,
     "trailingSlash": false,
     "rewrites": [
-      { "source": "/portfolio", "destination": "/dashboard.html" },
-      { "source": "/portfolio/**", "destination": "/dashboard.html" },
-      { "source": "/stock-price", "destination": "/stock-price.html" },
-      { "source": "/stock-education/stock-tech", "destination": "/stock-tech.html" },
-      { "source": "/stock-education/stock-tech.html", "destination": "/stock-tech.html" },
-      { "source": "/stock-education/stock-fund", "destination": "/stock-fund.html" },
-      { "source": "/stock-education/stock-fund.html", "destination": "/stock-fund.html" },
-      { "source": "/stock-education", "destination": "/stock-education.html" },
-      { "source": "/stock-fund", "destination": "/stock-fund.html" },
-      { "source": "/stock-tech", "destination": "/stock-tech.html" },
-      { "source": "/stock", "destination": "/stock.html" },
-      { "source": "/savings", "destination": "/savings.html" },
-      { "source": "/etf", "destination": "/etf.html" },
-      { "source": "/real-estate", "destination": "/real-estate.html" },
-      { "source": "/articles", "destination": "/articles.html" },
-      { "source": "/about", "destination": "/about.html" },
-      { "source": "/contact", "destination": "/contact.html" },
-      { "source": "/privacy", "destination": "/privacy.html" },
-      { "source": "/dashboard", "destination": "/dashboard.html" },
-      { "source": "/articles/youth-housing-subscription", "destination": "/articles/youth-housing-subscription.html" },
-      { "source": "/articles/youth-leap-account", "destination": "/articles/youth-leap-account.html" },
-      { "source": "/articles/etf-beginner", "destination": "/articles/etf-beginner.html" },
-      { "source": "**", "destination": "/index.html" }
+      {
+        "source": "/portfolio",
+        "destination": "/dashboard.html"
+      },
+      {
+        "source": "/portfolio/**",
+        "destination": "/dashboard.html"
+      },
+      {
+        "source": "/stock-price",
+        "destination": "/stock-price.html"
+      },
+      {
+        "source": "/stock-education/stock-tech",
+        "destination": "/stock-tech.html"
+      },
+      {
+        "source": "/stock-education/stock-tech.html",
+        "destination": "/stock-tech.html"
+      },
+      {
+        "source": "/stock-education/stock-fund",
+        "destination": "/stock-fund.html"
+      },
+      {
+        "source": "/stock-education/stock-fund.html",
+        "destination": "/stock-fund.html"
+      },
+      {
+        "source": "/stock-education",
+        "destination": "/stock-education.html"
+      },
+      {
+        "source": "/stock-fund",
+        "destination": "/stock-fund.html"
+      },
+      {
+        "source": "/stock-tech",
+        "destination": "/stock-tech.html"
+      },
+      {
+        "source": "/stock",
+        "destination": "/stock.html"
+      },
+      {
+        "source": "/savings",
+        "destination": "/savings.html"
+      },
+      {
+        "source": "/etf",
+        "destination": "/etf.html"
+      },
+      {
+        "source": "/real-estate",
+        "destination": "/real-estate.html"
+      },
+      {
+        "source": "/articles",
+        "destination": "/articles.html"
+      },
+      {
+        "source": "/about",
+        "destination": "/about.html"
+      },
+      {
+        "source": "/contact",
+        "destination": "/contact.html"
+      },
+      {
+        "source": "/privacy",
+        "destination": "/privacy.html"
+      },
+      {
+        "source": "/dashboard",
+        "destination": "/dashboard.html"
+      },
+      {
+        "source": "/articles/youth-housing-subscription",
+        "destination": "/articles/youth-housing-subscription.html"
+      },
+      {
+        "source": "/articles/youth-leap-account",
+        "destination": "/articles/youth-leap-account.html"
+      },
+      {
+        "source": "/articles/etf-beginner",
+        "destination": "/articles/etf-beginner.html"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
     ],
     "headers": [
       {
         "source": "/ads.txt",
         "headers": [
-          { "key": "Content-Type", "value": "text/plain; charset=utf-8" },
-          { "key": "Cache-Control", "value": "no-cache, max-age=0, must-revalidate" }
+          {
+            "key": "Content-Type",
+            "value": "text/plain; charset=utf-8"
+          },
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, max-age=0, must-revalidate"
+          }
         ]
       },
       {
         "source": "/robots.txt",
         "headers": [
-          { "key": "Content-Type", "value": "text/plain; charset=utf-8" },
-          { "key": "Cache-Control", "value": "public, max-age=300" }
+          {
+            "key": "Content-Type",
+            "value": "text/plain; charset=utf-8"
+          },
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=300"
+          }
         ]
       },
       {
         "source": "/data/**",
         "headers": [
-          { "key": "Cache-Control", "value": "public, max-age=60, stale-while-revalidate=300" }
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=60, stale-while-revalidate=300"
+          }
         ]
       },
       {
         "source": "**/*.html",
         "headers": [
-          { "key": "Cache-Control", "value": "no-cache, must-revalidate" }
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, must-revalidate"
+          }
         ]
       },
       {
         "source": "**/*.@(css|js)",
         "headers": [
-          { "key": "Cache-Control", "value": "public, max-age=86400" }
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=86400"
+          }
         ]
       },
       {
         "source": "**/*.xml",
         "headers": [
-          { "key": "Cache-Control", "value": "public, max-age=3600" }
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=3600"
+          }
         ]
       }
+    ],
+    "postdeploy": [
+      "node ../scripts/sync-hub.mjs"
     ]
   }
 }
