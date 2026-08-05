@@ -204,7 +204,7 @@
     if (document.querySelector('link[data-site-chrome-css]')) return;
     const link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = "/css/site-chrome.css?v=20260805d";
+    link.href = "/css/site-chrome.css?v=20260805e";
     link.setAttribute("data-site-chrome-css", "1");
     document.head.appendChild(link);
   }
