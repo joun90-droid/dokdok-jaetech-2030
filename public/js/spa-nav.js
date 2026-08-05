@@ -3,7 +3,8 @@
  * data-full-nav 속성이 있는 링크·외부 링크·복잡한 페이지는 전체 새로고침
  */
 (function () {
-  const SKIP_PATHS = /\/(stock-tech|dashboard|stock-price|stock-fund|real-estate)(\.html)?$/;
+  // 페이지별 CSS/스크립트가 많은 화면은 전체 로드 (SPA main 교체만 하면 스타일 누락)
+  const SKIP_PATHS = /\/(stock-tech|stock-fund|stock-education|dashboard|stock-price|real-estate)(\.html)?$/;
   const FADE_MS = 220;
 
   function sameOriginPage(href) {
@@ -27,13 +28,49 @@
     return !!document.querySelector("main");
   }
 
+  function absUrl(href) {
+    try {
+      return new URL(href, location.href).href;
+    } catch {
+      return href;
+    }
+  }
+
+  function applyPageStyles(doc) {
+    document.querySelectorAll("[data-spa-style]").forEach((el) => el.remove());
+
+    doc.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
+      const href = link.getAttribute("href");
+      if (!href) return;
+      const abs = absUrl(href);
+      const exists = [...document.querySelectorAll('link[rel="stylesheet"]')].some((l) => l.href === abs);
+      if (exists) return;
+      const el = document.createElement("link");
+      el.rel = "stylesheet";
+      el.href = href.startsWith("http") || href.startsWith("/") ? href : abs;
+      el.setAttribute("data-spa-style", "1");
+      document.head.appendChild(el);
+    });
+
+    doc.querySelectorAll("head style").forEach((style) => {
+      const el = document.createElement("style");
+      el.textContent = style.textContent || "";
+      el.setAttribute("data-spa-style", "1");
+      document.head.appendChild(el);
+    });
+  }
+
   function runPageScripts(doc) {
+    applyPageStyles(doc);
     doc.querySelectorAll("script[src]").forEach((script) => {
       const src = script.getAttribute("src");
       if (!src || src.includes("spa-nav.js") || src.includes("main.js")) return;
-      if (document.querySelector(`script[src="${src}"]`)) return;
+      const abs = absUrl(src);
+      if ([...document.querySelectorAll("script[src]")].some((s) => absUrl(s.getAttribute("src") || "") === abs)) {
+        return;
+      }
       const el = document.createElement("script");
-      el.src = src;
+      el.src = src.startsWith("http") || src.startsWith("/") ? src : abs;
       el.defer = true;
       document.body.appendChild(el);
     });

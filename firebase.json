@@ -99,8 +99,16 @@
         "destination": "/articles/etf-beginner.html"
       },
       {
-        "source": "**",
-        "destination": "/index.html"
+        "source": "/articles/deep-etf",
+        "destination": "/articles/deep-etf.html"
+      },
+      {
+        "source": "/articles/deep-savings",
+        "destination": "/articles/deep-savings.html"
+      },
+      {
+        "source": "/articles/deep-realestate",
+        "destination": "/articles/deep-realestate.html"
       }
     ],
     "headers": [

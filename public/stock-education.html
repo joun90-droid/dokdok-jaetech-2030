@@ -7,65 +7,25 @@
   <title>주식교육창 | 영재 재테크 2030</title>
   <meta name="description" content="기술적 분석과 기본적 분석을 배우는 주식 교육 허브">
   <link rel="canonical" href="https://fintrack2030-248bf.web.app/stock-education">
-  <link rel="stylesheet" href="css/style.css">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #0f0f0f; --bg-card: #1e1e1e; --bg-card-hover: #282828;
-      --text: #fff; --text-muted: #a0a0a0; --accent: #3b82f6;
-      --border: rgba(255,255,255,0.08); --radius-card: 16px;
-    }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Malgun Gothic", sans-serif;
-      background: var(--bg); color: var(--text); min-height: 100dvh;
-      display: flex; flex-direction: column;
-    }
-    a { color: inherit; text-decoration: none; }
-    .container { max-width: 960px; margin: 0 auto; padding: 0 1.25rem; width: 100%; }
-    .page-main { flex: 1; padding: 3rem 0 4rem; }
-    .page-head { text-align: center; margin-bottom: 3rem; }
-    .page-head h1 { font-size: clamp(2rem, 6vw, 2.75rem); font-weight: 800; margin-bottom: 0.85rem; }
-    .page-head p { color: var(--text-muted); font-size: 1.05rem; line-height: 1.65; max-width: 480px; margin: 0 auto; }
-    .edu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; max-width: 820px; margin: 0 auto; }
-    .edu-card {
-      display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between;
-      min-height: 250px; padding: 2rem; background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: var(--radius-card);
-      transition: transform 0.25s, background 0.25s, box-shadow 0.25s;
-    }
-    .edu-card:hover { transform: translateY(-6px); background: var(--bg-card-hover); box-shadow: 0 14px 40px rgba(0,0,0,0.35); }
-    .edu-card-icon { font-size: 2.5rem; margin-bottom: 1.25rem; }
-    .edu-card-title { font-size: clamp(1.1rem, 2.5vw, 1.35rem); font-weight: 700; margin-bottom: 0.5rem; }
-    .edu-card-sub { font-size: 0.9rem; color: var(--text-muted); line-height: 1.55; flex: 1; }
-    .edu-card-arrow { margin-top: 1.5rem; font-size: 1.25rem; color: var(--accent); transition: transform 0.2s; }
-    .edu-card:hover .edu-card-arrow { transform: translateX(8px); }
-    .site-footer { border-top: 1px solid var(--border); padding: 2rem 0; margin-top: auto; }
-    .footer-nav { display: flex; flex-wrap: wrap; gap: 0.5rem 0.85rem; margin: 1rem 0; }
-    .footer-nav a { font-size: 0.78rem; color: var(--text-muted); }
-    .footer-disclaimer, .footer-copy { font-size: 0.75rem; color: #666; }
-    .footer-disclaimer { margin-bottom: 0.35rem; }
-    @media (max-width: 768px) {
-      .edu-grid { grid-template-columns: 1fr; }
-      .edu-card { min-height: 210px; padding: 1.5rem; }
-    }
-  </style>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/stock-education.css">
 </head>
-<body>
+<body class="page-edu">
   <header class="site-header">
     <div class="container header-inner">
-      <a href="index.html" class="logo"><span class="logo-icon" aria-hidden="true">💰</span><span class="logo-text">영재 재테크 <span class="logo-accent">2030</span></span></a>
+      <a href="/index.html" class="logo"><span class="logo-icon" aria-hidden="true">💰</span><span class="logo-text">영재 재테크 <span class="logo-accent">2030</span></span></a>
       <button class="menu-toggle" aria-label="메뉴 열기" aria-expanded="false">☰</button>
       <nav aria-label="주요 메뉴">
         <ul class="nav-links">
-          <li><a href="index.html">홈</a></li>
-          <li><a href="stock-price.html">주식시세추천</a></li>
-          <li><a href="stock-education.html">주식교육창</a></li>
-          <li><a href="savings.html">예적금</a></li>
-          <li><a href="etf.html">ETF</a></li>
-          <li><a href="real-estate.html">부동산</a></li>
-          <li><a href="articles.html">가이드</a></li>
-          <li><a href="about.html">운영자 소개</a></li>
-          <li><a href="contact.html">문의하기</a></li>
+          <li><a href="/index.html">홈</a></li>
+          <li><a href="/stock-price.html">주식시세추천</a></li>
+          <li><a href="/stock-education.html">주식교육창</a></li>
+          <li><a href="/savings.html">예적금</a></li>
+          <li><a href="/etf.html">ETF</a></li>
+          <li><a href="/real-estate.html">부동산</a></li>
+          <li><a href="/articles.html">가이드</a></li>
+          <li><a href="/about.html">운영자 소개</a></li>
+          <li><a href="/contact.html">문의하기</a></li>
         </ul>
       </nav>
     </div>
@@ -74,11 +34,11 @@
   <main class="page-main">
     <div class="container">
       <div class="page-head">
-        <h1>🎓 주식교육창</h1>
+        <h1>주식교육창</h1>
         <p>주식 투자에 필요한 핵심 분석 방법을 배워보세요.</p>
       </div>
       <div class="edu-grid">
-        <a href="/stock-tech" class="edu-card">
+        <a href="/stock-tech" class="edu-card" data-full-nav="true">
           <span class="edu-card-icon" aria-hidden="true">📉</span>
           <div>
             <h2 class="edu-card-title">기술적 분석</h2>
@@ -86,7 +46,7 @@
           </div>
           <span class="edu-card-arrow" aria-hidden="true">→</span>
         </a>
-        <a href="/stock-fund" class="edu-card">
+        <a href="/stock-fund" class="edu-card" data-full-nav="true">
           <span class="edu-card-icon" aria-hidden="true">📊</span>
           <div>
             <h2 class="edu-card-title">기본적 분석</h2>
@@ -100,22 +60,22 @@
 
   <footer class="site-footer">
     <div class="container">
-      <a href="index.html" class="logo"><span class="logo-icon" aria-hidden="true">💰</span><span class="logo-text">영재 재테크 <span class="logo-accent">2030</span></span></a>
+      <a href="/index.html" class="logo"><span class="logo-icon" aria-hidden="true">💰</span><span class="logo-text">영재 재테크 <span class="logo-accent">2030</span></span></a>
       <nav class="footer-nav">
-        <a href="stock-price.html">주식시세추천</a>
-        <a href="stock-education.html">주식교육창</a>
-        <a href="savings.html">예적금</a>
-        <a href="etf.html">ETF</a>
-        <a href="real-estate.html">부동산</a>
-        <a href="articles.html">가이드</a>
-        <a href="about.html">운영자 소개</a>
-        <a href="contact.html">문의하기</a>
-        <a href="privacy.html">개인정보처리방침</a>
+        <a href="/stock-price.html">주식시세추천</a>
+        <a href="/stock-education.html">주식교육창</a>
+        <a href="/savings.html">예적금</a>
+        <a href="/etf.html">ETF</a>
+        <a href="/real-estate.html">부동산</a>
+        <a href="/articles.html">가이드</a>
+        <a href="/about.html">운영자 소개</a>
+        <a href="/contact.html">문의하기</a>
+        <a href="/privacy.html">개인정보처리방침</a>
       </nav>
       <p class="footer-disclaimer">본 사이트의 정보는 참고용이며 투자 권유가 아닙니다.</p>
       <p class="footer-copy">© 2026 영재 재테크 2030</p>
     </div>
   </footer>
-  <script src="js/main.js"></script>
+  <script src="/js/main.js"></script>
 </body>
 </html>
