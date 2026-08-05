@@ -13,6 +13,15 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
   <link rel="stylesheet" href="css/stock-analyzer.css?v=7">
+  <link rel="stylesheet" href="/css/site-chrome.css?v=20260805">
+  <script>
+    try {
+      var t = localStorage.getItem("ft_theme");
+      document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
+      var l = localStorage.getItem("ft_lang");
+      if (l === "en") document.documentElement.setAttribute("lang", "en");
+    } catch (e) {}
+  </script>
 </head>
 <body class="stock-analyzer-page g-theme">
 
@@ -176,5 +185,6 @@
 <script src="js/main.js" defer></script>
 <script src="js/stock-insight.js?v=1" defer></script>
 <script src="js/stock-live.js?v=8" defer></script>
+  <script src="/js/site-chrome.js?v=20260805" defer></script>
 </body>
 </html>

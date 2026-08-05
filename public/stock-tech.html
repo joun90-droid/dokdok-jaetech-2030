@@ -100,6 +100,15 @@
       .glass{padding:1rem}
     }
   </style>
+  <link rel="stylesheet" href="/css/site-chrome.css?v=20260805">
+  <script>
+    try {
+      var t = localStorage.getItem("ft_theme");
+      document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
+      var l = localStorage.getItem("ft_lang");
+      if (l === "en") document.documentElement.setAttribute("lang", "en");
+    } catch (e) {}
+  </script>
 </head>
 <body class="stock-tech-page">
 
@@ -1055,5 +1064,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 <script src="js/stock-edu-detail.js?v=1" defer></script>
+  <script src="/js/site-chrome.js?v=20260805" defer></script>
 </body>
 </html>

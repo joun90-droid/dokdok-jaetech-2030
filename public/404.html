@@ -6,6 +6,15 @@
   <title>페이지를 찾을 수 없습니다 | 영재 재테크 2030</title>
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/site-chrome.css?v=20260805">
+  <script>
+    try {
+      var t = localStorage.getItem("ft_theme");
+      document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
+      var l = localStorage.getItem("ft_lang");
+      if (l === "en") document.documentElement.setAttribute("lang", "en");
+    } catch (e) {}
+  </script>
 </head>
 <body class="g-theme">
   <header class="site-header">
@@ -40,5 +49,6 @@
     </div>
   </main>
   <script src="/js/main.js"></script>
+  <script src="/js/site-chrome.js?v=20260805" defer></script>
 </body>
 </html>

@@ -1,0 +1,234 @@
+/* 최상단 고정: 테마 · 언어 */
+:root {
+  --chrome-h: 40px;
+}
+
+html.has-site-chrome {
+  scroll-padding-top: calc(var(--chrome-h) + 56px);
+}
+
+html.has-site-chrome body {
+  padding-top: var(--chrome-h);
+}
+
+html.has-site-chrome .site-header {
+  top: var(--chrome-h);
+}
+
+.site-chrome {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: var(--chrome-h);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 0 12px;
+  background: rgba(18, 18, 18, 0.94);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-family: "Pretendard", "Noto Sans KR", -apple-system, sans-serif;
+}
+
+.site-chrome-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.site-chrome-btn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 6px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+
+.site-chrome-btn:hover {
+  color: #f5f5f5;
+}
+
+.site-chrome-btn.is-active {
+  background: rgba(250, 204, 21, 0.2);
+  color: #facc15;
+}
+
+.site-chrome-sep {
+  width: 1px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.12);
+  margin: 0 2px;
+}
+
+/* ── Light theme ── */
+html[data-theme="light"] {
+  color-scheme: light;
+  --g-bg: #f4f6f8;
+  --g-surface: #ffffff;
+  --g-surface-2: #f0f2f5;
+  --g-surface-3: #e8ebef;
+  --g-border: rgba(15, 23, 42, 0.1);
+  --g-text: #0f172a;
+  --g-muted: #64748b;
+  --g-gold: #ca8a04;
+  --bg: #f4f6f8;
+  --surface: #ffffff;
+  --surface-hover: #f0f2f5;
+  --border: rgba(15, 23, 42, 0.1);
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --accent: #ca8a04;
+  --shadow: 0 1px 3px rgba(15, 23, 42, 0.08), 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+html[data-theme="light"] body {
+  background: var(--g-bg);
+  color: var(--g-text);
+}
+
+html[data-theme="light"] .site-chrome {
+  background: rgba(255, 255, 255, 0.94);
+  border-bottom-color: rgba(15, 23, 42, 0.08);
+}
+
+html[data-theme="light"] .site-chrome-group {
+  background: rgba(15, 23, 42, 0.04);
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+html[data-theme="light"] .site-chrome-btn {
+  color: #64748b;
+}
+
+html[data-theme="light"] .site-chrome-btn:hover {
+  color: #0f172a;
+}
+
+html[data-theme="light"] .site-chrome-btn.is-active {
+  background: rgba(202, 138, 4, 0.16);
+  color: #a16207;
+}
+
+html[data-theme="light"] .site-chrome-sep {
+  background: rgba(15, 23, 42, 0.12);
+}
+
+html[data-theme="light"] .site-header {
+  background: rgba(255, 255, 255, 0.94);
+  border-bottom-color: rgba(15, 23, 42, 0.08);
+}
+
+html[data-theme="light"] .logo,
+html[data-theme="light"] .logo-text,
+html[data-theme="light"] .nav-links a {
+  color: #0f172a;
+}
+
+html[data-theme="light"] .nav-links a:hover,
+html[data-theme="light"] .nav-links a.active {
+  color: #a16207;
+}
+
+html[data-theme="light"] .menu-toggle {
+  color: #0f172a;
+  border-color: rgba(15, 23, 42, 0.12);
+  background: #fff;
+}
+
+html[data-theme="light"] .site-footer {
+  background: #eef1f4;
+  border-top-color: rgba(15, 23, 42, 0.08);
+  color: #64748b;
+}
+
+html[data-theme="light"] .footer-nav a,
+html[data-theme="light"] .footer-disclaimer,
+html[data-theme="light"] .footer-copy {
+  color: #64748b;
+}
+
+html[data-theme="light"] .g-blob {
+  opacity: 0.08;
+}
+
+html[data-theme="light"] .edu-card,
+html[data-theme="light"] .page-edu .edu-card,
+html[data-theme="light"] .feature-card,
+html[data-theme="light"] .card,
+html[data-theme="light"] .menu-card {
+  background: #fff;
+  border-color: rgba(15, 23, 42, 0.1);
+  color: #0f172a;
+  box-shadow: var(--shadow);
+}
+
+html[data-theme="light"] .page-edu {
+  --edu-bg: #f4f6f8;
+  --edu-card: #ffffff;
+  --edu-card-hover: #f8fafc;
+  --edu-text: #0f172a;
+  --edu-muted: #64748b;
+  --edu-accent: #2563eb;
+  --edu-border: rgba(15, 23, 42, 0.1);
+}
+
+html[data-theme="light"] .page-edu .edu-card-icon {
+  background: rgba(37, 99, 235, 0.1);
+  border-color: rgba(37, 99, 235, 0.2);
+}
+
+/* index inline vars */
+html[data-theme="light"] body {
+  --bg: #f4f6f8;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f8fafc;
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --accent: #ca8a04;
+  --border: rgba(15, 23, 42, 0.1);
+}
+
+html[data-theme="light"] .menu-card,
+html[data-theme="light"] .menu-card--accent {
+  background: #fff !important;
+  border-color: rgba(15, 23, 42, 0.1) !important;
+  color: #0f172a;
+}
+
+html[data-theme="light"] .menu-card-title {
+  color: #0f172a;
+}
+
+html[data-theme="light"] .menu-card-desc {
+  color: #64748b;
+}
+
+html[data-theme="light"] .hero-slogan {
+  color: #0f172a;
+}
+
+html[data-theme="light"] .hero-sub {
+  color: #64748b;
+}
+
+@media (max-width: 1024px) {
+  html[data-theme="light"] .nav-links.open,
+  html[data-theme="light"] .nav-links {
+    background: #fff;
+  }
+}

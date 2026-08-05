@@ -11,6 +11,15 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css" rel="stylesheet">
   <script src="js/market.js?v=8" defer></script>
+  <link rel="stylesheet" href="/css/site-chrome.css?v=20260805">
+  <script>
+    try {
+      var t = localStorage.getItem("ft_theme");
+      document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
+      var l = localStorage.getItem("ft_lang");
+      if (l === "en") document.documentElement.setAttribute("lang", "en");
+    } catch (e) {}
+  </script>
 </head>
 <body class="g-theme">
   <div class="g-ambient" aria-hidden="true">
@@ -130,5 +139,6 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
   <script src="js/estate-map.js?v=1" defer></script>
   <script src="js/main.js"></script>
+  <script src="/js/site-chrome.js?v=20260805" defer></script>
 </body>
 </html>

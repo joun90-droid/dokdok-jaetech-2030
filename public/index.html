@@ -14,6 +14,15 @@
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/spa-nav.css">
+  <link rel="stylesheet" href="/css/site-chrome.css?v=20260805">
+  <script>
+    try {
+      var t = localStorage.getItem("ft_theme");
+      document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
+      var l = localStorage.getItem("ft_lang");
+      if (l === "en") document.documentElement.setAttribute("lang", "en");
+    } catch (e) {}
+  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -154,15 +163,15 @@
   <main>
     <section class="hero">
       <div class="container">
-        <h1 class="hero-slogan">똑똑한 재테크 2030</h1>
-        <p class="hero-sub">복잡한 정보는 줄이고, 꼭 필요한 재테크만.<br>아래 메뉴에서 바로 시작하세요.</p>
+        <h1 class="hero-slogan" data-i18n="heroTitle">똑똑한 재테크 2030</h1>
+        <p class="hero-sub" data-i18n="heroSub">복잡한 정보는 줄이고, 꼭 필요한 재테크만. 아래 메뉴에서 바로 시작하세요.</p>
 
         <div class="menu-grid">
           <a href="stock-price.html" class="menu-card menu-card--accent">
             <span class="menu-card-icon" aria-hidden="true">📈</span>
             <div class="menu-card-body">
-              <div class="menu-card-title">주식시세추천</div>
-              <div class="menu-card-desc">오늘의 추천 종목 · 시세</div>
+              <div class="menu-card-title" data-i18n="cardStock">주식시세추천</div>
+              <div class="menu-card-desc" data-i18n="cardStockSub">오늘의 추천 종목 · 시세</div>
             </div>
             <span class="menu-card-arrow" aria-hidden="true">→</span>
           </a>
@@ -170,8 +179,8 @@
           <a href="real-estate.html" class="menu-card" data-full-nav="true">
             <span class="menu-card-icon" aria-hidden="true">🏠</span>
             <div class="menu-card-body">
-              <div class="menu-card-title">부동산 실시간 시세</div>
-              <div class="menu-card-desc">지역별 시세 · 청약 · 트렌드</div>
+              <div class="menu-card-title" data-i18n="cardEstate">부동산 실시간 시세</div>
+              <div class="menu-card-desc" data-i18n="cardEstateSub">지역별 시세 · 청약 · 트렌드</div>
             </div>
             <span class="menu-card-arrow" aria-hidden="true">→</span>
           </a>
@@ -179,8 +188,8 @@
           <a href="savings.html" class="menu-card">
             <span class="menu-card-icon" aria-hidden="true">💰</span>
             <div class="menu-card-body">
-              <div class="menu-card-title">예적금</div>
-              <div class="menu-card-desc">청년도약계좌 · 우대 금리</div>
+              <div class="menu-card-title" data-i18n="cardSavings">예적금</div>
+              <div class="menu-card-desc" data-i18n="cardSavingsSub">청년도약계좌 · 우대 금리</div>
             </div>
             <span class="menu-card-arrow" aria-hidden="true">→</span>
           </a>
@@ -188,8 +197,8 @@
           <a href="etf.html" class="menu-card">
             <span class="menu-card-icon" aria-hidden="true">📊</span>
             <div class="menu-card-body">
-              <div class="menu-card-title">ETF</div>
-              <div class="menu-card-desc">S&amp;P500 · KODEX 200 적립</div>
+              <div class="menu-card-title" data-i18n="cardEtf">ETF</div>
+              <div class="menu-card-desc" data-i18n="cardEtfSub">S&amp;P500 · KODEX 200 적립</div>
             </div>
             <span class="menu-card-arrow" aria-hidden="true">→</span>
           </a>
@@ -197,8 +206,8 @@
           <a href="articles.html" class="menu-card">
             <span class="menu-card-icon" aria-hidden="true">🧭</span>
             <div class="menu-card-body">
-              <div class="menu-card-title">재테크 초보 가이드</div>
-              <div class="menu-card-desc">예적금 · ETF · 청약 가이드</div>
+              <div class="menu-card-title" data-i18n="cardGuide">재테크 초보 가이드</div>
+              <div class="menu-card-desc" data-i18n="cardGuideSub">예적금 · ETF · 청약 가이드</div>
             </div>
             <span class="menu-card-arrow" aria-hidden="true">→</span>
           </a>
@@ -206,8 +215,8 @@
           <a href="etf.html" class="menu-card">
             <span class="menu-card-icon" aria-hidden="true">📈</span>
             <div class="menu-card-body">
-              <div class="menu-card-title">2030 맞춤 포트폴리오</div>
-              <div class="menu-card-desc">적립식 투자 · ISA 활용법</div>
+              <div class="menu-card-title" data-i18n="cardPortfolio">2030 맞춤 포트폴리오</div>
+              <div class="menu-card-desc" data-i18n="cardPortfolioSub">적립식 투자 · ISA 활용법</div>
             </div>
             <span class="menu-card-arrow" aria-hidden="true">→</span>
           </a>
@@ -233,11 +242,12 @@
         <a href="contact.html">문의하기</a>
         <a href="privacy.html">개인정보처리방침</a>
       </nav>
-      <p class="footer-disclaimer">본 사이트의 정보는 참고용이며 투자 권유가 아닙니다.</p>
-      <p class="footer-copy">© 2026 영재 재테크 2030</p>
+      <p class="footer-disclaimer" data-i18n="disclaimer">본 사이트의 정보는 참고용이며 투자 권유가 아닙니다.</p>
+      <p class="footer-copy" data-i18n="copyright">© 2026 영재 재테크 2030</p>
     </div>
   </footer>
   <script src="js/main.js"></script>
+  <script src="/js/site-chrome.js?v=20260805" defer></script>
   <script src="js/spa-nav.js?v=20260805" defer></script>
 </body>
 </html>

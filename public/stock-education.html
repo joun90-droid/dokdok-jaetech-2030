@@ -9,6 +9,15 @@
   <link rel="canonical" href="https://fintrack2030-248bf.web.app/stock-education">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/stock-education.css">
+  <link rel="stylesheet" href="/css/site-chrome.css?v=20260805">
+  <script>
+    try {
+      var t = localStorage.getItem("ft_theme");
+      document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
+      var l = localStorage.getItem("ft_lang");
+      if (l === "en") document.documentElement.setAttribute("lang", "en");
+    } catch (e) {}
+  </script>
 </head>
 <body class="page-edu">
   <header class="site-header">
@@ -34,23 +43,23 @@
   <main class="page-main">
     <div class="container">
       <div class="page-head">
-        <h1>주식교육창</h1>
-        <p>주식 투자에 필요한 핵심 분석 방법을 배워보세요.</p>
+        <h1 data-i18n="eduTitle">주식교육창</h1>
+        <p data-i18n="eduSub">주식 투자에 필요한 핵심 분석 방법을 배워보세요.</p>
       </div>
       <div class="edu-grid">
         <a href="/stock-tech" class="edu-card" data-full-nav="true">
           <span class="edu-card-icon" aria-hidden="true">📉</span>
           <div>
-            <h2 class="edu-card-title">기술적 분석</h2>
-            <p class="edu-card-sub">차트, 이동평균선, RSI 분석법</p>
+            <h2 class="edu-card-title" data-i18n="eduTech">기술적 분석</h2>
+            <p class="edu-card-sub" data-i18n="eduTechSub">차트, 이동평균선, RSI 분석법</p>
           </div>
           <span class="edu-card-arrow" aria-hidden="true">→</span>
         </a>
         <a href="/stock-fund" class="edu-card" data-full-nav="true">
           <span class="edu-card-icon" aria-hidden="true">📊</span>
           <div>
-            <h2 class="edu-card-title">기본적 분석</h2>
-            <p class="edu-card-sub">PER, PBR, ROE, 재무제표 분석</p>
+            <h2 class="edu-card-title" data-i18n="eduFund">기본적 분석</h2>
+            <p class="edu-card-sub" data-i18n="eduFundSub">PER, PBR, ROE, 재무제표 분석</p>
           </div>
           <span class="edu-card-arrow" aria-hidden="true">→</span>
         </a>
@@ -72,10 +81,11 @@
         <a href="/contact.html">문의하기</a>
         <a href="/privacy.html">개인정보처리방침</a>
       </nav>
-      <p class="footer-disclaimer">본 사이트의 정보는 참고용이며 투자 권유가 아닙니다.</p>
-      <p class="footer-copy">© 2026 영재 재테크 2030</p>
+      <p class="footer-disclaimer" data-i18n="disclaimer">본 사이트의 정보는 참고용이며 투자 권유가 아닙니다.</p>
+      <p class="footer-copy" data-i18n="copyright">© 2026 영재 재테크 2030</p>
     </div>
   </footer>
   <script src="/js/main.js"></script>
+  <script src="/js/site-chrome.js?v=20260805" defer></script>
 </body>
 </html>
