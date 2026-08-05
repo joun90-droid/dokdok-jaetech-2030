@@ -1,19 +1,24 @@
 document.addEventListener("DOMContentLoaded", () => {
   const toggle = document.querySelector(".menu-toggle");
   const nav = document.querySelector(".nav-links");
+  const menuLabel = (open) => {
+    const en = (localStorage.getItem("ft_lang") || "ko") === "en";
+    if (open) return en ? "Close menu" : "메뉴 닫기";
+    return en ? "Open menu" : "메뉴 열기";
+  };
 
   if (toggle && nav) {
     toggle.addEventListener("click", () => {
       const isOpen = nav.classList.toggle("open");
       toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
-      toggle.setAttribute("aria-label", isOpen ? "메뉴 닫기" : "메뉴 열기");
+      toggle.setAttribute("aria-label", menuLabel(isOpen));
     });
 
     nav.querySelectorAll("a").forEach((link) => {
       link.addEventListener("click", () => {
         nav.classList.remove("open");
         toggle.setAttribute("aria-expanded", "false");
-        toggle.setAttribute("aria-label", "메뉴 열기");
+        toggle.setAttribute("aria-label", menuLabel(false));
         document.querySelectorAll(".nav-item.has-dropdown.open").forEach((el) => el.classList.remove("open"));
       });
     });
@@ -22,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (nav.contains(e.target) || toggle.contains(e.target)) return;
       nav.classList.remove("open");
       toggle.setAttribute("aria-expanded", "false");
-      toggle.setAttribute("aria-label", "메뉴 열기");
+      toggle.setAttribute("aria-label", menuLabel(false));
       document.querySelectorAll(".nav-item.has-dropdown.open").forEach((el) => el.classList.remove("open"));
     });
   }
