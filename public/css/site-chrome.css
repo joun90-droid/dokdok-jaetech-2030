@@ -80,6 +80,15 @@ html.has-site-chrome .site-header {
   z-index: 0;
 }
 
+/* 아이콘 그룹도 길쭉한 필 형태로 보이게 */
+.site-chrome-theme {
+  min-width: 92px;
+}
+
+.site-chrome-lang {
+  min-width: 100px;
+}
+
 .site-chrome-group[data-active="light"] .site-chrome-thumb,
 .site-chrome-group[data-active="en"] .site-chrome-thumb {
   transform: translateX(100%);
@@ -96,9 +105,9 @@ html.has-site-chrome .site-header {
   font-weight: 700;
   letter-spacing: 0.04em;
   line-height: 1;
-  min-width: 40px;
-  height: 28px;
-  padding: 0 12px;
+  min-width: 44px;
+  height: 26px;
+  padding: 0 14px;
   border-radius: 999px;
   cursor: pointer;
   white-space: nowrap;
@@ -140,14 +149,14 @@ html.has-site-chrome .site-header {
 }
 
 .site-chrome-theme .site-chrome-btn {
-  min-width: 36px;
-  padding: 0 10px;
+  min-width: 42px;
+  padding: 0 12px;
 }
 
 .site-chrome-lang .site-chrome-btn {
-  min-width: 42px;
+  min-width: 46px;
   font-size: 0.7rem;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
 }
 
 .site-chrome-sep {
