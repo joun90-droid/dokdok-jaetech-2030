@@ -129,25 +129,29 @@ html[data-theme="light"] .site-chrome-sep {
 }
 
 html[data-theme="light"] .site-header {
-  background: rgba(255, 255, 255, 0.94);
-  border-bottom-color: rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-bottom-color: rgba(15, 23, 42, 0.08) !important;
 }
 
 html[data-theme="light"] .logo,
 html[data-theme="light"] .logo-text,
-html[data-theme="light"] .nav-links a {
-  color: #0f172a;
+html[data-theme="light"] .nav-links a,
+html[data-theme="light"] .site-header .nav-links a {
+  color: #0f172a !important;
 }
 
 html[data-theme="light"] .nav-links a:hover,
-html[data-theme="light"] .nav-links a.active {
-  color: #a16207;
+html[data-theme="light"] .nav-links a.active,
+html[data-theme="light"] .site-header .nav-links a:hover,
+html[data-theme="light"] .site-header .nav-links a.active {
+  color: #a16207 !important;
 }
 
-html[data-theme="light"] .menu-toggle {
-  color: #0f172a;
-  border-color: rgba(15, 23, 42, 0.12);
-  background: #fff;
+html[data-theme="light"] .menu-toggle,
+html[data-theme="light"] .site-header .menu-toggle {
+  color: #0f172a !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+  background: #fff !important;
 }
 
 html[data-theme="light"] .site-footer {

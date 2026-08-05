@@ -131,19 +131,20 @@
     syncChromeButtons();
   }
 
-  function t(key) {
-    const lang = getLang();
+  function t(key, langOverride) {
+    const lang = langOverride || getLang();
     return (I18N[lang] && I18N[lang][key]) || I18N.ko[key] || key;
   }
 
   function applyLang(lang) {
     localStorage.setItem(LANG_KEY, lang);
     document.documentElement.setAttribute("lang", lang === "en" ? "en" : "ko");
+    const tr = (key) => t(key, lang);
 
     document.querySelectorAll("[data-i18n]").forEach((el) => {
       const key = el.getAttribute("data-i18n");
       if (!key) return;
-      const value = t(key);
+      const value = tr(key);
       if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
         el.placeholder = value;
       } else {
@@ -153,32 +154,28 @@
 
     document.querySelectorAll("[data-i18n-aria]").forEach((el) => {
       const key = el.getAttribute("data-i18n-aria");
-      if (key) el.setAttribute("aria-label", t(key));
+      if (key) el.setAttribute("aria-label", tr(key));
     });
 
-    // 네비/푸터 링크 텍스트 매핑
     document.querySelectorAll(".nav-links a, .footer-nav a").forEach((a) => {
       const raw = (a.getAttribute("data-i18n-label") || a.textContent || "").trim();
       if (!a.getAttribute("data-i18n-label")) {
-        // 최초 한글 라벨 저장
-        const koGuess = Object.keys(LABEL_KEYS).find((k) => k === raw) || raw;
-        a.setAttribute("data-i18n-label", koGuess);
+        a.setAttribute("data-i18n-label", raw);
       }
       const label = a.getAttribute("data-i18n-label");
       const key = LABEL_KEYS[label];
-      if (key) a.textContent = t(key);
+      if (key) a.textContent = tr(key);
     });
 
-    // 로고 브랜드 텍스트 (2030 유지)
     document.querySelectorAll(".logo-text").forEach((el) => {
       const accent = el.querySelector(".logo-accent");
       const accentHtml = accent ? accent.outerHTML : '<span class="logo-accent">2030</span>';
-      el.innerHTML = `${t("brand")} ${accentHtml}`;
+      el.innerHTML = `${tr("brand")} ${accentHtml}`;
     });
 
     document.querySelectorAll(".menu-toggle").forEach((btn) => {
       const open = btn.getAttribute("aria-expanded") === "true";
-      btn.setAttribute("aria-label", open ? t("menuClose") : t("menuOpen"));
+      btn.setAttribute("aria-label", open ? tr("menuClose") : tr("menuOpen"));
     });
 
     syncChromeButtons();
@@ -199,7 +196,7 @@
     if (document.querySelector('link[data-site-chrome-css]')) return;
     const link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = "/css/site-chrome.css?v=20260805";
+    link.href = "/css/site-chrome.css?v=20260805b";
     link.setAttribute("data-site-chrome-css", "1");
     document.head.appendChild(link);
   }
