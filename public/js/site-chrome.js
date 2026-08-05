@@ -185,18 +185,26 @@
     const theme = getTheme();
     const lang = getLang();
     document.querySelectorAll("[data-chrome-theme]").forEach((btn) => {
-      btn.classList.toggle("is-active", btn.getAttribute("data-chrome-theme") === theme);
+      const on = btn.getAttribute("data-chrome-theme") === theme;
+      btn.classList.toggle("is-active", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
     });
     document.querySelectorAll("[data-chrome-lang]").forEach((btn) => {
-      btn.classList.toggle("is-active", btn.getAttribute("data-chrome-lang") === lang);
+      const on = btn.getAttribute("data-chrome-lang") === lang;
+      btn.classList.toggle("is-active", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
     });
+    const themeGroup = document.querySelector(".site-chrome-theme");
+    if (themeGroup) themeGroup.setAttribute("data-active", theme);
+    const langGroup = document.querySelector(".site-chrome-lang");
+    if (langGroup) langGroup.setAttribute("data-active", lang);
   }
 
   function ensureCss() {
     if (document.querySelector('link[data-site-chrome-css]')) return;
     const link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = "/css/site-chrome.css?v=20260805b";
+    link.href = "/css/site-chrome.css?v=20260805c";
     link.setAttribute("data-site-chrome-css", "1");
     document.head.appendChild(link);
   }
@@ -210,14 +218,26 @@
     bar.setAttribute("role", "region");
     bar.setAttribute("aria-label", "Theme and language");
     bar.innerHTML = `
-      <div class="site-chrome-group" role="group" aria-label="Theme">
-        <button type="button" class="site-chrome-btn" data-chrome-theme="dark" data-i18n="themeDark">다크</button>
-        <button type="button" class="site-chrome-btn" data-chrome-theme="light" data-i18n="themeLight">화이트</button>
-      </div>
-      <span class="site-chrome-sep" aria-hidden="true"></span>
-      <div class="site-chrome-group" role="group" aria-label="Language">
-        <button type="button" class="site-chrome-btn" data-chrome-lang="ko" data-i18n="langKo">한국어</button>
-        <button type="button" class="site-chrome-btn" data-chrome-lang="en" data-i18n="langEn">English</button>
+      <div class="site-chrome-inner">
+        <div class="site-chrome-group site-chrome-theme" role="group" aria-label="Theme" data-active="dark">
+          <span class="site-chrome-thumb" aria-hidden="true"></span>
+          <button type="button" class="site-chrome-btn" data-chrome-theme="dark" data-i18n-aria="themeDark" aria-label="다크" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5z"/></svg>
+          </button>
+          <button type="button" class="site-chrome-btn" data-chrome-theme="light" data-i18n-aria="themeLight" aria-label="화이트" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+          </button>
+        </div>
+        <span class="site-chrome-sep" aria-hidden="true"></span>
+        <div class="site-chrome-group site-chrome-lang" role="group" aria-label="Language" data-active="ko">
+          <span class="site-chrome-thumb" aria-hidden="true"></span>
+          <button type="button" class="site-chrome-btn" data-chrome-lang="ko" data-i18n-aria="langKo" aria-label="한국어" aria-pressed="false">
+            <span class="site-chrome-btn-label">KO</span>
+          </button>
+          <button type="button" class="site-chrome-btn" data-chrome-lang="en" data-i18n-aria="langEn" aria-label="English" aria-pressed="false">
+            <span class="site-chrome-btn-label">EN</span>
+          </button>
+        </div>
       </div>
     `;
     document.body.prepend(bar);
