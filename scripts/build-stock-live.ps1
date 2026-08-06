@@ -42,6 +42,37 @@ function Get-YahooQuotes($symbols) {
   return $map
 }
 
+function Get-NaverStockQuote($d) {
+  $over = $d.overMarketPriceInfo
+  # 장마감 후 네이버 증권 UI와 동일: NXT 시간외(overMarket) 가격 사용
+  if ($d.marketStatus -eq "CLOSE" -and $over -and $over.overPrice) {
+    $price = [double]($over.overPrice -replace ',', '')
+    $chg = [double]$over.fluctuationsRatio
+    if ($over.compareToPreviousPrice.code -eq "5") { $chg = -$chg }
+    $vol = 0
+    if ($over.accumulatedTradingVolumeRaw) { $vol = [long]$over.accumulatedTradingVolumeRaw }
+    elseif ($over.accumulatedTradingVolume) {
+      $volRaw = ($over.accumulatedTradingVolume -replace ',', '')
+      if ($volRaw -match '^\d+$') { $vol = [long]$volRaw }
+    }
+    return @{ price = $price; change = $chg; volume = $vol; name = $d.stockName }
+  }
+  $price = 0
+  if ($d.closePriceRaw) { $price = [double]$d.closePriceRaw }
+  elseif ($d.closePrice) { $price = [double]($d.closePrice -replace ',', '') }
+  $chg = 0
+  if ($d.fluctuationsRatioRaw) { $chg = [double]$d.fluctuationsRatioRaw }
+  elseif ($d.fluctuationsRatio) { $chg = [double]$d.fluctuationsRatio }
+  if ($d.compareToPreviousPrice.code -eq "5") { $chg = -$chg }
+  $vol = 0
+  if ($d.accumulatedTradingVolumeRaw) { $vol = [long]$d.accumulatedTradingVolumeRaw }
+  elseif ($d.accumulatedTradingVolume) {
+    $volRaw = ($d.accumulatedTradingVolume -replace ',', '')
+    if ($volRaw -match '^\d+$') { $vol = [long]$volRaw }
+  }
+  return @{ price = $price; change = $chg; volume = $vol; name = $d.stockName }
+}
+
 Write-Host "Fetching Naver indices..."
 $idxUrl = "https://polling.finance.naver.com/api/realtime/domestic/index/KOSPI,KOSDAQ"
 $indices = @{}
@@ -67,15 +98,8 @@ $naverRes = Invoke-WebRequest -Uri $naverUrl -Headers $headers -UseBasicParsing 
 $naverJson = $naverRes.Content | ConvertFrom-Json
 $naverMap = @{}
 foreach ($d in $naverJson.datas) {
-  $price = [double]($d.closePrice -replace ',', '')
-  $chg = [double]$d.fluctuationsRatio
-  if ($d.compareToPreviousPrice.code -eq "5") { $chg = -$chg }
-    $vol = 0
-    if ($d.accumulatedTradingVolume) {
-      $volRaw = ($d.accumulatedTradingVolume -replace ',', '')
-      if ($volRaw -match '^\d+$') { $vol = [long]$volRaw }
-    }
-  $naverMap[$d.itemCode] = @{ price = $price; change = $chg; volume = $vol; name = $d.stockName }
+  $q = Get-NaverStockQuote $d
+  $naverMap[$d.itemCode] = $q
 }
 
 $krNaver = @($KrStocks | ForEach-Object {

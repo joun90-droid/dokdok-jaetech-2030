@@ -525,19 +525,40 @@
     }
   }
 
+  function pickNaverStockRow(d) {
+    const over = d.overMarketPriceInfo;
+    // 장마감 후 네이버 증권과 동일: NXT 시간외(overMarket) 가격
+    if (d.marketStatus === "CLOSE" && over?.overPrice) {
+      let chg = parseFloat(over.fluctuationsRatioRaw || over.fluctuationsRatio) || 0;
+      if (over.compareToPreviousPrice?.code === "5") chg = -chg;
+      const vol = parseInt(String(over.accumulatedTradingVolumeRaw || over.accumulatedTradingVolume || "0").replace(/,/g, ""), 10) || 0;
+      return {
+        name: d.stockName,
+        code: d.itemCode,
+        price: parseFloat(String(over.overPrice).replace(/,/g, "")) || 0,
+        change: chg,
+        volume: vol,
+        market: d.stockExchangeType?.nameKor || "KOSPI",
+      };
+    }
+    let chg = parseFloat(d.fluctuationsRatioRaw || d.fluctuationsRatio) || 0;
+    if (d.compareToPreviousPrice?.code === "5") chg = -chg;
+    const priceRaw = d.closePriceRaw || d.closePrice;
+    const volRaw = d.accumulatedTradingVolumeRaw || d.accumulatedTradingVolume;
+    return {
+      name: d.stockName,
+      code: d.itemCode,
+      price: parseFloat(String(priceRaw).replace(/,/g, "")) || 0,
+      change: chg,
+      volume: parseInt(String(volRaw || "0").replace(/,/g, ""), 10) || 0,
+      market: d.stockExchangeType?.nameKor || "KOSPI",
+    };
+  }
+
   function parseNaver(data, meta) {
     const map = {};
     (data.datas || []).forEach((d) => {
-      let chg = parseFloat(d.fluctuationsRatio) || 0;
-      if (d.compareToPreviousPrice?.code === "5") chg = -chg;
-      map[d.itemCode] = {
-        name: d.stockName,
-        code: d.itemCode,
-        price: parseFloat(String(d.closePrice).replace(/,/g, "")) || 0,
-        change: chg,
-        volume: parseInt(String(d.accumulatedTradingVolume || "0").replace(/,/g, ""), 10) || 0,
-        market: d.stockExchangeType?.nameKor || meta?.market || "KOSPI",
-      };
+      map[d.itemCode] = pickNaverStockRow(d);
     });
     return map;
   }
