@@ -26,7 +26,7 @@
 
 ```powershell
 # Python이 설치된 경우
-cd "C:\Users\User\Desktop\재테크 투자정보"
+cd "D:\Sites\live\재테크 투자정보"
 python -m http.server 8080
 ```
 
