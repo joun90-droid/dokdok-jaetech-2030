@@ -5,7 +5,7 @@
   const UNIVERSE_URL = "data/stock-universe.json";
   const FALLBACK_JSON = { naver: "data/stock-live-naver.json", yahoo: "data/stock-live-yahoo.json" };
   const REFRESH_MS = 60000;
-  const JSON_STALE_MS = 180000;
+  const JSON_STALE_MS = 600000;
   const NAVER_URL = "https://polling.finance.naver.com/api/realtime/domestic/stock/";
   const NAVER_INDEX_URL = "https://polling.finance.naver.com/api/realtime/domestic/index/";
   const YAHOO_SPARK = "https://query1.finance.yahoo.com/v7/finance/spark";
@@ -16,6 +16,8 @@
   let activeSource = "naver";
   let activeFilter = "all";
   let refreshTimer = null;
+  let countdownTimer = null;
+  let secondsLeft = REFRESH_MS / 1000;
   let isStreamingActive = true;
   let lastError = "";
   let currentStocks = [];
@@ -486,16 +488,23 @@
       patchStockGrid(filtered, isKr, !!forceRebuild || !!animate);
       if (visibleEl()) visibleEl().textContent = filtered.length;
       if (updatedEl()) {
-        updatedEl().textContent = "갱신 " + new Date().toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+        const nowStr = new Date().toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+        const src = window.__STOCK_LIVE__?.packUpdated;
+        if (src) {
+          const srcStr = new Date(src).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" });
+          updatedEl().textContent = `확인 ${nowStr} · 시세 ${srcStr}`;
+        } else {
+          updatedEl().textContent = "갱신 " + nowStr;
+        }
       }
       if (statusEl()) {
         statusEl().className = lastError ? "quote-status quote-status--warn" : "quote-status";
         if (lastError) {
           statusEl().textContent = lastError;
         } else if (lastDataSource === "api") {
-          statusEl().textContent = "실시간 API 연동 · 60초마다 갱신";
+          statusEl().textContent = "실시간 API · 60초마다 갱신";
         } else if (lastDataSource === "json") {
-          statusEl().textContent = "배포 JSON 시세 · API 재시도 중 · 60초 갱신";
+          statusEl().textContent = "서버 시세 JSON · 60초마다 재조회 (GitHub 10분마다 수집)";
         } else {
           statusEl().textContent = "시세 연결됨 · 60초 갱신";
         }
@@ -615,37 +624,53 @@
   }
 
   async function fetchLiveQuotes() {
-    let kr = null;
-    let us = null;
-    let indices = null;
-    let packUpdated = null;
-    let dataSource = "api";
-
-    const yahooKr = await fetchYahooDirect("kr").catch(() => null);
-    const yahooUs = await fetchYahooDirect("us").catch(() => null);
-    if (yahooKr?.length) kr = yahooKr;
-    if (yahooUs?.length) us = yahooUs;
-
-    if (activeSource === "naver") {
-      const naverKr = await fetchNaverDirect().catch(() => null);
-      if (naverKr?.kr?.length) {
-        kr = naverKr.kr.map((row) => {
-          const y = yahooKr?.find((x) => x.code === row.code);
-          if (!row.price && y?.price) return { ...row, price: y.price, change: y.change, volume: y.volume || row.volume };
-          if (row.price && row.change === 0 && y?.change) return { ...row, change: y.change, volume: row.volume || y.volume };
-          return row;
-        });
-      }
+    let pack = null;
+    try {
+      pack = await fetchLiveJson(activeSource);
+    } catch {
+      pack = null;
     }
 
-    const [krIdx, usIdx] = await Promise.all([
-      fetchKrIndices().catch(() => null),
-      fetchUsIndices().catch(() => null),
-    ]);
-    indices = buildIndicesFromParts(krIdx, usIdx);
+    let kr = pack?.kr?.length ? pack.kr : null;
+    let us = pack?.us?.length ? pack.us : null;
+    let indices = pack?.indices || null;
+    let packUpdated = pack?.updated || null;
+    let dataSource = pack ? "json" : "none";
 
-    if (!kr?.length || !us?.length) {
-      const pack = await fetchLiveJson(activeSource);
+    const [yahooKr, yahooUs, naverKr] = await Promise.all([
+      fetchYahooDirect("kr").catch(() => null),
+      fetchYahooDirect("us").catch(() => null),
+      activeSource === "naver" ? fetchNaverDirect().catch(() => null) : Promise.resolve(null),
+    ]);
+
+    if (yahooUs?.length) {
+      us = yahooUs;
+      dataSource = "api";
+    }
+
+    if (naverKr?.kr?.length) {
+      kr = naverKr.kr.map((row) => {
+        const y = yahooKr?.find((x) => x.code === row.code);
+        if (!row.price && y?.price) return { ...row, price: y.price, change: y.change, volume: y.volume || row.volume };
+        if (row.price && row.change === 0 && y?.change) return { ...row, change: y.change, volume: row.volume || y.volume };
+        return row;
+      });
+      dataSource = "api";
+    } else if (yahooKr?.length) {
+      kr = yahooKr;
+      dataSource = "api";
+    }
+
+    if (!indices || !indices.KOSPI) {
+      const [krIdx, usIdx] = await Promise.all([
+        fetchKrIndices().catch(() => null),
+        fetchUsIndices().catch(() => null),
+      ]);
+      const built = buildIndicesFromParts(krIdx, usIdx);
+      if (built) indices = built;
+    }
+
+    if ((!kr?.length || !us?.length) && pack) {
       kr = kr?.length ? kr : pack.kr;
       us = us?.length ? us : pack.us;
       if (!indices && pack.indices) indices = pack.indices;
@@ -690,8 +715,9 @@
 
       if (!kr?.length || !us?.length) throw new Error("empty quotes");
 
-      window.__STOCK_LIVE__ = { kr, us, source: activeSource, updated: Date.now(), indices, dataSource };
+      window.__STOCK_LIVE__ = { kr, us, source: activeSource, updated: Date.now(), packUpdated, indices, dataSource };
       renderList(activeMarket === "kr" ? kr : us, !silent, !silent);
+      resetCountdown();
     } catch {
       lastError = lastError || "시세 로드 실패";
       try {
@@ -761,6 +787,28 @@
     if (toastTime) toastTime.textContent = timeStr;
   }
 
+  function updateCountdownBadge() {
+    const timerEl = document.querySelector("#stockLiveStatusBadge .badge-text-timer");
+    if (!timerEl || !isStreamingActive) return;
+    timerEl.innerHTML = `<i class="fa-solid fa-arrows-rotate fa-spin-slow"></i> ${secondsLeft}초`;
+  }
+
+  function resetCountdown() {
+    secondsLeft = REFRESH_MS / 1000;
+    updateCountdownBadge();
+  }
+
+  function startCountdown() {
+    if (countdownTimer) clearInterval(countdownTimer);
+    resetCountdown();
+    countdownTimer = setInterval(() => {
+      if (!isStreamingActive) return;
+      secondsLeft -= 1;
+      if (secondsLeft <= 0) secondsLeft = REFRESH_MS / 1000;
+      updateCountdownBadge();
+    }, 1000);
+  }
+
   function setLiveBadgePaused(paused) {
     const badge = document.getElementById("stockLiveStatusBadge");
     const btn = document.getElementById("toggleStockLiveBtn");
@@ -771,7 +819,7 @@
         <span class="pulse-dot"></span>
         <span class="badge-text-live">LIVE</span>
         <span class="badge-divider">|</span>
-        <span class="badge-text-timer"><i class="fa-solid fa-arrows-rotate fa-spin-slow"></i> 60초 갱신</span>
+        <span class="badge-text-timer"><i class="fa-solid fa-arrows-rotate fa-spin-slow"></i> 60초</span>
       `;
       if (btn) btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
     } else {
@@ -791,16 +839,25 @@
     if (isStreamingActive) {
       loadQuotes(true);
       startAutoRefresh();
-    } else if (refreshTimer) {
-      clearInterval(refreshTimer);
-      refreshTimer = null;
+      startCountdown();
+    } else {
+      if (refreshTimer) {
+        clearInterval(refreshTimer);
+        refreshTimer = null;
+      }
+      if (countdownTimer) {
+        clearInterval(countdownTimer);
+        countdownTimer = null;
+      }
     }
   }
 
   function startAutoRefresh() {
     if (refreshTimer) clearInterval(refreshTimer);
     if (!isStreamingActive) return;
-    refreshTimer = setInterval(() => loadQuotes(true), REFRESH_MS);
+    refreshTimer = setInterval(() => {
+      loadQuotes(true);
+    }, REFRESH_MS);
   }
 
   function bindStockListeners() {
@@ -875,6 +932,10 @@
         clearInterval(refreshTimer);
         refreshTimer = null;
       }
+      if (countdownTimer) {
+        clearInterval(countdownTimer);
+        countdownTimer = null;
+      }
     }
 
     try {
@@ -888,6 +949,7 @@
     bindStockListeners();
     await Promise.all([loadQuotes(false), refreshIndexRibbons()]);
     startAutoRefresh();
+    startCountdown();
   }
 
   function scheduleStockBoot(force) {
