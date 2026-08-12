@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://fintrack2030-248bf.web.app/</loc></url>
-  <url><loc>https://fintrack2030-248bf.web.app/dashboard.html</loc></url>
-  <url><loc>https://fintrack2030-248bf.web.app/stock.html</loc></url>
-  <url><loc>https://fintrack2030-248bf.web.app/etf.html</loc></url>
+  <url><loc>https://fintrack2030-248bf.web.app/stock-price.html</loc></url>
+  <url><loc>https://fintrack2030-248bf.web.app/stock-education.html</loc></url>
+  <url><loc>https://fintrack2030-248bf.web.app/stock-tech.html</loc></url>
+  <url><loc>https://fintrack2030-248bf.web.app/stock-fund.html</loc></url>
   <url><loc>https://fintrack2030-248bf.web.app/savings.html</loc></url>
+  <url><loc>https://fintrack2030-248bf.web.app/etf.html</loc></url>
   <url><loc>https://fintrack2030-248bf.web.app/real-estate.html</loc></url>
   <url><loc>https://fintrack2030-248bf.web.app/articles.html</loc></url>
-  <url><loc>https://fintrack2030-248bf.web.app/privacy.html</loc></url>
-  <url><loc>https://fintrack2030-248bf.web.app/articles/etf-beginner.html</loc></url>
+  <url><loc>https://fintrack2030-248bf.web.app/articles/deep-savings.html</loc></url>
+  <url><loc>https://fintrack2030-248bf.web.app/articles/deep-etf.html</loc></url>
+  <url><loc>https://fintrack2030-248bf.web.app/articles/deep-realestate.html</loc></url>
   <url><loc>https://fintrack2030-248bf.web.app/articles/youth-leap-account.html</loc></url>
+  <url><loc>https://fintrack2030-248bf.web.app/articles/etf-beginner.html</loc></url>
   <url><loc>https://fintrack2030-248bf.web.app/articles/youth-housing-subscription.html</loc></url>
+  <url><loc>https://fintrack2030-248bf.web.app/about.html</loc></url>
+  <url><loc>https://fintrack2030-248bf.web.app/contact.html</loc></url>
+  <url><loc>https://fintrack2030-248bf.web.app/privacy.html</loc></url>
 </urlset>

@@ -564,6 +564,18 @@
   text-align: center;
 }
 
+.estate-live-disclaimer-top {
+  margin: 0.9rem 1rem 0;
+  padding: 0.75rem 1rem;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: #fde68a;
+  background: rgba(250, 204, 21, 0.1);
+  border: 1px solid rgba(250, 204, 21, 0.35);
+  border-radius: 10px;
+}
+.estate-live-disclaimer-top a { color: #facc15; text-decoration: underline; }
+
 .fa-spin-slow {
   animation: fa-spin 3s linear infinite;
 }

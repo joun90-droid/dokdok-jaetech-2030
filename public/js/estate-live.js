@@ -1,4 +1,11 @@
-// 대한민국 전국 주요 지역별 실시간 부동산 데이터 (2026년 실거래가/감정가 연동 - 파주 운정 및 전국 확대)
+﻿// 대한민국 전국 주요 지역별 실시간 부동산 데이터 (2026년 실거래가/감정가 연동 - 파주 운정 및 전국 확대)
+
+function eTr(key) { return (window.estateTr && window.estateTr(key)) || key; }
+function eRegion(name) { return (window.estateTrRegion && window.estateTrRegion(name)) || name; }
+function eCat(cat) { return (window.estateTrCategory && window.estateTrCategory(cat)) || cat; }
+function eText(s) { return (window.estateTrText && window.estateTrText(s)) || s; }
+function eIsEn() { return window.estateIsEn && window.estateIsEn(); }
+
 const regionalData = [
   {
     id: 'gyeonggi-paju',
@@ -512,6 +519,11 @@ window.addEventListener('load', () => {
   if (!estateLiveBooted) scheduleEstateLiveBoot(false);
 });
 
+document.addEventListener('ft:langchange', () => {
+  if (!document.getElementById('estate-live-app')) return;
+  bootEstateLive(true);
+});
+
 // Global handlers for inline onclick in real-estate.html
 window.scrollToSection = scrollToSection;
 window.filterRegions = filterRegions;
@@ -540,9 +552,9 @@ function toggleAutoStreaming() {
     if (badge) {
       badge.innerHTML = `
         <span class="pulse-dot"></span>
-        <span class="badge-text-live">LIVE</span>
+        <span class="badge-text-live">DEMO</span>
         <span class="badge-divider">|</span>
-        <span class="badge-text-timer"><i class="fa-solid fa-arrows-rotate fa-spin-slow"></i> 1시간 갱신</span>
+        <span class="badge-text-timer"><i class="fa-solid fa-arrows-rotate fa-spin-slow"></i> ${eTr('refresh1h')}</span>
       `;
     }
     if (btn) btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
@@ -552,7 +564,7 @@ function toggleAutoStreaming() {
         <span class="pulse-dot" style="background:#ef4444;box-shadow:none;"></span>
         <span class="badge-text-live" style="color:#f87171;">PAUSED</span>
         <span class="badge-divider">|</span>
-        <span class="badge-text-timer" style="color:#94a3b8;">일시정지됨</span>
+        <span class="badge-text-timer" style="color:#94a3b8;">${eTr('paused')}</span>
       `;
     }
     if (btn) btn.innerHTML = '<i class="fa-solid fa-play"></i>';
@@ -577,19 +589,19 @@ function triggerLiveTick() {
   const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
   const dateStr = formatNewsDate();
 
-  const toastText = `[${timeStr}] ${region.name} ${pType} 실거래 신고! (평당 ${region.avgPricePerPyeong.toLocaleString()}만, ${isGain ? '+' : ''}${deltaPrice}만)`;
-  
+  const toastText = `[예시] ${region.name} ${pType} 평당가 시뮬레이션 변동 (${region.avgPricePerPyeong.toLocaleString()}만, ${isGain ? '+' : ''}${deltaPrice}만)`;
+
   const toastEl = document.getElementById('liveToastText');
   const timeEl = document.getElementById('liveToastTime');
   if (toastEl) toastEl.textContent = toastText;
-  if (timeEl) timeEl.textContent = '방금 전';
+  if (timeEl) timeEl.textContent = eTr('justNow');
 
-  const headline = `[실거래] ${region.name} ${pType} 평당 ${region.avgPricePerPyeong.toLocaleString()}만 (${isGain ? '+' : ''}${deltaPrice}만)`;
+  const headline = `[시뮬레이션] ${region.name} ${pType} 평당 ${region.avgPricePerPyeong.toLocaleString()}만 (${isGain ? '+' : ''}${deltaPrice}만)`;
   liveHeadlines.unshift(headline);
   if (liveHeadlines.length > 6) liveHeadlines.pop();
   tickerNewsIdx = (tickerNewsIdx + 1) % realTimeNews.length;
   updateNewsTickerLine(headline);
-  updateNewsFeedLine(headline, `${dateStr} ${timeStr}`, '실거래 LIVE');
+  updateNewsFeedLine(headline, `${dateStr} ${timeStr}`, eTr('liveDeal'));
   patchRegionInDom(region);
 }
 
@@ -683,15 +695,15 @@ function renderRegionGrid(regions) {
     const cardHtml = `
       <div class="region-card" data-region-id="${r.id}" onclick="selectRegionForAnalysis('${r.id}')">
         <div class="region-card-header">
-          <div class="region-name">${r.name}</div>
-          <span class="tag-badge ${badgeClass}">${r.category}</span>
+          <div class="region-name">${eRegion(r.name)}</div>
+          <span class="tag-badge ${badgeClass}">${eCat(r.category)}</span>
         </div>
         <div class="region-stats-row">
-          <span>평당 매매가:</span>
-          <strong>${r.avgPricePerPyeong.toLocaleString()} 만원</strong>
+          <span>${eTr('pricePerPyeong')}</span>
+          <strong>${r.avgPricePerPyeong.toLocaleString()} ${eTr('manwon')}</strong>
         </div>
         <div class="region-stats-row">
-          <span>전세가율 / 1년변동:</span>
+          <span>${eTr('jeonseChange')}</span>
           <strong class="${isUp ? 'text-green' : 'text-red'}">${r.jeonseRatio}% (${isUp ? '+' : ''}${r.priceChange1Yr}%)</strong>
         </div>
       </div>
@@ -717,9 +729,9 @@ function renderAlignedTable(regions) {
     rowDiv.style.cursor = 'pointer';
 
     rowDiv.innerHTML = `
-      <div class="sg-cell col-region">${r.name}</div>
-      <div class="sg-cell col-pyeong">${r.avgPricePerPyeong.toLocaleString()}만</div>
-      <div class="sg-cell col-avg">${r.avgApartmentPrice}억</div>
+      <div class="sg-cell col-region">${eRegion(r.name)}</div>
+      <div class="sg-cell col-pyeong">${r.avgPricePerPyeong.toLocaleString()}${eIsEn() ? 'k' : '만'}</div>
+      <div class="sg-cell col-avg">${r.avgApartmentPrice}${eIsEn() ? '00M' : '억'}</div>
       <div class="sg-cell col-jeonse">${r.jeonseRatio}%</div>
       <div class="sg-cell col-change ${isUp ? 'text-green' : 'text-red'}">${isUp ? '+' : ''}${r.priceChange1Yr}%</div>
       <div class="sg-cell col-rating"><span class="tag-badge ${badgeClass}">${r.landRating}</span></div>
@@ -752,7 +764,7 @@ function renderRegionalChart(regions) {
       labels: labels,
       datasets: [
         {
-          label: '평당가 (만원)',
+          label: eTr('chartPrice'),
           data: priceData,
           backgroundColor: 'rgba(59, 130, 246, 0.75)',
           borderColor: '#3b82f6',
@@ -760,7 +772,7 @@ function renderRegionalChart(regions) {
           yAxisID: 'y'
         },
         {
-          label: '전세가율 (%)',
+          label: eTr('chartJeonse'),
           data: jeonseData,
           type: 'line',
           borderColor: '#10b981',
@@ -809,7 +821,7 @@ function populateRegionDropdowns(regions) {
   regions.forEach(r => {
     const opt = document.createElement('option');
     opt.value = r.id;
-    opt.textContent = `${r.name} (${r.category})`;
+    opt.textContent = `${eRegion(r.name)} (${eCat(r.category)})`;
     select.appendChild(opt);
   });
   renderInvestmentAnalysis();
@@ -839,7 +851,7 @@ function renderInvestmentAnalysis() {
     issuesUl.innerHTML = '';
     region.topIssues.forEach(issue => {
       const li = document.createElement('li');
-      li.textContent = issue;
+      li.textContent = eText(issue);
       issuesUl.appendChild(li);
     });
   }
@@ -1041,14 +1053,14 @@ function initLiveDisplay() {
     updateNewsTickerLine(`[${n.tag}] ${n.title}`);
     updateNewsFeedLine(n.title, n.time, n.tag);
   } else {
-    updateNewsTickerLine('실시간 부동산 데이터 연동 중...');
+    updateNewsTickerLine('부동산 이슈 요약 불러오는 중...');
   }
 }
 
 function renderNewsTickerShell() {
   const ticker = document.getElementById('newsTicker');
   if (!ticker || ticker.querySelector('#newsTickerText')) return;
-  ticker.innerHTML = '<p class="ticker-single-line" id="newsTickerText">실시간 부동산 데이터 연동 중...</p>';
+  ticker.innerHTML = `<p class="ticker-single-line" id="newsTickerText">${eTr('loadingData')}</p>`;
 }
 
 function updateNewsTickerLine(text) {
@@ -1062,8 +1074,8 @@ function renderNewsFeedShell() {
   if (!container || container.querySelector('#newsFeedText')) return;
   container.className = 'news-feed-single';
   container.innerHTML = `
-    <span class="news-feed-tag" id="newsFeedTag">속보</span>
-    <p class="news-feed-line" id="newsFeedText">속보를 불러오는 중...</p>
+    <span class="news-feed-tag" id="newsFeedTag">이슈</span>
+    <p class="news-feed-line" id="newsFeedText">이슈 요약 불러오는 중...</p>
     <time class="news-feed-time" id="newsFeedTime"></time>`;
 }
 
@@ -1109,7 +1121,12 @@ function setupInputFormatters() {
 }
 
 function formatKoreanMoney(num) {
-  if (isNaN(num) || num === 0) return '0 원';
+  if (isNaN(num) || num === 0) return eIsEn() ? '₩0' : '0 원';
+  if (eIsEn()) {
+    if (num >= 100000000) return `₩${(num / 100000000).toFixed(1)}B`;
+    if (num >= 10000) return `₩${Math.round(num / 10000).toLocaleString()}M`;
+    return `₩${num.toLocaleString()}`;
+  }
   const eok = Math.floor(num / 100000000);
   const man = Math.floor((num % 100000000) / 10000);
 

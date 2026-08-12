@@ -6,8 +6,8 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3079797618341925" crossorigin="anonymous"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>영재 재테크 2030 | 청년 부동산·청약</title>
-  <meta name="description" content="청년 부동산 투자·내 집 마련 가이드. 청년 주택드림 청약 자격, 청약 가점, 전세 vs 월세, LTV·DSR 기초. 2030 청년을 위한 부동산 정보.">
+  <title data-i18n="rePageTitle">영재 재테크 2030 | 청년 부동산·청약</title>
+  <meta name="description" content="청년 부동산 투자·내 집 마련 가이드. 청년 주택드림 청약 자격, 청약 가점, 전세 vs 월세, LTV·DSR 기초. 2030 청년을 위한 부동산 정보." data-i18n="rePageDesc">
   <meta name="keywords" content="청년 부동산, 청년 주택드림 청약, 청년 청약, 내 집 마련, 청약 가점, 전세 월세, LTV DSR, 청년 주택">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://fintrack2030-248bf.web.app/real-estate.html">
@@ -31,7 +31,8 @@
     ]
   }
   </script>
-  <link rel="stylesheet" href="/css/site-chrome.css?v=20260805e">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/site-chrome.css?v=20260806e">
   <script>
     try {
       var t = localStorage.getItem("ft_theme");
@@ -66,17 +67,17 @@
   <main>
     <section class="page-hero">
       <div class="container">
-        <nav class="breadcrumb"><a href="index.html">홈</a> › 부동산</nav>
-        <h1>청년 부동산 가이드 — 실시간 매매·청약·내 집 마련</h1>
-        <p class="lead">전국 지역별 실시간 매매·전세 동향, 투자가치 진단, 임대수익·DSR 계산기와 청년 주택드림 청약 가이드를 한곳에서 확인하세요.</p>
+        <nav class="breadcrumb"><a href="index.html">홈</a> › <span data-i18n="realEstate">부동산</span></nav>
+        <h1 data-i18n="reHeroTitle">청년 부동산 가이드 — 실시간 매매·청약·내 집 마련</h1>
+        <p class="lead" data-i18n="reHeroLead">전국 지역별 실시간 매매·전세 동향, 투자가치 진단, 임대수익·DSR 계산기와 청년 주택드림 청약 가이드를 한곳에서 확인하세요.</p>
       </div>
     </section>
 
     <section class="estate-hero-actions">
       <div class="container">
         <div class="estate-action-row">
-          <button type="button" class="btn btn-primary" id="estate-btn-live">🏠 지역별 실시간 시세 보기</button>
-          <button type="button" class="btn btn-secondary estate-action-pill" data-estate-panel="map">🗺️ 시세 지도</button>
+          <button type="button" class="btn btn-primary" id="estate-btn-live" data-i18n="reBtnLive">🏠 지역별 실시간 시세 보기</button>
+          <button type="button" class="btn btn-secondary estate-action-pill" data-estate-panel="map" data-i18n="reBtnMap">🗺️ 시세 지도</button>
         </div>
       </div>
     </section>
@@ -89,42 +90,47 @@
           <div class="header-left">
             <div class="logo-icon"><i class="fa-solid fa-city"></i></div>
             <div>
-              <p class="section-kicker">Live Analysis</p>
-              <h2 class="app-title">전국 지역별 실시간 매매·전세 종합분석</h2>
-              <span class="sub-title">매매동향 · 정밀표 · 투자가치 · 임대수익 · DSR 계산기</span>
+              <p class="section-kicker">Simulation</p>
+              <h2 class="app-title" data-i18n="reAppTitle">전국 지역별 매매·전세 시세 시뮬레이션</h2>
+              <span class="sub-title" data-i18n="reAppSub">매매동향 · 정밀표 · 투자가치 · 임대수익 · DSR 계산기</span>
             </div>
           </div>
           <div class="header-right">
             <div class="pro-live-status-pill" id="liveStatusBadge">
               <span class="pulse-dot"></span>
-              <span class="badge-text-live">LIVE</span>
+              <span class="badge-text-live">DEMO</span>
               <span class="badge-divider">|</span>
               <span class="badge-text-timer"><i class="fa-solid fa-arrows-rotate fa-spin-slow"></i> 1시간 갱신</span>
             </div>
-            <button type="button" class="btn-pro-stream" id="toggleLiveStreamBtn" onclick="toggleAutoStreaming()" title="실시간 스트리밍 일시정지/재개"><i class="fa-solid fa-pause"></i></button>
+            <button type="button" class="btn-pro-stream" id="toggleLiveStreamBtn" onclick="toggleAutoStreaming()" title="시뮬레이션 갱신 일시정지/재개"><i class="fa-solid fa-pause"></i></button>
           </div>
         </header>
 
+        <p class="estate-live-disclaimer-top">
+          ⚠️ 아래 시세·거래 알림은 <strong>학습용으로 임의 생성한 시뮬레이션</strong>입니다. 실제 실거래 신고 데이터가 아니며,
+          투자 판단에 사용하지 마세요. 실거래가는 <a href="https://rt.molit.go.kr" target="_blank" rel="noopener">국토교통부 실거래가 공개시스템</a>에서 확인하세요.
+        </p>
+
         <div class="news-ticker-container">
-          <div class="ticker-label"><i class="fa-solid fa-bullhorn"></i> 속보</div>
-          <div class="ticker-wrapper" id="newsTicker"><p class="ticker-single-line" id="newsTickerText">실시간 부동산 데이터 연동 중...</p></div>
+          <div class="ticker-label"><i class="fa-solid fa-bullhorn"></i> <span data-i18n="reTickerLabel">이슈</span></div>
+          <div class="ticker-wrapper" id="newsTicker"><p class="ticker-single-line" id="newsTickerText">부동산 이슈 요약 불러오는 중...</p></div>
         </div>
 
         <div class="live-toast-bar">
           <div class="toast-content">
-            <span class="toast-tag">실거래 LIVE</span>
-            <span id="liveToastText">서울 강남구 압구정 현대 84㎡ 28억 5,000만 원 실거래 체결!</span>
+            <span class="toast-tag">시세 변동 예시</span>
+            <span id="liveToastText">아래 수치는 학습용으로 임의 생성되는 시뮬레이션입니다.</span>
           </div>
-          <span class="toast-time" id="liveToastTime">방금 전</span>
+          <span class="toast-time" id="liveToastTime">예시</span>
         </div>
 
         <nav class="sticky-anchor-nav">
-          <button type="button" class="anchor-btn active" onclick="scrollToSection('sec-regions')"><i class="fa-solid fa-map-location-dot"></i> 매매동향</button>
-          <button type="button" class="anchor-btn" onclick="scrollToSection('sec-table')"><i class="fa-solid fa-table-list"></i> 정밀표</button>
-          <button type="button" class="anchor-btn" onclick="scrollToSection('sec-investment')"><i class="fa-solid fa-chart-pie"></i> 투자가치</button>
-          <button type="button" class="anchor-btn" onclick="scrollToSection('sec-roi')"><i class="fa-solid fa-calculator"></i> 임대수익</button>
-          <button type="button" class="anchor-btn" onclick="scrollToSection('sec-loan')"><i class="fa-solid fa-landmark"></i> 대출DSR</button>
-          <button type="button" class="anchor-btn" onclick="scrollToSection('sec-news')"><i class="fa-solid fa-newspaper"></i> 속보뉴스</button>
+          <button type="button" class="anchor-btn active" onclick="scrollToSection('sec-regions')"><i class="fa-solid fa-map-location-dot"></i> <span data-i18n="reNavTrends">매매동향</span></button>
+          <button type="button" class="anchor-btn" onclick="scrollToSection('sec-table')"><i class="fa-solid fa-table-list"></i> <span data-i18n="reNavTable">정밀표</span></button>
+          <button type="button" class="anchor-btn" onclick="scrollToSection('sec-investment')"><i class="fa-solid fa-chart-pie"></i> <span data-i18n="reNavInvest">투자가치</span></button>
+          <button type="button" class="anchor-btn" onclick="scrollToSection('sec-roi')"><i class="fa-solid fa-calculator"></i> <span data-i18n="reNavRoi">임대수익</span></button>
+          <button type="button" class="anchor-btn" onclick="scrollToSection('sec-loan')"><i class="fa-solid fa-landmark"></i> <span data-i18n="reNavLoan">대출DSR</span></button>
+          <button type="button" class="anchor-btn" onclick="scrollToSection('sec-news')"><i class="fa-solid fa-newspaper"></i> <span data-i18n="reNavNews">속보뉴스</span></button>
         </nav>
 
         <div class="vertical-sections-flow">
@@ -311,10 +317,11 @@
           </section>
 
           <section id="sec-news" class="stream-section">
-            <div class="content-header"><h2><i class="fa-solid fa-newspaper"></i> 부동산 실시간 시장 속보</h2></div>
+            <div class="content-header"><h2><i class="fa-solid fa-newspaper"></i> 부동산 시장 이슈 브리핑</h2></div>
+            <p style="font-size:0.8rem;color:var(--g-muted, #64748b);margin:-0.5rem 0 0.75rem;">최근 이슈를 정리한 요약이며, 실시간 속보가 아닙니다.</p>
             <div class="news-feed-single" id="newsFeedList">
-              <span class="news-feed-tag" id="newsFeedTag">속보</span>
-              <p class="news-feed-line" id="newsFeedText">속보를 불러오는 중...</p>
+              <span class="news-feed-tag" id="newsFeedTag">이슈</span>
+              <p class="news-feed-line" id="newsFeedText">이슈 요약 불러오는 중...</p>
               <time class="news-feed-time" id="newsFeedTime"></time>
             </div>
           </section>
@@ -332,7 +339,7 @@
           <h2>지역별 부동산 시세 지도</h2>
           <p>전국 시·도 · GitHub 공개 행정구역 JSON 기반 3단계 드릴다운. 동 선택 시 좌표 조회 후 지도 줌인 및 평당 시세 팝업.</p>
           <div class="estate-type-tabs" role="tablist" aria-label="부동산 유형">
-            <button type="button" class="estate-type-tab active" data-estate-type="apt" role="tab">🏢 아파트</button>
+            <button type="button" class="estate-type-tab active" data-estate-type="apt" role="tab" data-i18n="reMapTabApt">🏢 아파트</button>
             <button type="button" class="estate-type-tab" data-estate-type="land" role="tab">🌍 토지</button>
             <button type="button" class="estate-type-tab" data-estate-type="forest" role="tab">🌲 임야</button>
             <button type="button" class="estate-type-tab" data-estate-type="building" role="tab">🏗️ 건물</button>
@@ -388,7 +395,7 @@
             </div>
           </aside>
           <div class="estate-map-wrap">
-            <span class="estate-map-badge">CartoDB Dark · Live Mock</span>
+            <span class="estate-map-badge">CartoDB Dark · 예시 데이터</span>
             <div id="estate-map" class="estate-map estate-map-v2"></div>
           </div>
         </div>
@@ -518,10 +525,12 @@
   </footer>
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin defer></script>
-  <script src="js/estate-live.js?v=8" defer></script>
+  <script src="/js/ft-i18n-dict.js?v=20260806e"></script>
+  <script src="/js/estate-i18n.js?v=20260806e"></script>
+  <script src="js/estate-live.js?v=9" defer></script>
   <script src="js/estate-page-boot.js?v=8" defer></script>
   <script src="js/estate-map.js?v=10" defer></script>
   <script src="js/main.js" defer></script>
-  <script src="/js/site-chrome.js?v=20260805e" defer></script>
+  <script src="/js/site-chrome.js?v=20260806e" defer></script>
 </body>
 </html>
