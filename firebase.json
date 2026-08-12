@@ -183,9 +183,6 @@
           }
         ]
       }
-    ],
-    "postdeploy": [
-      "node ../scripts/sync-hub.mjs"
     ]
   }
 }
