@@ -1,0 +1,101 @@
+{
+  "updated": "2026-08-12T17:19:17.099Z",
+  "source": "국토교통부 아파트매매 실거래가 (data.go.kr)",
+  "dealYmdRange": [
+    "202607",
+    "202608"
+  ],
+  "note": "avgPricePerPyeong·priceChangeMoM만 실거래 기준 실제값입니다. 그 외 regionalData 필드(임대수익률·투자등급·점수 등)는 참고용 추정치입니다.",
+  "overlay": {
+    "gyeonggi-paju": {
+      "avgPricePerPyeong": null,
+      "count": 0,
+      "priceChangeMoM": null
+    },
+    "seoul-gangnam": {
+      "avgPricePerPyeong": 11951,
+      "count": 141,
+      "priceChangeMoM": -12.3
+    },
+    "seoul-yongsan": {
+      "avgPricePerPyeong": 8483,
+      "count": 55,
+      "priceChangeMoM": -34.88
+    },
+    "seoul-seongdong": {
+      "avgPricePerPyeong": 8251,
+      "count": 78,
+      "priceChangeMoM": 24.96
+    },
+    "gyeonggi-bundang": {
+      "avgPricePerPyeong": 7601,
+      "count": 397,
+      "priceChangeMoM": -12.01
+    },
+    "gyeonggi-dongtan": {
+      "avgPricePerPyeong": null,
+      "count": 0,
+      "priceChangeMoM": null
+    },
+    "gyeonggi-pyeongtaek": {
+      "avgPricePerPyeong": 1527,
+      "count": 631,
+      "priceChangeMoM": 1.82
+    },
+    "incheon-songdo": {
+      "avgPricePerPyeong": 3106,
+      "count": 359,
+      "priceChangeMoM": 0.32
+    },
+    "chungnam-cheonan": {
+      "avgPricePerPyeong": 1138,
+      "count": 844,
+      "priceChangeMoM": -11.77
+    },
+    "daejeon-yuseong": {
+      "avgPricePerPyeong": 1862,
+      "count": 414,
+      "priceChangeMoM": -4.89
+    },
+    "sejong": {
+      "avgPricePerPyeong": 2128,
+      "count": 357,
+      "priceChangeMoM": 0.91
+    },
+    "gwangju-bongseon": {
+      "avgPricePerPyeong": null,
+      "count": 0,
+      "priceChangeMoM": null
+    },
+    "busan-haeundae": {
+      "avgPricePerPyeong": 2136,
+      "count": 360,
+      "priceChangeMoM": -8.67
+    },
+    "daegu-suseong": {
+      "avgPricePerPyeong": 2117,
+      "count": 328,
+      "priceChangeMoM": -19.46
+    },
+    "ulsan-namgu": {
+      "avgPricePerPyeong": 1808,
+      "count": 313,
+      "priceChangeMoM": -10.41
+    },
+    "gyeongnam-changwon": {
+      "avgPricePerPyeong": 1904,
+      "count": 429,
+      "priceChangeMoM": -17.55
+    },
+    "jeonbuk-jeonju": {
+      "avgPricePerPyeong": null,
+      "count": 0,
+      "priceChangeMoM": null
+    },
+    "gangwon-wonju": {
+      "avgPricePerPyeong": null,
+      "count": 0,
+      "priceChangeMoM": null
+    }
+  }
+}

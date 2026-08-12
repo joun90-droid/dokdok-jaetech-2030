@@ -2,3 +2,8 @@
 *.log
 .DS_Store
 Thumbs.db
+
+# API 키 등 비밀값 — 공개 저장소이므로 절대 커밋하지 않음
+scripts/.env
+scripts/*.local.*
+scripts/.cache/

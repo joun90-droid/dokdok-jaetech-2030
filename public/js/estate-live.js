@@ -552,7 +552,7 @@ function toggleAutoStreaming() {
     if (badge) {
       badge.innerHTML = `
         <span class="pulse-dot"></span>
-        <span class="badge-text-live">DEMO</span>
+        <span class="badge-text-live">실거래</span>
         <span class="badge-divider">|</span>
         <span class="badge-text-timer"><i class="fa-solid fa-arrows-rotate fa-spin-slow"></i> ${eTr('refresh1h')}</span>
       `;
@@ -571,39 +571,78 @@ function toggleAutoStreaming() {
   }
 }
 
-// Perform Live Market Transaction Tick
+// 국토교통부 실거래가 API에서 받아온 실제 거래를 순서대로 하나씩 보여줌 (더 이상 임의 생성 아님).
+// realTransactions는 loadRealTransactions()가 /data/estate-transactions-live.json 에서 채움.
+let realTransactions = [];
+let realTxIndex = 0;
+
 function triggerLiveTick() {
-  const randIndex = Math.floor(Math.random() * regionalData.length);
-  const region = regionalData[randIndex];
+  if (!realTransactions.length) return; // 아직 실거래 데이터를 못 불러왔으면 대기
 
-  const deltaPrice = (Math.random() > 0.4 ? 1 : -1) * Math.floor(Math.random() * 3 + 1) * 10;
-  region.avgPricePerPyeong = Math.max(1000, region.avgPricePerPyeong + deltaPrice);
+  const tx = realTransactions[realTxIndex % realTransactions.length];
+  realTxIndex++;
 
-  const deltaJeonse = (Math.random() > 0.5 ? 0.1 : -0.1);
-  region.jeonseRatio = parseFloat(Math.min(85, Math.max(40, region.jeonseRatio + deltaJeonse)).toFixed(1));
-
-  const propertyTypes = ['아파트 84㎡', '상가/꼬마빌딩', '토지 대지지분', '다가구 주택'];
-  const pType = propertyTypes[Math.floor(Math.random() * propertyTypes.length)];
-  const isGain = deltaPrice >= 0;
-  const now = new Date();
-  const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
-  const dateStr = formatNewsDate();
-
-  const toastText = `[예시] ${region.name} ${pType} 평당가 시뮬레이션 변동 (${region.avgPricePerPyeong.toLocaleString()}만, ${isGain ? '+' : ''}${deltaPrice}만)`;
+  const dateStr = `${tx.dealYear}.${String(tx.dealMonth).padStart(2, '0')}.${String(tx.dealDay).padStart(2, '0')}`;
+  const eok = (tx.dealAmount / 10000).toFixed(1);
+  const toastText = `${tx.sido} ${tx.sigungu} ${tx.umdNm} · ${tx.aptNm} ${tx.excluUseAr}㎡ · ${eok}억원 (${dateStr} 신고)`;
 
   const toastEl = document.getElementById('liveToastText');
   const timeEl = document.getElementById('liveToastTime');
   if (toastEl) toastEl.textContent = toastText;
-  if (timeEl) timeEl.textContent = eTr('justNow');
+  if (timeEl) timeEl.textContent = dateStr;
 
-  const headline = `[시뮬레이션] ${region.name} ${pType} 평당 ${region.avgPricePerPyeong.toLocaleString()}만 (${isGain ? '+' : ''}${deltaPrice}만)`;
+  const headline = `[실거래] ${tx.sido} ${tx.sigungu} ${tx.aptNm} ${eok}억 (${tx.excluUseAr}㎡, 평당 ${tx.pricePerPyeong.toLocaleString()}만원)`;
   liveHeadlines.unshift(headline);
   if (liveHeadlines.length > 6) liveHeadlines.pop();
-  tickerNewsIdx = (tickerNewsIdx + 1) % realTimeNews.length;
   updateNewsTickerLine(headline);
-  updateNewsFeedLine(headline, `${dateStr} ${timeStr}`, eTr('liveDeal'));
-  patchRegionInDom(region);
+  updateNewsFeedLine(headline, dateStr, '실거래');
 }
+
+/** /data/estate-transactions-live.json 에서 실제 최근 실거래 내역을 불러옴. */
+async function loadRealTransactions() {
+  try {
+    const res = await fetch('/data/estate-transactions-live.json', { cache: 'no-store' });
+    if (!res.ok) return;
+    const data = await res.json();
+    realTransactions = Array.isArray(data.transactions) ? data.transactions : [];
+    window.__estateTxUpdated = data.updated;
+    if (realTransactions.length) triggerLiveTick();
+  } catch (err) {
+    console.warn('실거래 데이터를 불러오지 못했습니다. 예시 문구를 계속 표시합니다.', err);
+  }
+}
+
+/**
+ * /data/estate-overlay-live.json 에서 regionalData의 대표 지역별 실제 평당가·전월 대비 증감을 받아
+ * 해당 필드만 덮어씀. 그 외 필드(임대수익률·투자등급·점수 등)는 실거래로 구할 수 없어 예시 값 그대로 둠.
+ */
+async function loadRealEstateOverlay() {
+  try {
+    const res = await fetch('/data/estate-overlay-live.json', { cache: 'no-store' });
+    if (!res.ok) return;
+    const data = await res.json();
+    let applied = 0;
+    regionalData.forEach((r) => {
+      const o = data.overlay && data.overlay[r.id];
+      if (o && o.avgPricePerPyeong != null) {
+        r.avgPricePerPyeong = o.avgPricePerPyeong;
+        if (o.priceChangeMoM != null) r.priceChange1Yr = o.priceChangeMoM;
+        r.realTxCount = o.count;
+        r.isRealData = true;
+        applied++;
+      } else {
+        r.isRealData = false;
+      }
+    });
+    window.__estateOverlayUpdated = data.updated;
+    if (applied && estateLiveBooted) bootEstateLive(true);
+  } catch (err) {
+    console.warn('실거래 평균 데이터를 불러오지 못했습니다. 예시 데이터로 표시합니다.', err);
+  }
+}
+
+loadRealEstateOverlay();
+loadRealTransactions();
 
 function formatNewsDate() {
   const today = new Date();
@@ -691,6 +730,9 @@ function renderRegionGrid(regions) {
   regions.forEach(r => {
     const isUp = r.priceChange1Yr >= 0;
     const badgeClass = r.category.includes('투기') ? 'regulated' : (r.category.includes('조정') ? 'adjustment' : 'normal');
+    const sourceBadge = r.isRealData
+      ? `<span class="tag-badge source-real" title="국토부 실거래가 ${r.realTxCount || ''}건 기준">실거래</span>`
+      : `<span class="tag-badge source-mock" title="공개 실거래 데이터 없음">예시</span>`;
 
     const cardHtml = `
       <div class="region-card" data-region-id="${r.id}" onclick="selectRegionForAnalysis('${r.id}')">
@@ -699,7 +741,7 @@ function renderRegionGrid(regions) {
           <span class="tag-badge ${badgeClass}">${eCat(r.category)}</span>
         </div>
         <div class="region-stats-row">
-          <span>${eTr('pricePerPyeong')}</span>
+          <span>${eTr('pricePerPyeong')} ${sourceBadge}</span>
           <strong>${r.avgPricePerPyeong.toLocaleString()} ${eTr('manwon')}</strong>
         </div>
         <div class="region-stats-row">
@@ -728,8 +770,10 @@ function renderAlignedTable(regions) {
     rowDiv.onclick = () => selectRegionForAnalysis(r.id);
     rowDiv.style.cursor = 'pointer';
 
+    const sourceMark = r.isRealData ? '<span class="tag-badge source-real" title="국토부 실거래가 기준">실거래</span>' : '<span class="tag-badge source-mock" title="공개 실거래 데이터 없음">예시</span>';
+
     rowDiv.innerHTML = `
-      <div class="sg-cell col-region">${eRegion(r.name)}</div>
+      <div class="sg-cell col-region">${eRegion(r.name)} ${sourceMark}</div>
       <div class="sg-cell col-pyeong">${r.avgPricePerPyeong.toLocaleString()}${eIsEn() ? 'k' : '만'}</div>
       <div class="sg-cell col-avg">${r.avgApartmentPrice}${eIsEn() ? '00M' : '억'}</div>
       <div class="sg-cell col-jeonse">${r.jeonseRatio}%</div>
