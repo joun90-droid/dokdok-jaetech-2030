@@ -1,0 +1,9 @@
+# Project location
+
+All new apps and projects MUST be created under:
+
+`D:\Sites\live\<project-name>`
+
+Do NOT create new projects under `C:\Users\User\Desktop\Sites\` or the Cursor workspace Desktop path unless the user explicitly requests it.
+
+When moving or referencing paths, prefer `D:\Sites\live\...`.

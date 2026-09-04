@@ -121,9 +121,8 @@ a.menu-card:hover {
   }
 
   .vi-header-actions .vi-btn {
-    flex: 1 1 calc(50% - 4px);
-    flex-shrink: 1;
-    min-height: 44px;
+    flex: 0 0 auto;
+    min-height: 38px;
   }
 
   .menu-grid {

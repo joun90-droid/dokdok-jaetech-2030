@@ -1,4 +1,4 @@
-/** 부동산 페이지 — CSS 누락·bfcache 복원 시 스타일/데이터 재적용 */
+﻿/** 부동산 페이지 — CSS 누락·bfcache 복원 시 스타일/데이터 재적용 */
 (function () {
   function cssReady() {
     const app = document.querySelector(".estate-live-app");

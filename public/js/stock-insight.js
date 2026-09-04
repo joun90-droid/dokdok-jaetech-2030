@@ -1,4 +1,4 @@
-/**
+﻿/**
  * stock-insight.js — 안전마진 · 매수 논리 · 종목 상세 모달
  */
 (function (global) {

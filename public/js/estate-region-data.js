@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 영재 재테크 2030 — 전국 행정구역 Mock 트리 (3단계 드릴다운)
  * window.ESTATE_REGION_DATA 로 estate-map.js 에 주입
  */

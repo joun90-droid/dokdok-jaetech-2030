@@ -100,7 +100,7 @@
       .glass{padding:1rem}
     }
   </style>
-  <link rel="stylesheet" href="/css/site-chrome.css?v=20260805e">
+  <link rel="stylesheet" href="/css/site-chrome.css?v=20260806d">
   <script>
     try {
       var t = localStorage.getItem("ft_theme");
@@ -134,8 +134,8 @@
 
 <main class="main">
   <section class="hero">
-    <h1>📈 기술적 분석 <span>- Technical Analysis</span></h1>
-    <p>차트 패턴, 캔들스틱, 보조지표를 <strong style="color:var(--cyan)">시각적으로</strong> 학습하세요 — SVG·Canvas 기반 실전 차트</p>
+    <h1 data-i18n="eduTechTitle">📈 기술적 분석</h1>
+    <p data-i18n-html="eduTechHero">차트 패턴, 캔들스틱, 보조지표를 <strong style="color:var(--cyan)">시각적으로</strong> 학습하세요 — SVG·Canvas 기반 실전 차트</p>
   </section>
 
   <!-- FULL LIVE CHART -->
@@ -632,6 +632,22 @@
    ================================================================ */
 const G = '#00c897', R = '#f84960', W = '#888', CY = '#00d4ff', GD = '#f0b90b';
 
+function ftIsEn() {
+  return (window.ftGetLang && window.ftGetLang()) === 'en';
+}
+
+function chartBg() {
+  return document.documentElement.getAttribute('data-theme') === 'light' ? '#f1f5f9' : '#0a0e1a';
+}
+
+function chartGridColor() {
+  return document.documentElement.getAttribute('data-theme') === 'light' ? 'rgba(15,23,42,0.08)' : 'rgba(255,255,255,.05)';
+}
+
+function chartLabelColor() {
+  return document.documentElement.getAttribute('data-theme') === 'light' ? '#64748b' : '#5a6478';
+}
+
 /* --- SVG Candle helpers --- */
 function svgOpen(w, h) { return `<svg viewBox="0 0 ${w} ${h}" width="120" height="80" xmlns="http://www.w3.org/2000/svg">`; }
 function svgClose() { return '</svg>'; }
@@ -681,16 +697,16 @@ function patThreeWhite() {
 }
 
 const CANDLE_PATTERNS = [
-  { ko:'망치형', en:'Hammer', meaning:'하락 추세 말단 매수세 유입', sig:'buy', svg:patHammer },
-  { ko:'교수형', en:'Hanging Man', meaning:'상승 고점 매도 압력', sig:'sell', svg:patHangMan },
-  { ko:'흡수형 (양)', en:'Bullish Engulfing', meaning:'음봉을 감싸는 양봉', sig:'buy', svg:patBullEngulf },
-  { ko:'흡수형 (음)', en:'Bearish Engulfing', meaning:'양봉을 감싸는 음봉', sig:'sell', svg:patBearEngulf },
-  { ko:'별형', en:'Doji', meaning:'시가=종가, 방향 불확실', sig:'hold', svg:patDoji },
-  { ko:'유성형', en:'Shooting Star', meaning:'상승 후 긴 상단 꼬리', sig:'sell', svg:patShootStar },
-  { ko:'아침별', en:'Morning Star', meaning:'3캔들 강력 상승 반전', sig:'buy', svg:patMorningStar },
-  { ko:'저녁별', en:'Evening Star', meaning:'3캔들 강력 하락 반전', sig:'sell', svg:patEveningStar },
-  { ko:'삼흑병', en:'Three Black Crows', meaning:'연속 3음봉 하락', sig:'sell', svg:patThreeBlack },
-  { ko:'적삼병', en:'Three White Soldiers', meaning:'연속 3양봉 상승', sig:'buy', svg:patThreeWhite },
+  { ko:'망치형', en:'Hammer', meaning:'하락 추세 말단 매수세 유입', meaningEn:'Buyers enter at the end of a downtrend', sig:'buy', svg:patHammer },
+  { ko:'교수형', en:'Hanging Man', meaning:'상승 고점 매도 압력', meaningEn:'Selling pressure at uptrend highs', sig:'sell', svg:patHangMan },
+  { ko:'흡수형 (양)', en:'Bullish Engulfing', meaning:'음봉을 감싸는 양봉', meaningEn:'Bullish candle engulfs prior bearish body', sig:'buy', svg:patBullEngulf },
+  { ko:'흡수형 (음)', en:'Bearish Engulfing', meaning:'양봉을 감싸는 음봉', meaningEn:'Bearish candle engulfs prior bullish body', sig:'sell', svg:patBearEngulf },
+  { ko:'별형', en:'Doji', meaning:'시가=종가, 방향 불확실', meaningEn:'Open≈close, uncertain direction', sig:'hold', svg:patDoji },
+  { ko:'유성형', en:'Shooting Star', meaning:'상승 후 긴 상단 꼬리', meaningEn:'Long upper wick after a rise', sig:'sell', svg:patShootStar },
+  { ko:'아침별', en:'Morning Star', meaning:'3캔들 강력 상승 반전', meaningEn:'Strong 3-candle bullish reversal', sig:'buy', svg:patMorningStar },
+  { ko:'저녁별', en:'Evening Star', meaning:'3캔들 강력 하락 반전', meaningEn:'Strong 3-candle bearish reversal', sig:'sell', svg:patEveningStar },
+  { ko:'삼흑병', en:'Three Black Crows', meaning:'연속 3음봉 하락', meaningEn:'Three consecutive bearish candles', sig:'sell', svg:patThreeBlack },
+  { ko:'적삼병', en:'Three White Soldiers', meaning:'연속 3양봉 상승', meaningEn:'Three consecutive bullish candles', sig:'buy', svg:patThreeWhite },
 ];
 
 /* --- Chart pattern SVG diagrams --- */
@@ -740,23 +756,27 @@ const CHART_PATTERNS = [
 function renderCandles() {
   const sigCls = { buy:'sig-buy', sell:'sig-sell', hold:'sig-hold' };
   const sigKo = { buy:'매수', sell:'매도', hold:'관망' };
+  const sigEn = { buy:'Buy', sell:'Sell', hold:'Hold' };
+  const en = ftIsEn();
   document.getElementById('candle-grid').innerHTML = CANDLE_PATTERNS.map(p => `
-    <div class="pat-card">
+    <div class="pat-card" data-tech-key="${p.ko}">
       <div class="pat-vis">${p.svg()}</div>
       <div class="pat-info">
-        <h4>${p.ko}</h4><span class="en">${p.en}</span>
-        <p>${p.meaning}</p>
-        <span class="sig ${sigCls[p.sig]}">${sigKo[p.sig]}</span>
+        <h4>${en ? p.en : p.ko}</h4><span class="en">${en ? p.ko : p.en}</span>
+        <p>${en ? p.meaningEn : p.meaning}</p>
+        <span class="sig ${sigCls[p.sig]}">${en ? sigEn[p.sig] : sigKo[p.sig]}</span>
       </div>
     </div>`).join('');
 }
 
 function renderChartPatterns() {
+  const en = ftIsEn();
+  const tr = (s) => (en && window.ftTranslatePhrase ? window.ftTranslatePhrase(s, 'en') : s);
   document.getElementById('chart-pat-grid').innerHTML = CHART_PATTERNS.map(p => `
-    <div class="chart-pat-card">
+    <div class="chart-pat-card" data-tech-key="${p.name}">
       <h4>${p.name}</h4>
       <svg viewBox="0 0 120 90" preserveAspectRatio="xMidYMid meet">${p.svg}</svg>
-      <p>${p.desc}</p>
+      <p>${tr(p.desc)}</p>
     </div>`).join('');
 }
 
@@ -774,7 +794,7 @@ function drawMiniChart(id, drawFn) {
 }
 
 function drawMACD(ctx, w, h) {
-  ctx.fillStyle = '#0a0e1a'; ctx.fillRect(0,0,w,h);
+  ctx.fillStyle = chartBg(); ctx.fillRect(0,0,w,h);
   const n = 40, xs = w/n;
   let macd = [], sig = [];
   for (let i = 0; i < n; i++) { macd.push(Math.sin(i*.25)*20+Math.cos(i*.1)*8); sig.push(Math.sin(i*.25-.3)*18); }
@@ -791,7 +811,7 @@ function drawMACD(ctx, w, h) {
 }
 
 function drawRSI(ctx, w, h) {
-  ctx.fillStyle = '#0a0e1a'; ctx.fillRect(0,0,w,h);
+  ctx.fillStyle = chartBg(); ctx.fillRect(0,0,w,h);
   ctx.fillStyle = 'rgba(248,73,96,.08)'; ctx.fillRect(0,0,w,h*.3);
   ctx.fillStyle = 'rgba(0,200,151,.08)'; ctx.fillRect(0,h*.7,w,h*.3);
   ctx.strokeStyle = 'rgba(255,255,255,.08)'; [h*.3,h*.5,h*.7].forEach(y=>{ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();});
@@ -805,7 +825,7 @@ function drawRSI(ctx, w, h) {
 }
 
 function drawBB(ctx, w, h) {
-  ctx.fillStyle = '#0a0e1a'; ctx.fillRect(0,0,w,h);
+  ctx.fillStyle = chartBg(); ctx.fillRect(0,0,w,h);
   const n = 50, xs = w/n; let price = [], upper = [], lower = [], mid = [];
   let p = h*.5;
   for (let i = 0; i < n; i++) { p += (Math.random()-.48)*8; price.push(p); const bw=18+Math.sin(i*.15)*6; mid.push(p); upper.push(p-bw); lower.push(p+bw); }
@@ -819,7 +839,7 @@ function drawBB(ctx, w, h) {
 }
 
 function drawMA(ctx, w, h) {
-  ctx.fillStyle = '#0a0e1a'; ctx.fillRect(0,0,w,h);
+  ctx.fillStyle = chartBg(); ctx.fillRect(0,0,w,h);
   const n = 50, xs = w/n; let price = [];
   let p = h*.6;
   for (let i = 0; i < n; i++) { p += (Math.random()-.45)*6; price.push(p); }
@@ -834,7 +854,7 @@ function drawMA(ctx, w, h) {
 }
 
 function drawStoch(ctx, w, h) {
-  ctx.fillStyle = '#0a0e1a'; ctx.fillRect(0,0,w,h);
+  ctx.fillStyle = chartBg(); ctx.fillRect(0,0,w,h);
   ctx.fillStyle = 'rgba(248,73,96,.07)'; ctx.fillRect(0,0,w,h*.2);
   ctx.fillStyle = 'rgba(0,200,151,.07)'; ctx.fillRect(0,h*.8,w,h*.2);
   const n = 50, xs = w/n;
@@ -847,16 +867,17 @@ function drawStoch(ctx, w, h) {
 }
 
 const INDICATORS = [
-  { id:'c-macd', title:'MACD (12,26,9)', desc:'MACD Line(청) · Signal(금) · Histogram(녹/적)', fn:drawMACD },
-  { id:'c-rsi', title:'RSI (14)', desc:'30↓ 과매도 · 70↑ 과매수 · 음영 구간', fn:drawRSI },
-  { id:'c-bb', title:'Bollinger Bands (20,2)', desc:'가격(흰) · 상/하단 밴드(청) · %B 해석', fn:drawBB },
-  { id:'c-ma', title:'Moving Averages (5/20)', desc:'가격 + MA5(청) + MA20(금) 골든/데드크로스', fn:drawMA },
-  { id:'c-stoch', title:'Stochastic (%K, %D)', desc:'80↑ 과매수 · 20↓ 과매도 · %K/%D 교차', fn:drawStoch },
+  { id:'c-macd', title:'MACD (12,26,9)', desc:'MACD Line(청) · Signal(금) · Histogram(녹/적)', descEn:'MACD line (cyan) · Signal (gold) · Histogram (green/red)', fn:drawMACD },
+  { id:'c-rsi', title:'RSI (14)', desc:'30↓ 과매도 · 70↑ 과매수 · 음영 구간', descEn:'30↓ oversold · 70↑ overbought · shaded zones', fn:drawRSI },
+  { id:'c-bb', title:'Bollinger Bands (20,2)', desc:'가격(흰) · 상/하단 밴드(청) · %B 해석', descEn:'Price (white) · Upper/lower bands (cyan) · %B reading', fn:drawBB },
+  { id:'c-ma', title:'Moving Averages (5/20)', desc:'가격 + MA5(청) + MA20(금) 골든/데드크로스', descEn:'Price + MA5 (cyan) + MA20 (gold) golden/death cross', fn:drawMA },
+  { id:'c-stoch', title:'Stochastic (%K, %D)', desc:'80↑ 과매수 · 20↓ 과매도 · %K/%D 교차', descEn:'80↑ overbought · 20↓ oversold · %K/%D cross', fn:drawStoch },
 ];
 
 function renderIndicators() {
+  const en = ftIsEn();
   document.getElementById('ind-grid').innerHTML = INDICATORS.map(i => `
-    <div class="ind-card"><h4>${i.title}</h4><canvas id="${i.id}"></canvas><p>${i.desc}</p></div>`).join('');
+    <div class="ind-card" data-tech-key="${i.title}"><h4>${i.title}</h4><canvas id="${i.id}"></canvas><p>${en ? i.descEn : i.desc}</p></div>`).join('');
   INDICATORS.forEach(i => drawMiniChart(i.id, i.fn));
 }
 
@@ -902,12 +923,14 @@ function drawMainChart() {
   const py = v => pad.t + priceH - ((v - minP) / pR) * priceH;
 
   // Grid
-  ctx.strokeStyle = 'rgba(255,255,255,.05)'; ctx.lineWidth = 1;
+  ctx.fillStyle = chartBg();
+  ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = chartGridColor(); ctx.lineWidth = 1;
   for (let i = 0; i <= 5; i++) {
     const y = pad.t + (priceH / 5) * i;
     ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + cw, y); ctx.stroke();
     const pr = maxP - (pR / 5) * i;
-    ctx.fillStyle = '#5a6478'; ctx.font = '10px Inter'; ctx.textAlign = 'left';
+    ctx.fillStyle = chartLabelColor(); ctx.font = '10px Inter'; ctx.textAlign = 'left';
     ctx.fillText('$' + pr.toFixed(0), W - pad.r + 6, y + 3);
   }
 
@@ -1062,8 +1085,20 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   bindChartResize();
 });
+
+document.addEventListener('ft:langchange', () => {
+  renderCandles();
+  renderChartPatterns();
+  renderIndicators();
+  if (window.StockEduDetail && window.StockEduDetail.rebind) window.StockEduDetail.rebind();
+});
+
+document.addEventListener('ft:themechange', () => {
+  redrawAllCharts();
+});
 </script>
 <script src="js/stock-edu-detail.js?v=1" defer></script>
-  <script src="/js/site-chrome.js?v=20260805e" defer></script>
+  <script src="/js/ft-i18n-dict.js?v=20260806d"></script>
+  <script src="/js/site-chrome.js?v=20260806d" defer></script>
 </body>
 </html>

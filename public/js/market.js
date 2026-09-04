@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 시세 엔진 v5 TURBO — 사전계산 팩 즉시 렌더 + IndexedDB + 점진적 페인트
  */
 (function () {

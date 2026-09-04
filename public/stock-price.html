@@ -5,15 +5,15 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3079797618341925" crossorigin="anonymous"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>실시간 주식 시세 추천 | 영재 재테크 2030</title>
-  <meta name="description" content="네이버·야후 실시간 API · 가치점수 · PBR/PER/ROE · 100종목 큐레이션">
+  <title data-i18n="spPageTitle">실시간 주식 시세 추천 | 영재 재테크 2030</title>
+  <meta name="description" data-i18n="spPageDesc" content="네이버·야후 실시간 API · 가치점수 · PBR/PER/ROE · 100종목 큐레이션">
   <link rel="canonical" href="https://fintrack2030-248bf.web.app/stock-price.html">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
-  <link rel="stylesheet" href="css/stock-analyzer.css?v=7">
-  <link rel="stylesheet" href="/css/site-chrome.css?v=20260805e">
+  <link rel="stylesheet" href="css/stock-analyzer.css?v=9">
+  <link rel="stylesheet" href="/css/site-chrome.css?v=20260902a">
   <script>
     try {
       var t = localStorage.getItem("ft_theme");
@@ -51,8 +51,8 @@
       <div class="vi-logo">
         <div class="vi-logo-icon"><i class="fa-solid fa-chart-line"></i></div>
         <div>
-          <h1>영재 재테크 <span class="vi-badge">주식시세 추천</span></h1>
-          <p class="vi-subtitle">네이버 · 야후 실시간 연동 · 🇰🇷국내 & 🇺🇸미국 100종목 · 가치점수 큐레이션</p>
+          <h1><span data-i18n="spBrand">영재 재테크</span> <span class="vi-badge" data-i18n="spBadge">주식시세 추천</span></h1>
+          <p class="vi-subtitle" data-i18n="spSubtitle">네이버 · 야후 실시간 연동 · 🇰🇷국내 & 🇺🇸미국 100종목 · 가치점수 큐레이션</p>
         </div>
       </div>
       <div class="vi-header-live-wrap">
@@ -60,9 +60,9 @@
           <span class="pulse-dot"></span>
           <span class="badge-text-live">LIVE</span>
           <span class="badge-divider">|</span>
-          <span class="badge-text-timer"><i class="fa-solid fa-arrows-rotate fa-spin-slow"></i> 60초 갱신</span>
+          <span class="badge-text-timer"><i class="fa-solid fa-arrows-rotate fa-spin-slow"></i> <span data-i18n="spLiveRefresh">60초 갱신</span></span>
         </div>
-        <button type="button" class="btn-pro-stream" id="toggleStockLiveBtn" title="실시간 스트리밍 일시정지/재개" aria-label="실시간 갱신 일시정지">
+        <button type="button" class="btn-pro-stream" id="toggleStockLiveBtn" data-i18n-aria="spPauseLive" aria-label="실시간 갱신 일시정지">
           <i class="fa-solid fa-pause"></i>
         </button>
       </div>
@@ -71,98 +71,118 @@
           <i class="fa-solid fa-gem"></i>
           <div>
             <span class="vi-stat-val" id="stat-total">0</span>
-            <span class="vi-stat-label">발굴 종목</span>
+            <span class="vi-stat-label" data-i18n="spStatTotal">발굴 종목</span>
           </div>
         </div>
         <div class="vi-stat-pill gold">
           <i class="fa-solid fa-arrow-trend-up"></i>
           <div>
             <span class="vi-stat-val" id="stat-avg-score">—</span>
-            <span class="vi-stat-label">평균 가치점수</span>
+            <span class="vi-stat-label" data-i18n="spStatScore">평균 가치점수</span>
           </div>
         </div>
         <div class="vi-stat-pill gold">
           <i class="fa-solid fa-sack-dollar"></i>
           <div>
             <span class="vi-stat-val" id="stat-avg-upside">+0%</span>
-            <span class="vi-stat-label">평균 상승여력</span>
+            <span class="vi-stat-label" data-i18n="spStatUpside">평균 상승여력</span>
           </div>
         </div>
       </div>
     </div>
     <div class="vi-live-toast-bar" id="stockLiveToastBar">
       <div class="vi-toast-content">
-        <span class="vi-toast-tag">실시간 LIVE</span>
-        <span id="stockLiveToastText">시세 스트리밍 연결 중...</span>
+        <span class="vi-toast-tag" data-i18n="spToastLive">실시간 LIVE</span>
+        <span id="stockLiveToastText" data-i18n="spToastConnecting">시세 스트리밍 연결 중...</span>
       </div>
       <span class="vi-toast-time" id="stockLiveToastTime">—</span>
     </div>
-    <div class="vi-header-actions">
-      <button type="button" class="vi-btn vi-btn-gold" data-filter="top"><i class="fa-solid fa-heart"></i> TOP Pick 80+</button>
-      <button type="button" class="vi-btn vi-btn-primary market-tab active" data-market="kr"><i class="fa-solid fa-flag"></i> 🇰🇷 국내 50</button>
-      <button type="button" class="vi-btn vi-btn-outline market-tab" data-market="us"><i class="fa-solid fa-rocket"></i> 🇺🇸 미국 50</button>
-      <button type="button" class="vi-btn vi-btn-outline source-tab active" data-source="naver"><i class="fa-brands fa-neos"></i> 네이버 데이터</button>
-      <button type="button" class="vi-btn vi-btn-outline source-tab" data-source="yahoo"><i class="fa-solid fa-globe"></i> 야후 데이터</button>
+    <div class="vi-header-actions" role="toolbar" aria-label="시세 필터">
+      <button type="button" class="vi-btn vi-btn-gold" data-filter="top"><i class="fa-solid fa-heart"></i> <span data-i18n="spTopPick">TOP</span></button>
+      <button type="button" class="vi-btn vi-btn-kr market-tab active" data-market="kr" aria-pressed="true"><i class="fa-solid fa-flag"></i> <span data-i18n="spKr50">국내</span></button>
+      <button type="button" class="vi-btn vi-btn-us market-tab" data-market="us" aria-pressed="false"><i class="fa-solid fa-rocket"></i> <span data-i18n="spUs50">미국</span></button>
+      <button type="button" class="vi-btn vi-btn-both market-tab" data-market="both" aria-pressed="false"><i class="fa-solid fa-layer-group"></i> <span data-i18n="spBoth">둘다</span></button>
+      <button type="button" class="vi-btn vi-btn-naver-src source-tab active" data-source="naver"><i class="fa-brands fa-neos"></i> <span data-i18n="spNaverData">네이버</span></button>
+      <button type="button" class="vi-btn vi-btn-yahoo-src source-tab" data-source="yahoo"><i class="fa-solid fa-globe"></i> <span data-i18n="spYahooData">야후</span></button>
     </div>
   </header>
 
+  <section class="vi-intro" aria-label="페이지 소개" style="max-width:760px;margin:1.5rem auto 0;padding:0 1rem;color:var(--vi-muted);font-size:0.88rem;line-height:1.75">
+    <p>
+      이 페이지는 네이버·야후 파이낸스의 공개 시세 API를 <strong style="color:var(--vi-text)">60초 주기로 갱신</strong>하며,
+      국내 코스피·코스닥과 미국 S&amp;P500·나스닥 상장 종목 중 100개를 선별해 <strong style="color:var(--vi-text)">PER(주가수익비율)·PBR(주가순자산비율)·ROE(자기자본이익률)</strong>와
+      최근 가격 모멘텀을 함께 살펴볼 수 있도록 정리한 화면입니다.
+    </p>
+    <p style="margin-top:0.6rem">
+      카드마다 붙는 <strong style="color:var(--vi-gold)">영재 가치점수</strong>는 PER·PBR·ROE·모멘텀 4개 지표를 종합해 계산한 자체 참고 지표로,
+      점수가 높을수록 저평가·수익성·상승 흐름이 함께 양호한 종목이라는 의미입니다. 다만 이는 공개된 재무 데이터를 기계적으로 계산한 결과일 뿐,
+      기업의 미래 실적이나 주가를 보장하지 않습니다. PER·PBR·ROE 각 지표의 의미가 궁금하다면
+      <a href="stock-education.html" style="color:var(--vi-cyan)">주식교육창</a>에서 기본적 분석 개념부터 확인해 보세요.
+    </p>
+    <p style="margin-top:0.6rem;color:var(--vi-dim);font-size:0.82rem">
+      ⚠️ 실시간 데이터는 API 특성상 실제 거래소 시세와 수 초~수 분 지연될 수 있으며, 본 화면의 종목·점수·순위는 투자 판단을 돕기 위한
+      참고 정보일 뿐 매수·매도를 권유하는 투자 자문이 아닙니다. 투자에 따른 손익 책임은 이용자 본인에게 있습니다.
+    </p>
+  </section>
+
   <section class="vi-ribbon" aria-label="시장 개요">
-    <div class="vi-ribbon-card"><span class="r-country">🇰🇷 KOSPI</span><strong class="r-val" id="ribbon-kospi">—</strong><span class="r-tag">실시간 연동</span></div>
-    <div class="vi-ribbon-card"><span class="r-country">🇰🇷 KOSDAQ</span><strong class="r-val" id="ribbon-kosdaq">—</strong><span class="r-tag">성장주</span></div>
-    <div class="vi-ribbon-card"><span class="r-country">🇺🇸 S&amp;P 500</span><strong class="r-val" id="ribbon-sp">—</strong><span class="r-tag">미국 대형</span></div>
-    <div class="vi-ribbon-card"><span class="r-country">🇺🇸 NASDAQ</span><strong class="r-val" id="ribbon-nasdaq">—</strong><span class="r-tag">기술주</span></div>
+    <div class="vi-ribbon-card"><span class="r-country">🇰🇷 KOSPI</span><strong class="r-val" id="ribbon-kospi">—</strong><span class="r-tag" data-i18n="spRibbonLive">실시간 연동</span></div>
+    <div class="vi-ribbon-card"><span class="r-country">🇰🇷 KOSDAQ</span><strong class="r-val" id="ribbon-kosdaq">—</strong><span class="r-tag" data-i18n="spRibbonGrowth">성장주</span></div>
+    <div class="vi-ribbon-card"><span class="r-country">🇺🇸 S&amp;P 500</span><strong class="r-val" id="ribbon-sp">—</strong><span class="r-tag" data-i18n="spRibbonUsLarge">미국 대형</span></div>
+    <div class="vi-ribbon-card"><span class="r-country">🇺🇸 NASDAQ</span><strong class="r-val" id="ribbon-nasdaq">—</strong><span class="r-tag" data-i18n="spRibbonTech">기술주</span></div>
   </section>
 
   <div class="vi-layout">
     <aside class="vi-filter">
-      <h2><i class="fa-solid fa-sliders"></i> 맞춤 스크리너</h2>
+      <h2><i class="fa-solid fa-sliders"></i> <span data-i18n="spScreener">맞춤 스크리너</span></h2>
 
       <div class="vi-filter-group">
-        <label><i class="fa-solid fa-globe"></i> 시장 선택</label>
+        <label><i class="fa-solid fa-globe"></i> <span data-i18n="spMarketSelect">시장 선택</span></label>
         <div class="vi-pills" id="marketPills">
-          <button type="button" class="vi-pill market-tab active" data-market="kr">🇰🇷 국내</button>
-          <button type="button" class="vi-pill market-tab" data-market="us">🇺🇸 미국</button>
+          <button type="button" class="vi-pill market-tab active" data-market="kr" aria-pressed="true" data-i18n="spKrMarket">🇰🇷 국내</button>
+          <button type="button" class="vi-pill market-tab" data-market="us" aria-pressed="false" data-i18n="spUsMarket">🇺🇸 미국</button>
+          <button type="button" class="vi-pill market-tab" data-market="both" aria-pressed="false" data-i18n="spBoth">둘다</button>
         </div>
       </div>
 
       <div class="vi-filter-group">
-        <label for="searchInput"><i class="fa-solid fa-magnifying-glass"></i> 종목명 / 코드</label>
+        <label for="searchInput"><i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="spSearchLabel">종목명 / 코드</span></label>
         <div class="vi-search">
           <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" id="searchInput" placeholder="예: 삼성전자, 005930, AAPL">
+          <input type="text" id="searchInput" data-i18n="spSearchPh" placeholder="예: 삼성전자, 005930, AAPL">
         </div>
       </div>
 
       <div class="vi-filter-group">
-        <label><i class="fa-solid fa-tags"></i> 테마 필터</label>
+        <label><i class="fa-solid fa-tags"></i> <span data-i18n="spThemeFilter">테마 필터</span></label>
         <div class="vi-pills" id="filterPills">
-          <button type="button" class="vi-pill filter-chip active" data-filter="all">전체</button>
-          <button type="button" class="vi-pill filter-chip" data-filter="top">💎 TOP 80+</button>
-          <button type="button" class="vi-pill filter-chip" data-filter="up">🔺 급등</button>
-          <button type="button" class="vi-pill filter-chip" data-filter="down">🔻 급락</button>
+          <button type="button" class="vi-pill filter-chip active" data-filter="all" data-i18n="spFilterAll">전체</button>
+          <button type="button" class="vi-pill filter-chip" data-filter="top" data-i18n="spFilterTop">💎 TOP 80+</button>
+          <button type="button" class="vi-pill filter-chip" data-filter="up" data-i18n="spFilterUp">🔺 급등</button>
+          <button type="button" class="vi-pill filter-chip" data-filter="down" data-i18n="spFilterDown">🔻 급락</button>
         </div>
       </div>
 
       <p style="font-size:0.65rem;color:#64748b;line-height:1.5;margin-top:8px">
-        ⚠️ file:// 로 열면 API(CORS) 차단됩니다.<br>
-        <a href="https://fintrack2030-248bf.web.app/stock-price" style="color:#38bdf8">배포 URL</a>에서 이용하세요.
+        <span data-i18n="spCorsWarn">⚠️ file:// 로 열면 API(CORS) 차단됩니다.</span><br>
+        <a href="https://fintrack2030-248bf.web.app/stock-price" style="color:#38bdf8" data-i18n="spDeployUrl">배포 URL</a><span data-i18n="spDeployHint">에서 이용하세요.</span>
       </p>
     </aside>
 
     <section class="vi-content">
       <div class="vi-control-bar">
         <div class="vi-results">
-          <span>영재 Pick <strong id="visible-count">0</strong>개</span>
+          <span><span data-i18n="spPickPrefix">영재 Pick</span> <strong id="visible-count">0</strong><span data-i18n="spPickSuffix">개</span></span>
           <span class="vi-stat-label" id="filter-summary" style="margin-left:8px">전체 · 점수순</span>
         </div>
         <div class="vi-sort">
           <label for="sortSelect"><i class="fa-solid fa-arrow-down-short-wide"></i></label>
           <select id="sortSelect" class="vi-sort-select">
-            <option value="score_desc">가치점수 높은순</option>
-            <option value="upside_desc">상승여력 높은순</option>
-            <option value="change_desc">등락률 높은순</option>
-            <option value="change_asc">등락률 낮은순</option>
-            <option value="pbr_asc">PBR 낮은순</option>
+            <option value="score_desc" data-i18n="spSortScore">가치점수 높은순</option>
+            <option value="upside_desc" data-i18n="spSortUpside">상승여력 높은순</option>
+            <option value="change_desc" data-i18n="spSortChangeDesc">등락률 높은순</option>
+            <option value="change_asc" data-i18n="spSortChangeAsc">등락률 낮은순</option>
+            <option value="pbr_asc" data-i18n="spSortPbr">PBR 낮은순</option>
           </select>
         </div>
       </div>
@@ -170,7 +190,7 @@
       <div class="vi-stock-grid" id="quote-list"></div>
 
       <div class="vi-footer-bar">
-        <span><span class="vi-live-dot"></span><span id="quote-status">연결 중...</span></span>
+        <span><span class="vi-live-dot"></span><span id="quote-status" data-i18n="spStatusConnecting">연결 중...</span></span>
         <span id="quote-updated"></span>
       </div>
     </section>
@@ -182,9 +202,18 @@
   <div class="vi-modal-panel" role="dialog" aria-labelledby="vi-modal-title"></div>
 </div>
 
+<footer class="site-footer" style="border-top:1px solid var(--vi-border);padding:2rem 1rem;margin-top:2rem">
+  <div class="container footer-inner" style="max-width:960px;margin:0 auto;text-align:center">
+    <p class="footer-legal" style="font-size:0.8rem;color:var(--vi-muted)"><a href="about.html" style="color:inherit">운영자 소개</a> · <a href="contact.html" style="color:inherit">문의하기</a> · <a href="privacy.html" style="color:inherit">개인정보처리방침</a></p>
+    <p class="footer-disclaimer" style="font-size:0.75rem;color:var(--vi-dim);line-height:1.5;margin-top:0.5rem">본 페이지의 종목·점수·순위는 참고용 정보이며 투자 권유가 아닙니다. 투자 결정에 따른 책임은 이용자 본인에게 있습니다.</p>
+    <p class="footer-copy" style="font-size:0.75rem;color:var(--vi-dim);margin-top:0.35rem">© 2026 영재 재테크 2030</p>
+  </div>
+</footer>
+
 <script src="js/main.js" defer></script>
 <script src="js/stock-insight.js?v=1" defer></script>
-<script src="js/stock-live.js?v=10" defer></script>
-  <script src="/js/site-chrome.js?v=20260805e" defer></script>
+<script src="/js/ft-i18n-dict.js?v=20260806d"></script>
+  <script src="/js/site-chrome.js?v=20260902a" defer></script>
+<script src="js/stock-live.js?v=13" defer></script>
 </body>
 </html>

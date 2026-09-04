@@ -91,11 +91,12 @@
       spStatUpside: "평균 상승여력",
       spToastLive: "실시간 LIVE",
       spToastConnecting: "시세 스트리밍 연결 중...",
-      spTopPick: "TOP Pick 80+",
-      spKr50: "🇰🇷 국내 50",
-      spUs50: "🇺🇸 미국 50",
-      spNaverData: "네이버 데이터",
-      spYahooData: "야후 데이터",
+      spTopPick: "TOP",
+      spKr50: "국내",
+      spUs50: "미국",
+      spBoth: "둘다",
+      spNaverData: "네이버",
+      spYahooData: "야후",
       spRibbonLive: "실시간 연동",
       spRibbonGrowth: "성장주",
       spRibbonUsLarge: "미국 대형",
@@ -104,6 +105,7 @@
       spMarketSelect: "시장 선택",
       spKrMarket: "🇰🇷 국내",
       spUsMarket: "🇺🇸 미국",
+      spMarketNone: "시장 미선택",
       spSearchLabel: "종목명 / 코드",
       spSearchPh: "예: 삼성전자, 005930, AAPL",
       spThemeFilter: "테마 필터",
@@ -247,11 +249,12 @@
       spStatUpside: "Avg. upside",
       spToastLive: "LIVE",
       spToastConnecting: "Connecting to quote stream...",
-      spTopPick: "TOP Pick 80+",
-      spKr50: "🇰🇷 Korea 50",
-      spUs50: "🇺🇸 US 50",
-      spNaverData: "Naver data",
-      spYahooData: "Yahoo data",
+      spTopPick: "TOP",
+      spKr50: "KR",
+      spUs50: "US",
+      spBoth: "Both",
+      spNaverData: "Naver",
+      spYahooData: "Yahoo",
       spRibbonLive: "Live feed",
       spRibbonGrowth: "Growth",
       spRibbonUsLarge: "US large-cap",
@@ -260,6 +263,7 @@
       spMarketSelect: "Market",
       spKrMarket: "🇰🇷 Korea",
       spUsMarket: "🇺🇸 US",
+      spMarketNone: "No market",
       spSearchLabel: "Name / ticker",
       spSearchPh: "e.g. Samsung, 005930, AAPL",
       spThemeFilter: "Theme filter",
@@ -352,8 +356,7 @@
   }
 
   function getLang() {
-    const l = localStorage.getItem(LANG_KEY);
-    return l === "en" ? "en" : "ko";
+    return "ko";
   }
 
   function applyTheme(theme) {
@@ -562,7 +565,7 @@
     if (document.querySelector('link[data-site-chrome-css]')) return;
     const link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = "/css/site-chrome.css?v=20260806e";
+    link.href = "/css/site-chrome.css?v=20260902a";
     link.setAttribute("data-site-chrome-css", "1");
     document.head.appendChild(link);
   }
@@ -584,16 +587,6 @@
           </button>
           <button type="button" class="site-chrome-btn" data-chrome-theme="light" data-i18n-aria="themeLight" aria-label="화이트" aria-pressed="false">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-          </button>
-        </div>
-        <span class="site-chrome-sep" aria-hidden="true"></span>
-        <div class="site-chrome-group site-chrome-lang" role="group" aria-label="Language" data-active="ko">
-          <span class="site-chrome-thumb" aria-hidden="true"></span>
-          <button type="button" class="site-chrome-btn" data-chrome-lang="ko" data-i18n-aria="langKo" aria-label="한국어" aria-pressed="false">
-            <span class="site-chrome-btn-label">KO</span>
-          </button>
-          <button type="button" class="site-chrome-btn" data-chrome-lang="en" data-i18n-aria="langEn" aria-label="English" aria-pressed="false">
-            <span class="site-chrome-btn-label">EN</span>
           </button>
         </div>
       </div>

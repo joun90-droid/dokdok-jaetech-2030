@@ -1,4 +1,4 @@
-/**
+﻿/**
  * stock-edu-detail.js — 기술적/기본적 분석 카드 클릭 심화 정보
  */
 (function () {
@@ -102,6 +102,13 @@
     },
   };
 
+  function trText(s) {
+    if (window.ftGetLang && window.ftGetLang() === "en" && window.ftTranslatePhrase) {
+      return window.ftTranslatePhrase(s, "en");
+    }
+    return s;
+  }
+
   function openEduModal(title, subtitle, sections) {
     let modal = document.getElementById("edu-detail-modal");
     if (!modal) {
@@ -124,17 +131,18 @@
       });
     }
     const panel = modal.querySelector(".edu-modal-panel");
+    const secHtml = sections.map((s) => `
+          <article class="edu-modal-block">
+            <h4>${trText(s.title)}</h4>
+            <p>${trText(s.body)}</p>
+          </article>`).join("");
     panel.innerHTML = `
       <header class="edu-modal-head">
-        <div><h2>${title}</h2><p>${subtitle || ""}</p></div>
-        <button type="button" class="edu-modal-close" aria-label="닫기"><i class="fa-solid fa-xmark"></i></button>
+        <div><h2>${trText(title)}</h2><p>${trText(subtitle || "")}</p></div>
+        <button type="button" class="edu-modal-close" aria-label="${trText("닫기")}"><i class="fa-solid fa-xmark"></i></button>
       </header>
       <div class="edu-modal-body">
-        ${sections.map((s) => `
-          <article class="edu-modal-block">
-            <h4>${s.title}</h4>
-            <p>${s.body}</p>
-          </article>`).join("")}
+        ${secHtml}
       </div>`;
     modal.hidden = false;
     document.body.classList.add("edu-modal-open");
@@ -151,13 +159,16 @@
 
   function bindTechCards() {
     document.querySelectorAll(".pat-card, .chart-pat-card, .ind-card").forEach((card) => {
+      if (card.dataset.eduBound) return;
+      card.dataset.eduBound = "1";
       card.style.cursor = "pointer";
       card.setAttribute("tabindex", "0");
       card.setAttribute("role", "button");
       const open = () => {
-        const title = card.querySelector("h4")?.textContent?.trim() || "기술적 분석";
+        const key = card.dataset.techKey || card.querySelector("h4")?.textContent?.trim() || "";
+        const title = card.querySelector("h4")?.textContent?.trim() || trText("기술적 분석");
         const meaning = card.querySelector("p")?.textContent?.trim() || "";
-        const deep = TECH_DEEP[title];
+        const deep = TECH_DEEP[key] || TECH_DEEP[card.querySelector(".en")?.textContent?.trim()];
         openEduModal(title, deep?.subtitle || card.querySelector(".en")?.textContent || "", deep?.sections || defaultTechSections(title, meaning));
       };
       card.addEventListener("click", open);
@@ -176,6 +187,8 @@
       });
     });
   }
+
+  window.StockEduDetail = { rebind: () => { bindTechCards(); bindFundCards(); } };
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => { bindTechCards(); bindFundCards(); });
