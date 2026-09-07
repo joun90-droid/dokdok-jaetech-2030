@@ -10,11 +10,13 @@
     ko: {
       themeDark: "다크",
       themeLight: "화이트",
+      themeToLight: "화이트 모드로 전환",
+      themeToDark: "다크 모드로 전환",
       langKo: "한국어",
       langEn: "English",
       home: "홈",
-      stockPrice: "주식시세추천",
-      stockEdu: "주식교육창",
+      stockPrice: "지표정리",
+      stockEdu: "주린이 탈출",
       savings: "예적금",
       etf: "ETF",
       realEstate: "부동산",
@@ -55,7 +57,7 @@
       brand: "영재 재테크",
       heroTitle: "똑똑한 재테크 2030",
       heroSub: "복잡한 정보는 줄이고, 꼭 필요한 재테크만. 아래 메뉴에서 바로 시작하세요.",
-      cardStock: "주식시세추천",
+      cardStock: "지표정리",
       cardStockSub: "오늘의 추천 종목 · 시세",
       cardEstate: "부동산 실시간 시세",
       cardEstateSub: "지역별 시세 · 청약 · 트렌드",
@@ -67,7 +69,7 @@
       cardGuideSub: "예적금 · ETF · 청약 가이드",
       cardPortfolio: "2030 맞춤 포트폴리오",
       cardPortfolioSub: "적립식 투자 · ISA 활용법",
-      eduTitle: "주식교육창",
+      eduTitle: "주린이 탈출",
       eduSub: "주식 투자에 필요한 핵심 분석 방법을 배워보세요.",
       eduTech: "기술적 분석",
       eduTechSub: "차트, 이동평균선, RSI 분석법",
@@ -81,7 +83,7 @@
       spPageTitle: "실시간 주식 시세 추천 | 영재 재테크 2030",
       spPageDesc: "네이버·야후 실시간 API · 가치점수 · PBR/PER/ROE · 100종목 큐레이션",
       spBrand: "영재 재테크",
-      spBadge: "주식시세 추천",
+      spBadge: "지표정리",
       spSubtitle: "네이버 · 야후 실시간 연동 · 🇰🇷국내 & 🇺🇸미국 100종목 · 가치점수 큐레이션",
       spLiveRefresh: "60초 갱신",
       spPauseLive: "실시간 갱신 일시정지",
@@ -169,11 +171,13 @@
     en: {
       themeDark: "Dark",
       themeLight: "Light",
+      themeToLight: "Switch to light mode",
+      themeToDark: "Switch to dark mode",
       langKo: "한국어",
       langEn: "English",
       home: "Home",
-      stockPrice: "Stock Picks",
-      stockEdu: "Stock School",
+      stockPrice: "Indicators",
+      stockEdu: "Investing 101",
       savings: "Savings",
       etf: "ETF",
       realEstate: "Real Estate",
@@ -214,7 +218,7 @@
       brand: "Youngjae Finance",
       heroTitle: "Smart Investing 2030",
       heroSub: "Less noise, only what matters. Start from the menu below.",
-      cardStock: "Stock Picks",
+      cardStock: "Indicators",
       cardStockSub: "Today’s picks · live quotes",
       cardEstate: "Live Real Estate",
       cardEstateSub: "Local prices · subscriptions · trends",
@@ -226,7 +230,7 @@
       cardGuideSub: "Savings · ETF · housing guides",
       cardPortfolio: "2030 Portfolio",
       cardPortfolioSub: "DCA investing · ISA tips",
-      eduTitle: "Stock School",
+      eduTitle: "Investing 101",
       eduSub: "Learn the core analysis methods for investing.",
       eduTech: "Technical Analysis",
       eduTechSub: "Charts, moving averages, RSI",
@@ -239,7 +243,7 @@
       spPageTitle: "Live Stock Picks | Youngjae Finance 2030",
       spPageDesc: "Naver & Yahoo live API · value score · PBR/PER/ROE · 100 curated stocks",
       spBrand: "Youngjae Finance",
-      spBadge: "Stock Picks",
+      spBadge: "Indicators",
       spSubtitle: "Naver & Yahoo live · 🇰🇷 KR & 🇺🇸 US 100 stocks · value score curation",
       spLiveRefresh: "60s refresh",
       spPauseLive: "Pause live refresh",
@@ -329,7 +333,9 @@
   /** 네비/푸터 한글 라벨 → i18n 키 */
   const LABEL_KEYS = {
     "홈": "home",
+    "지표정리": "stockPrice",
     "주식시세추천": "stockPrice",
+    "주린이 탈출": "stockEdu",
     "주식교육창": "stockEdu",
     "주식교육장": "stockEdu",
     "예적금": "savings",
@@ -340,7 +346,9 @@
     "문의하기": "contact",
     "개인정보처리방침": "privacy",
     "Home": "home",
+    "Indicators": "stockPrice",
     "Stock Picks": "stockPrice",
+    "Investing 101": "stockEdu",
     "Stock School": "stockEdu",
     "Savings": "savings",
     "Real Estate": "realEstate",
@@ -555,6 +563,12 @@
       btn.classList.toggle("is-active", on);
       btn.setAttribute("aria-pressed", on ? "true" : "false");
     });
+    document.querySelectorAll("[data-chrome-toggle]").forEach((btn) => {
+      const label = t(theme === "light" ? "themeToDark" : "themeToLight");
+      btn.setAttribute("aria-label", label);
+      btn.setAttribute("title", label);
+      btn.setAttribute("aria-pressed", theme === "light" ? "true" : "false");
+    });
     const themeGroup = document.querySelector(".site-chrome-theme");
     if (themeGroup) themeGroup.setAttribute("data-active", theme);
     const langGroup = document.querySelector(".site-chrome-lang");
@@ -565,7 +579,7 @@
     if (document.querySelector('link[data-site-chrome-css]')) return;
     const link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = "/css/site-chrome.css?v=20260902a";
+    link.href = "/css/site-chrome.css?v=20260907a";
     link.setAttribute("data-site-chrome-css", "1");
     document.head.appendChild(link);
   }
@@ -577,23 +591,23 @@
     const bar = document.createElement("div");
     bar.className = "site-chrome";
     bar.setAttribute("role", "region");
-    bar.setAttribute("aria-label", "Theme and language");
+    bar.setAttribute("aria-label", "Theme");
     bar.innerHTML = `
       <div class="site-chrome-inner">
-        <div class="site-chrome-group site-chrome-theme" role="group" aria-label="Theme" data-active="dark">
-          <span class="site-chrome-thumb" aria-hidden="true"></span>
-          <button type="button" class="site-chrome-btn" data-chrome-theme="dark" data-i18n-aria="themeDark" aria-label="다크" aria-pressed="false">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5z"/></svg>
-          </button>
-          <button type="button" class="site-chrome-btn" data-chrome-theme="light" data-i18n-aria="themeLight" aria-label="화이트" aria-pressed="false">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-          </button>
-        </div>
+        <button type="button" class="site-chrome-toggle" data-chrome-toggle aria-label="화이트 모드로 전환" title="화이트 모드로 전환" aria-pressed="false">
+          <svg class="ico-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+          <svg class="ico-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5z"/></svg>
+        </button>
       </div>
     `;
+
     document.body.prepend(bar);
 
     bar.addEventListener("click", (e) => {
+      if (e.target.closest("[data-chrome-toggle]")) {
+        applyTheme(getTheme() === "light" ? "dark" : "light");
+        return;
+      }
       const themeBtn = e.target.closest("[data-chrome-theme]");
       if (themeBtn) {
         applyTheme(themeBtn.getAttribute("data-chrome-theme"));
@@ -604,6 +618,8 @@
         applyLang(langBtn.getAttribute("data-chrome-lang"));
       }
     });
+
+    syncChromeButtons();
   }
 
   window.ftT = t;

@@ -28,6 +28,11 @@ html.has-site-chrome .site-header {
   --chrome-bar-bg: linear-gradient(90deg, rgba(8, 8, 12, 0.94), rgba(17, 24, 39, 0.9));
   --chrome-bar-border: rgba(250, 204, 21, 0.12);
   --chrome-sep: rgba(255, 255, 255, 0.12);
+  --chrome-toggle-bg: rgba(255, 255, 255, 0.06);
+  --chrome-toggle-bg-hover: rgba(255, 255, 255, 0.12);
+  --chrome-toggle-border: rgba(255, 255, 255, 0.14);
+  --chrome-toggle-border-hover: rgba(250, 204, 21, 0.5);
+  --chrome-focus: rgba(250, 204, 21, 0.55);
 
   position: fixed;
   top: 0;
@@ -51,134 +56,69 @@ html.has-site-chrome .site-header {
 .site-chrome-inner {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
-.site-chrome-group {
-  position: relative;
-  display: inline-grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 1fr;
-  align-items: stretch;
-  gap: 0;
-  padding: 3px;
-  border-radius: 999px;
-  background: var(--chrome-track);
-  border: 1px solid var(--chrome-track-border);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.18);
-}
-
-.site-chrome-thumb {
-  position: absolute;
-  top: 3px;
-  bottom: 3px;
-  left: 3px;
-  width: calc(50% - 3px);
-  border-radius: 999px;
-  background: var(--chrome-thumb);
-  box-shadow: var(--chrome-thumb-shadow);
-  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* 아이콘 그룹도 길쭉한 필 형태로 보이게 */
-.site-chrome-theme {
-  min-width: 118px;
-  background: var(--chrome-track);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
-}
-
-.site-chrome-lang,
-.site-chrome-sep {
-  display: none !important;
-}
-
-.site-chrome-group[data-active="light"] .site-chrome-thumb,
-.site-chrome-group[data-active="en"] .site-chrome-thumb {
-  transform: translateX(100%);
-}
-
-.site-chrome-btn {
-  position: relative;
-  z-index: 1;
+/* 단일 토글 버튼 — 현재 테마에 맞는 아이콘 1개만 노출 */
+.site-chrome-toggle {
   appearance: none;
-  border: none;
-  background: transparent;
-  color: var(--chrome-fg);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  line-height: 1;
-  min-width: 44px;
-  height: 26px;
-  padding: 0 14px;
+  -webkit-appearance: none;
+  width: 30px;
+  height: 30px;
+  padding: 0;
   border-radius: 999px;
+  border: 1px solid var(--chrome-toggle-border);
+  background: var(--chrome-toggle-bg);
+  color: var(--chrome-fg);
   cursor: pointer;
-  white-space: nowrap;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  transition: color 0.2s ease;
+  transition: color 0.18s ease, background 0.18s ease, border-color 0.18s ease;
 }
 
-.site-chrome-btn:hover {
+.site-chrome-toggle:hover {
   color: var(--chrome-fg-hover);
+  background: var(--chrome-toggle-bg-hover);
+  border-color: var(--chrome-toggle-border-hover);
 }
 
-.site-chrome-btn.is-active {
-  color: var(--chrome-thumb-text);
-  font-weight: 800;
+.site-chrome-toggle:active {
+  transform: scale(0.94);
 }
 
-.site-chrome-btn:focus-visible {
-  outline: 2px solid rgba(250, 204, 21, 0.55);
+.site-chrome-toggle:focus-visible {
+  outline: 2px solid var(--chrome-focus);
   outline-offset: 2px;
 }
 
-.site-chrome-btn svg {
-  width: 14px;
-  height: 14px;
-  flex-shrink: 0;
-  opacity: 0.85;
-  transition: opacity 0.2s, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+.site-chrome-toggle svg {
+  width: 16px;
+  height: 16px;
+  display: block;
 }
 
-.site-chrome-btn.is-active svg {
-  opacity: 1;
-  transform: scale(1.06);
+/* 다크일 때 = 해 아이콘(누르면 화이트로), 화이트일 때 = 달 아이콘 */
+.site-chrome-toggle .ico-moon {
+  display: none;
 }
 
-.site-chrome-btn-label {
-  font-variant-numeric: tabular-nums;
+html[data-theme="light"] .site-chrome-toggle .ico-sun {
+  display: none;
 }
 
-.site-chrome-theme .site-chrome-btn {
-  min-width: 54px;
-  padding: 0 10px;
-  gap: 6px;
+html[data-theme="light"] .site-chrome-toggle .ico-moon {
+  display: block;
 }
 
-.site-chrome-theme .site-chrome-btn::after {
-  content: attr(aria-label);
-  font-size: 0.62rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-}
+@media (prefers-reduced-motion: reduce) {
+  .site-chrome-toggle {
+    transition: none;
+  }
 
-.site-chrome-lang .site-chrome-btn {
-  min-width: 46px;
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-}
-
-.site-chrome-sep {
-  width: 1px;
-  height: 18px;
-  background: var(--chrome-sep);
-  border-radius: 1px;
-  opacity: 0.9;
+  .site-chrome-toggle:active {
+    transform: none;
+  }
 }
 
 /* ── Light theme ── */
@@ -218,6 +158,11 @@ html[data-theme="light"] .site-chrome {
   --chrome-bar-bg: linear-gradient(90deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.94));
   --chrome-bar-border: rgba(37, 99, 235, 0.1);
   --chrome-sep: rgba(15, 23, 42, 0.12);
+  --chrome-toggle-bg: rgba(15, 23, 42, 0.04);
+  --chrome-toggle-bg-hover: rgba(15, 23, 42, 0.08);
+  --chrome-toggle-border: rgba(15, 23, 42, 0.12);
+  --chrome-toggle-border-hover: rgba(37, 99, 235, 0.45);
+  --chrome-focus: rgba(37, 99, 235, 0.5);
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset;
 }
 
@@ -336,16 +281,7 @@ html[data-theme="light"] .hero-sub {
   }
 
   .site-chrome-inner {
-    gap: 8px;
-  }
-
-  .site-chrome-btn {
-    min-width: 34px;
-    padding: 0 9px;
-  }
-
-  .site-chrome-lang .site-chrome-btn {
-    min-width: 38px;
+    gap: 6px;
   }
 }
 
